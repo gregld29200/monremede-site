@@ -12,7 +12,6 @@ export const metadata = {
   description: 'Recettes saines et naturelles pour une alimentation équilibrée. Découvrez des plats nutritifs et délicieux.',
 }
 
-export const revalidate = 60
 
 async function getRecipes(): Promise<Recipe[]> {
   return client.fetch(recipesQuery)

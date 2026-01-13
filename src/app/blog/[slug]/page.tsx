@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
+export const dynamic = 'force-static'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -219,7 +219,7 @@ export default async function PostPage({ params }: PageProps) {
                     />
                   )}
                   <div>
-                    <p className="label text-sage mb-2">À propos de l'auteur</p>
+                    <p className="label text-sage mb-2">À propos de l&apos;auteur</p>
                     <h3 className="font-serif text-xl text-forest mb-3">{post.author.name}</h3>
                     <div className="text-ink-soft text-sm">
                       <PortableText value={post.author.bio} />

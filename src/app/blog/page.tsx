@@ -12,7 +12,6 @@ export const metadata = {
   description: 'Articles sur la naturopathie, la santé naturelle et le bien-être. Conseils pratiques pour une vie saine.',
 }
 
-export const revalidate = 60 // Revalidate every 60 seconds
 
 async function getPosts(): Promise<Post[]> {
   return client.fetch(postsQuery)
