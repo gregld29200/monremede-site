@@ -7,10 +7,10 @@ import { useState, useEffect } from 'react'
 
 const navigation = [
   { name: 'Accueil', href: '/' },
+  { name: 'Le Livre', href: '/livre' },
+  { name: 'Consultations', href: '/consultations' },
   { name: 'Blog', href: '/blog' },
   { name: 'Recettes', href: '/recettes' },
-  { name: 'Le Livre', href: '/livre' },
-  { name: 'À propos', href: '/a-propos' },
 ]
 
 export function Header() {
