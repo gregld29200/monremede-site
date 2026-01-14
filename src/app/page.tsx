@@ -9,6 +9,7 @@ import {
   PricingSection,
   FAQSection,
   FinalCTASection,
+  ServicesSection,
 } from '@/components/sections'
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
         <PainPointsSection />
         <TransformationSection />
         <BookContentSection />
+        <ServicesSection />
         <AuthorSection />
         <TestimonialsSection />
         <PricingSection />
