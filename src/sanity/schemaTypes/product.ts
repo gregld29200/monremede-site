@@ -123,7 +123,7 @@ export const product = defineType({
       name: 'purchaseUrl',
       title: 'Lien d\'achat',
       type: 'url',
-      description: 'Lien externe vers la page d\'achat (Gumroad, Stripe, etc.)',
+      description: 'Lien externe vers la page d\'achat (ex: Amazon)',
     }),
     defineField({
       name: 'featured',

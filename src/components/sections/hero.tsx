@@ -1,6 +1,9 @@
 'use client'
 import { Badge, Button } from '@/components/ui'
 
+// TODO: Replace with actual Amazon link when available
+const AMAZON_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
+
 export function HeroSection() {
   return (
     <section className="hero min-h-screen bg-forest-deep relative grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
@@ -29,8 +32,8 @@ export function HeroSection() {
 
         <div className="flex flex-wrap gap-5 animate-[fadeSlideUp_1s_ease_1s_both]">
           <Button variant="primary" size="lg" asChild>
-            <a href="#commander">
-              Commander le livre
+            <a href={AMAZON_LINK} target="_blank" rel="noopener noreferrer">
+              Commander sur Amazon
               <span>→</span>
             </a>
           </Button>

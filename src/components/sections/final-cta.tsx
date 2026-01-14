@@ -1,6 +1,9 @@
 'use client'
 import { Button } from '@/components/ui'
 
+// TODO: Replace with actual Amazon link when available
+const AMAZON_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
+
 export function FinalCTASection() {
   return (
     <section className="final-cta py-24 lg:py-32 px-6 lg:px-20 bg-forest text-center relative overflow-hidden">
@@ -19,8 +22,8 @@ export function FinalCTASection() {
           et découvrez comment faire de l&apos;alimentation votre meilleur allié santé.
         </p>
         <Button variant="primary" size="lg" asChild>
-          <a href="#commander">
-            Je commande mon livre
+          <a href={AMAZON_LINK} target="_blank" rel="noopener noreferrer">
+            Commander sur Amazon
             <span>→</span>
           </a>
         </Button>

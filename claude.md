@@ -1,16 +1,19 @@
-# MonRemede - Site Oum Soumayya
+# Mon Remède - Site Naturopathie
 
 ## Aperçu du projet
 
-Site web pour Oum Soumayya, naturopathe, vendant un livre sur la santé naturelle "La Santé dans l'assiette - 30 jours pour guérir naturellement". Le site comprend une page de vente, un blog d'articles et une section recettes.
+Site web pour la marque Mon Remède, naturopathie avec Oum Soumayya. Le site propose:
+- Un livre sur la santé naturelle "La Santé dans l'assiette - 30 jours pour guérir naturellement" (vendu sur Amazon)
+- Des consultations en naturopathie en ligne
+- Un blog d'articles et une section recettes
 
 ## Stack technique
 
-- **Framework**: Next.js 16 (App Router)
-- **React**: 19
+- **Framework**: Next.js 15 (App Router)
+- **React**: 18
 - **Styling**: Tailwind CSS 4
 - **CMS**: Sanity (embedded studio)
-- **Déploiement**: Cloudflare Pages avec @opennextjs/cloudflare
+- **Déploiement**: Vercel
 - **Langage**: TypeScript
 
 ## Structure du projet
@@ -18,26 +21,29 @@ Site web pour Oum Soumayya, naturopathe, vendant un livre sur la santé naturell
 ```
 src/
 ├── app/
-│   ├── page.tsx              # Page d'accueil (page de vente)
-│   ├── livre/page.tsx        # Page détaillée du livre
+│   ├── page.tsx                    # Page d'accueil
+│   ├── livre/page.tsx              # Page détaillée du livre
+│   ├── consultations/
+│   │   ├── page.tsx                # Liste des consultations
+│   │   └── demande/page.tsx        # Questionnaire de demande
 │   ├── blog/
-│   │   ├── page.tsx          # Liste des articles
-│   │   └── [slug]/page.tsx   # Article individuel
+│   │   ├── page.tsx                # Liste des articles
+│   │   └── [slug]/page.tsx         # Article individuel
 │   ├── recettes/
-│   │   ├── page.tsx          # Liste des recettes
-│   │   └── [slug]/page.tsx   # Recette individuelle
-│   └── studio/[[...tool]]/   # Sanity Studio
+│   │   ├── page.tsx                # Liste des recettes
+│   │   └── [slug]/page.tsx         # Recette individuelle
+│   └── studio/[[...tool]]/         # Sanity Studio
 ├── components/
-│   ├── ui/                   # Composants réutilisables (Button, Badge, Card, etc.)
-│   ├── layout/               # Header, Footer
-│   └── sections/             # Sections de la page de vente
+│   ├── ui/                         # Composants réutilisables
+│   ├── layout/                     # Header, Footer
+│   └── sections/                   # Sections des pages
 ├── sanity/
-│   ├── schemaTypes/          # Schémas Sanity (post, recipe, author, etc.)
-│   └── lib/                  # Client, queries, image helper
+│   ├── schemaTypes/                # Schémas Sanity
+│   └── lib/                        # Client, queries, image helper
 ├── lib/
-│   └── utils.ts              # Utilitaires (cn pour classnames)
+│   └── utils.ts                    # Utilitaires
 └── types/
-    └── sanity.ts             # Types TypeScript pour Sanity
+    └── sanity.ts                   # Types TypeScript pour Sanity
 ```
 
 ## Design System
@@ -61,9 +67,9 @@ src/
 
 ### Typographie
 
-- **Display**: Instrument Serif (titres grands)
-- **Serif**: Fraunces (sous-titres, corps élégant)
-- **Sans**: DM Sans (corps de texte, labels)
+- **Display**: Playfair Display (titres grands)
+- **Accent**: Cormorant Garamond (sous-titres, labels)
+- **Body**: Lora (corps de texte)
 
 ### Classes utilitaires
 
@@ -90,29 +96,39 @@ src/
 
 ### Accès au Studio
 
-URL locale: http://localhost:3000/studio
+- URL locale: http://localhost:3000/studio
+- URL production: https://monremede-site.vercel.app/studio
 
 ## Commandes
 
 ```bash
-npm run dev              # Développement local
-npm run build            # Build Next.js standard
-npm run build:cloudflare # Build pour Cloudflare Pages
-npm run preview          # Preview Cloudflare local
-npm run deploy           # Déployer sur Cloudflare
+npm run dev    # Développement local
+npm run build  # Build Next.js
+npm run start  # Serveur de production local
+npm run lint   # Linter
 ```
+
+## Consultations
+
+4 formules de consultation:
+- **Santé Générale** - 50€
+- **Troubles Digestifs** - 60€
+- **Équilibre Hormonal** - 70€
+- **Suivi Complet** - 110€
+
+Les consultations utilisent un questionnaire (pas de paiement en ligne, contact par email).
+
+## Vente du livre
+
+Le livre est vendu sur Amazon (format broché et Kindle).
+TODO: Remplacer le lien placeholder `AMAZON_LINK` dans les fichiers suivants:
+- `src/components/sections/hero.tsx`
+- `src/components/sections/pricing.tsx`
+- `src/components/sections/final-cta.tsx`
 
 ## Notes importantes
 
-1. **Images Sanity**: Utiliser `urlFor()` de `@/sanity/lib/image` pour générer les URLs
-2. **ISR**: Les pages blog et recettes utilisent `revalidate = 60` (1 minute)
+1. **Images Sanity**: Utiliser `urlFor()` de `@/sanity/lib/image`
+2. **ISR**: Les pages blog et recettes utilisent `revalidate = 60`
 3. **SSG**: Les pages individuelles utilisent `generateStaticParams()`
-4. **PortableText**: Utiliser `@portabletext/react` pour le rendu du contenu riche
-
-## TODO / Améliorations futures
-
-- [ ] Affiner le design de la page de vente (inconsistances à corriger)
-- [ ] Ajouter les vrais témoignages
-- [ ] Intégrer le système de paiement
-- [ ] Ajouter les métadonnées SEO complètes
-- [ ] Configurer les analytics
+4. **PortableText**: Utiliser `@portabletext/react` pour le contenu riche

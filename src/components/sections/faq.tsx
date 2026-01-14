@@ -16,12 +16,12 @@ const faqs = [
     answer: 'Non, ce livre est un support d\'information et ne remplace pas le diagnostic d\'un professionnel de santé. En cas de doute ou si les troubles persistent, consultez toujours votre praticien. Ce guide vous aidera à mieux comprendre votre corps et à adopter une hygiène de vie saine.',
   },
   {
-    question: 'Comment recevoir le livre après l\'achat ?',
-    answer: 'Immédiatement après votre paiement, vous recevrez un email avec le lien de téléchargement de votre livre en format PDF. Vous pourrez le lire sur tous vos appareils : téléphone, tablette, ordinateur, et même l\'imprimer si vous le souhaitez.',
+    question: 'Comment commander le livre ?',
+    answer: 'Le livre est disponible sur Amazon en format broché (papier) et en version Kindle. Commandez-le directement sur Amazon et profitez de la livraison rapide. Le livre sera chez vous en quelques jours.',
   },
   {
-    question: 'Y a-t-il une version papier disponible ?',
-    answer: 'La version papier est en préparation et sera disponible prochainement. Inscrivez-vous à notre newsletter pour être informée dès sa sortie. En attendant, la version PDF vous permet de commencer immédiatement votre parcours vers une meilleure santé.',
+    question: 'En quels formats est disponible le livre ?',
+    answer: 'Le livre est disponible en deux formats : broché (version papier) pour celles qui préfèrent avoir un livre physique, et version Kindle pour une lecture numérique immédiate sur tablette, téléphone ou liseuse.',
   },
 ]
 

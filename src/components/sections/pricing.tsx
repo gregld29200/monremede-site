@@ -1,13 +1,15 @@
-'use client'
 import { Button } from '@/components/ui'
 
+// TODO: Replace with actual Amazon link when available
+const AMAZON_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
+
 const features = [
-  'Livre complet en PDF (135+ pages)',
+  'Livre complet (135+ pages)',
   '30 jours de conseils nutritionnels',
   'Questionnaires d\'auto-évaluation',
   'Listes d\'aliments et leurs bienfaits',
   'Recettes et conseils pratiques',
-  'Accès à vie + mises à jour gratuites',
+  'Format broché ou Kindle',
 ]
 
 export function PricingSection() {
@@ -39,7 +41,7 @@ export function PricingSection() {
 
         {/* Content */}
         <div className="pricing-content bg-cream p-8 lg:p-12">
-          <p className="label text-sage mb-6">Commander maintenant</p>
+          <p className="label text-sage mb-6">Disponible sur Amazon</p>
 
           {/* Price */}
           <div className="price-display flex items-start mb-8">
@@ -60,14 +62,16 @@ export function PricingSection() {
           </ul>
 
           {/* CTA */}
-          <Button variant="primary" size="lg" className="w-full justify-center mb-6">
-            Commander maintenant →
+          <Button variant="primary" size="lg" className="w-full justify-center mb-6" asChild>
+            <a href={AMAZON_LINK} target="_blank" rel="noopener noreferrer">
+              Commander sur Amazon →
+            </a>
           </Button>
 
-          {/* Guarantee */}
+          {/* Trust badge */}
           <div className="flex items-center justify-center gap-2 text-sm text-ink-soft">
-            <span>🔒</span>
-            <span>Paiement 100% sécurisé</span>
+            <span>📦</span>
+            <span>Livraison rapide via Amazon</span>
           </div>
         </div>
       </div>
