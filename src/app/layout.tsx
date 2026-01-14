@@ -1,30 +1,31 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces, Instrument_Serif } from "next/font/google";
+import { Playfair_Display, Cormorant_Garamond, Lora } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  variable: "--font-sans",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
-const fraunces = Fraunces({
-  variable: "--font-serif",
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-accent",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-display",
+const lora = Lora({
+  variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  title: "Oum Soumayya - La Santé dans l'assiette",
-  description: "30 jours pour se soigner naturellement. Découvrez comment transformer votre alimentation avec la naturopathie.",
+  title: "Mon Remède - La Santé dans l'assiette",
+  description: "30 jours pour guérir naturellement. Naturopathie et consultations en ligne avec Oum Soumayya.",
 };
 
 export default function RootLayout({
@@ -35,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${dmSans.variable} ${fraunces.variable} ${instrumentSerif.variable} antialiased`}
+        className={`${playfairDisplay.variable} ${cormorantGaramond.variable} ${lora.variable} antialiased`}
       >
         {children}
       </body>

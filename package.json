@@ -5,14 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:cloudflare": "npx @opennextjs/cloudflare build",
-    "preview": "npx wrangler dev",
-    "deploy": "npx wrangler deploy",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "^1.14.8",
     "@portabletext/react": "^6.0.2",
     "@radix-ui/react-slot": "^1.2.4",
     "@sanity/image-url": "^1.2.0",
@@ -34,7 +30,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wrangler": "^4.59.1"
+    "typescript": "^5"
   }
 }

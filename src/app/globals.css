@@ -1,52 +1,82 @@
 @import "tailwindcss";
 
 /* ============================================
-   MONREMEDE - Design System
-   Oum Soumayya Branding
+   MON REMÈDE - Design System
+   Charte graphique officielle v1.0
    ============================================ */
 
 :root {
-  /* Palette - Deep forest meets warm earth */
-  --forest-deep: #1a2e23;
-  --forest: #2D4A3E;
-  --sage: #8b9e7e;
-  --sage-light: #b5c4a8;
-  --cream: #f7f4ed;
-  --cream-warm: #efe9dc;
-  --blush: #e8d4cf;
-  --blush-deep: #d4aea5;
-  --gold: #c4a35a;
-  --gold-light: #dcc78e;
+  /* Couleurs principales */
+  --vert-bouteille: #2D4A3E;    /* Principal - Titres, fonds importants */
+  --vert-sauge: #9CAF88;        /* Secondaire - Accents, bordures */
+  --vert-sauge-clair: #B8C9A9;  /* Tertiaire - Hovers, transitions */
+
+  /* Couleurs neutres */
+  --blanc-casse: #FDFBF7;       /* Fond principal */
+  --beige-lin: #F5F0E8;         /* Fonds secondaires, encadrés */
+  --beige-chaud: #E8DFD0;       /* Séparateurs, lignes */
+
+  /* Couleurs d'accent */
+  --rose-poudre: #E8D5D5;       /* Accent doux - Highlights */
+  --rose-doux: #D4B8B8;         /* Accent chaud - Boutons secondaires */
+  --or-doux: #C9A962;           /* Prestige - CTA, badges premium */
+
+  /* Texte */
   --ink: #1a1a18;
   --ink-soft: #3d3d38;
 
   /* Semantic colors */
-  --background: var(--cream);
+  --background: var(--blanc-casse);
   --foreground: var(--ink);
+
+  /* Aliases pour compatibilité */
+  --forest: var(--vert-bouteille);
+  --sage: var(--vert-sauge);
+  --sage-light: var(--vert-sauge-clair);
+  --cream: var(--blanc-casse);
+  --cream-warm: var(--beige-lin);
+  --blush: var(--rose-poudre);
+  --blush-deep: var(--rose-doux);
+  --gold: var(--or-doux);
 }
 
 @theme inline {
-  /* Colors */
-  --color-forest-deep: var(--forest-deep);
-  --color-forest: var(--forest);
-  --color-sage: var(--sage);
-  --color-sage-light: var(--sage-light);
-  --color-cream: var(--cream);
-  --color-cream-warm: var(--cream-warm);
-  --color-blush: var(--blush);
-  --color-blush-deep: var(--blush-deep);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
+  /* Couleurs principales */
+  --color-vert-bouteille: var(--vert-bouteille);
+  --color-vert-sauge: var(--vert-sauge);
+  --color-vert-sauge-clair: var(--vert-sauge-clair);
+
+  /* Couleurs neutres */
+  --color-blanc-casse: var(--blanc-casse);
+  --color-beige-lin: var(--beige-lin);
+  --color-beige-chaud: var(--beige-chaud);
+
+  /* Couleurs d'accent */
+  --color-rose-poudre: var(--rose-poudre);
+  --color-rose-doux: var(--rose-doux);
+  --color-or-doux: var(--or-doux);
+
+  /* Texte */
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
+
+  /* Aliases pour compatibilité avec le code existant */
+  --color-forest: var(--vert-bouteille);
+  --color-sage: var(--vert-sauge);
+  --color-sage-light: var(--vert-sauge-clair);
+  --color-cream: var(--blanc-casse);
+  --color-cream-warm: var(--beige-lin);
+  --color-blush: var(--rose-poudre);
+  --color-blush-deep: var(--rose-doux);
+  --color-gold: var(--or-doux);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Fonts */
-  --font-serif: "Fraunces", serif;
-  --font-display: "Instrument Serif", serif;
-  --font-sans: "DM Sans", sans-serif;
+  /* Fonts - Charte Mon Remède */
+  --font-display: "Playfair Display", serif;     /* Titres principaux */
+  --font-accent: "Cormorant Garamond", serif;    /* Sous-titres, labels */
+  --font-body: "Lora", serif;                    /* Corps de texte */
 
   /* Animations */
   --animate-shimmer: shimmer 3s infinite;
@@ -63,7 +93,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   line-height: 1.7;
   overflow-x: hidden;
 }
@@ -82,9 +112,9 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* Typography utilities */
+/* Typography utilities - Charte Mon Remède */
 .display-huge {
-  font-family: var(--font-display);
+  font-family: var(--font-display);  /* Playfair Display */
   font-size: clamp(3.5rem, 12vw, 9rem);
   font-weight: 400;
   line-height: 0.9;
@@ -92,7 +122,7 @@ body::before {
 }
 
 .display-large {
-  font-family: var(--font-display);
+  font-family: var(--font-display);  /* Playfair Display */
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 400;
   line-height: 1;
@@ -100,28 +130,29 @@ body::before {
 }
 
 .display-medium {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);  /* Playfair Display */
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 400;
   line-height: 1.2;
 }
 
 .heading {
-  font-family: var(--font-serif);
+  font-family: var(--font-accent);   /* Cormorant Garamond */
   font-size: clamp(1.2rem, 2vw, 1.6rem);
   font-weight: 500;
   line-height: 1.3;
 }
 
 .body-large {
+  font-family: var(--font-body);     /* Lora */
   font-size: 1.15rem;
   line-height: 1.8;
 }
 
 .label {
-  font-family: var(--font-sans);
+  font-family: var(--font-accent);   /* Cormorant Garamond */
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
