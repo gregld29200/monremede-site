@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 const navigation = [
@@ -35,11 +36,18 @@ export function Header() {
     >
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="font-display text-2xl text-cream hover:text-gold transition-colors"
-        >
-          Oum Soumayya
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Mon Remède"
+            width={120}
+            height={50}
+            className={cn(
+              "transition-all duration-300 h-auto",
+              isScrolled ? "brightness-0 invert" : ""
+            )}
+            priority
+          />
         </Link>
 
         {/* Desktop Navigation */}
