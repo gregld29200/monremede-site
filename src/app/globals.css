@@ -6,69 +6,39 @@
    ============================================ */
 
 :root {
-  /* Couleurs principales */
-  --vert-bouteille: #2D4A3E;    /* Principal - Titres, fonds importants */
-  --vert-sauge: #9CAF88;        /* Secondaire - Accents, bordures */
-  --vert-sauge-clair: #B8C9A9;  /* Tertiaire - Hovers, transitions */
-
-  /* Couleurs neutres */
-  --blanc-casse: #FDFBF7;       /* Fond principal */
-  --beige-lin: #F5F0E8;         /* Fonds secondaires, encadrés */
-  --beige-chaud: #E8DFD0;       /* Séparateurs, lignes */
-
-  /* Couleurs d'accent */
-  --rose-poudre: #E8D5D5;       /* Accent doux - Highlights */
-  --rose-doux: #D4B8B8;         /* Accent chaud - Boutons secondaires */
-  --or-doux: #C9A962;           /* Prestige - CTA, badges premium */
-
-  /* Texte */
+  /* Palette - Deep forest meets warm earth (original) */
+  --forest-deep: #1a2e23;
+  --forest: #2D4A3E;
+  --sage: #8b9e7e;
+  --sage-light: #b5c4a8;
+  --cream: #f7f4ed;
+  --cream-warm: #efe9dc;
+  --blush: #e8d4cf;
+  --blush-deep: #d4aea5;
+  --gold: #c4a35a;
+  --gold-light: #dcc78e;
   --ink: #1a1a18;
   --ink-soft: #3d3d38;
 
   /* Semantic colors */
-  --background: var(--blanc-casse);
+  --background: var(--cream);
   --foreground: var(--ink);
-
-  /* Aliases pour compatibilité */
-  --forest: var(--vert-bouteille);
-  --sage: var(--vert-sauge);
-  --sage-light: var(--vert-sauge-clair);
-  --cream: var(--blanc-casse);
-  --cream-warm: var(--beige-lin);
-  --blush: var(--rose-poudre);
-  --blush-deep: var(--rose-doux);
-  --gold: var(--or-doux);
 }
 
 @theme inline {
-  /* Couleurs principales */
-  --color-vert-bouteille: var(--vert-bouteille);
-  --color-vert-sauge: var(--vert-sauge);
-  --color-vert-sauge-clair: var(--vert-sauge-clair);
-
-  /* Couleurs neutres */
-  --color-blanc-casse: var(--blanc-casse);
-  --color-beige-lin: var(--beige-lin);
-  --color-beige-chaud: var(--beige-chaud);
-
-  /* Couleurs d'accent */
-  --color-rose-poudre: var(--rose-poudre);
-  --color-rose-doux: var(--rose-doux);
-  --color-or-doux: var(--or-doux);
-
-  /* Texte */
+  /* Colors (original palette) */
+  --color-forest-deep: var(--forest-deep);
+  --color-forest: var(--forest);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-cream: var(--cream);
+  --color-cream-warm: var(--cream-warm);
+  --color-blush: var(--blush);
+  --color-blush-deep: var(--blush-deep);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
-
-  /* Aliases pour compatibilité avec le code existant */
-  --color-forest: var(--vert-bouteille);
-  --color-sage: var(--vert-sauge);
-  --color-sage-light: var(--vert-sauge-clair);
-  --color-cream: var(--blanc-casse);
-  --color-cream-warm: var(--beige-lin);
-  --color-blush: var(--rose-poudre);
-  --color-blush-deep: var(--rose-doux);
-  --color-gold: var(--or-doux);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
