@@ -4,33 +4,23 @@ import { cn } from '@/lib/utils'
 const painPoints = [
   {
     number: '01',
-    title: 'Fatigue chronique',
-    description: 'Vous vous réveillez déjà épuisée, traînant votre corps toute la journée sans comprendre pourquoi l\'énergie ne revient jamais.',
+    title: 'Fatigue persistante',
+    description: 'Vous réveiller fatiguée malgré une nuit complète, traînant votre corps toute la journée sans comprendre pourquoi.',
   },
   {
     number: '02',
-    title: 'Digestion perturbée',
-    description: 'Ballonnements, reflux acide, intestin irritable... votre ventre ne vous laisse jamais tranquille et dicte votre quotidien.',
+    title: 'Médicaments sans résultats',
+    description: 'Enchaîner les traitements sans résultats durables, sentant que quelque chose de plus profond doit changer.',
   },
   {
     number: '03',
-    title: 'Stress permanent',
-    description: 'La charge mentale déborde, les émotions submergent. Vous avez l\'impression de courir sans jamais pouvoir reprendre votre souffle.',
+    title: 'Corps incompréhensible',
+    description: 'Ne pas comprendre pourquoi votre corps vous fait souffrir. La connexion corps-esprit semble rompue.',
   },
   {
     number: '04',
-    title: 'Dépendance aux médicaments',
-    description: 'Vous enchaînez les traitements sans résultats durables, sentant que quelque chose de plus profond doit changer.',
-  },
-  {
-    number: '05',
-    title: 'Perte de contrôle alimentaire',
-    description: 'Envies irrépressibles, grignotages compulsifs... vous avez perdu vos repères face à la nourriture.',
-  },
-  {
-    number: '06',
-    title: 'Déconnexion de soi',
-    description: 'Vous avez oublié ce que signifie se sentir bien dans son corps. La connexion corps-esprit semble rompue.',
+    title: 'Ramadan épuisant',
+    description: 'Finir chaque Ramadan plus épuisée qu\'avant, au lieu de vous sentir purifiée et régénérée.',
   },
 ]
 
@@ -42,28 +32,26 @@ export function PainPointsSection() {
         <div>
           <p className="label text-sage mb-5">Vous reconnaissez-vous ?</p>
           <h2 className="display-large text-forest">
-            Ces maux silencieux qui vous épuisent
+            Vous en avez assez de…
           </h2>
         </div>
         <div className="lg:pb-2">
           <p className="body-large text-ink-soft max-w-md lg:ml-auto">
-            Chaque jour qui passe, la douleur est présente. C&apos;est comme un circuit sans fin,
-            une tourmente qui ne vous lâche jamais.
+            Chaque jour qui passe, ces maux silencieux vous épuisent.
+            Ce livre a été écrit <em className="italic text-forest">pour vous</em>.
           </p>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="pain-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="pain-grid grid grid-cols-1 md:grid-cols-2 gap-5">
         {painPoints.map((point, index) => (
           <div
             key={point.number}
             className={cn(
               'pain-card bg-cream-warm p-8 lg:p-10 relative transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] border border-transparent hover:bg-blush hover:border-blush-deep hover:scale-[1.02]',
-              index === 1 && 'lg:translate-y-10',
-              index === 2 && 'lg:translate-y-20',
-              index === 4 && 'lg:translate-y-10',
-              index === 5 && 'lg:translate-y-20'
+              index === 1 && 'lg:translate-y-8',
+              index === 3 && 'lg:translate-y-8'
             )}
           >
             <div className="font-display text-6xl text-sage/30 leading-none mb-5">

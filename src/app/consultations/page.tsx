@@ -32,8 +32,8 @@ const consultations = [
       'Programme alimentaire ciblé',
       'Suivi personnalisé',
     ],
-    price: 60,
-    duration: '60 min',
+    price: 50,
+    duration: '45 min',
     color: 'forest',
   },
   {
@@ -46,8 +46,8 @@ const consultations = [
       'Alimentation adaptée',
       'Conseils en phytothérapie',
     ],
-    price: 70,
-    duration: '60 min',
+    price: 50,
+    duration: '45 min',
     color: 'blush',
   },
   {

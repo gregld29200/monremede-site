@@ -4,49 +4,35 @@ import { Button } from '@/components/ui'
 const AMAZON_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
 
 const features = [
-  'Livre complet (135+ pages)',
-  '30 jours de conseils nutritionnels',
-  'Questionnaires d\'auto-évaluation',
-  'Listes d\'aliments et leurs bienfaits',
-  'Recettes et conseils pratiques',
-  'Format broché ou Kindle',
+  '260+ pages de conseils concrets',
+  'Applicable toute l\'année (pas seulement le Ramadan)',
+  'Questionnaires d\'auto-évaluation inclus',
+  'Listes d\'aliments thérapeutiques',
+  'Recettes et menus types',
 ]
 
 export function PricingSection() {
   return (
     <section id="commander" className="pricing-section py-20 lg:py-32 px-6 lg:px-20 bg-forest-deep">
-      <div className="pricing-container grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-5xl mx-auto overflow-hidden rounded-lg">
-        {/* Visual */}
-        <div className="pricing-visual relative min-h-[300px] lg:min-h-full bg-gradient-to-br from-sage to-forest overflow-hidden">
-          {/* Image Placeholder */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="label text-cream/60 text-center px-8">
-              Image : Nature morte avec le livre, une tasse de thé, des dattes, quelques feuilles de menthe
-            </span>
-          </div>
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-forest-deep/80 via-transparent to-transparent" />
-
-          {/* Content */}
-          <div className="absolute bottom-8 left-8 right-8 lg:bottom-12 lg:left-12">
-            <h3 className="font-display text-2xl lg:text-3xl text-cream mb-2">
-              La Santé dans l&apos;assiette
-            </h3>
-            <p className="font-serif italic text-sage-light">
-              Votre guide vers la guérison
-            </p>
-          </div>
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <p className="label text-gold mb-6">Disponible sur Amazon</p>
+          <h2 className="display-large text-cream mb-4">
+            Investissez dans votre santé
+          </h2>
         </div>
 
-        {/* Content */}
-        <div className="pricing-content bg-cream p-8 lg:p-12">
-          <p className="label text-sage mb-6">Disponible sur Amazon</p>
-
-          {/* Price */}
-          <div className="price-display flex items-start mb-8">
-            <span className="text-2xl text-forest font-serif mt-2">€</span>
-            <span className="text-7xl lg:text-8xl font-display text-forest leading-none">25</span>
+        {/* Pricing Card */}
+        <div className="bg-cream rounded-sm p-8 lg:p-12 max-w-2xl mx-auto">
+          {/* Price with comparison */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-4xl lg:text-5xl font-display text-forest">19,90€</span>
+            </div>
+            <p className="text-ink-soft italic">
+              Le prix d&apos;un repas au restaurant — pour un guide que vous consulterez pendant des années.
+            </p>
           </div>
 
           {/* Features */}
@@ -62,17 +48,12 @@ export function PricingSection() {
           </ul>
 
           {/* CTA */}
-          <Button variant="primary" size="lg" className="w-full justify-center mb-6" asChild>
+          <Button variant="primary" size="lg" className="w-full justify-center" asChild>
             <a href={AMAZON_LINK} target="_blank" rel="noopener noreferrer">
-              Commander sur Amazon →
+              Commander sur Amazon
+              <span className="ml-2">→</span>
             </a>
           </Button>
-
-          {/* Trust badge */}
-          <div className="flex items-center justify-center gap-2 text-sm text-ink-soft">
-            <span>📦</span>
-            <span>Livraison rapide via Amazon</span>
-          </div>
         </div>
       </div>
     </section>

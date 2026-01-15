@@ -1,0 +1,8 @@
+export { HeroHome } from './hero-home'
+export { PainPointsHome } from './pain-points-home'
+export { PhilosophyHome } from './philosophy-home'
+export { SolutionsHome } from './solutions-home'
+export { AuthorHome } from './author-home'
+export { TestimonialsHome } from './testimonials-home'
+export { BlogRecipesHome } from './blog-recipes-home'
+export { CTAFinalHome } from './cta-final-home'

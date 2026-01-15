@@ -2,7 +2,6 @@ import { Header, Footer } from '@/components/layout'
 import {
   HeroSection,
   PainPointsSection,
-  TransformationSection,
   BookContentSection,
   AuthorSection,
   TestimonialsSection,
@@ -13,7 +12,7 @@ import {
 
 export const metadata = {
   title: 'La Santé dans l\'assiette – Oum Soumayya',
-  description: '30 jours pour se soigner naturellement. Découvrez comment transformer votre Ramadan en période de guérison avec ce guide complet de naturopathie.',
+  description: 'Et si vous pouviez enfin comprendre votre corps ? 260+ pages de conseils concrets pour reprendre le contrôle de votre santé naturellement.',
 }
 
 export default function LivrePage() {
@@ -23,7 +22,6 @@ export default function LivrePage() {
       <main>
         <HeroSection />
         <PainPointsSection />
-        <TransformationSection />
         <BookContentSection />
         <AuthorSection />
         <TestimonialsSection />

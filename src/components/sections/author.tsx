@@ -2,70 +2,56 @@
 
 const credentials = [
   'Naturopathie',
-  'Hijama',
-  'Acupuncture',
-  'Réflexologie',
   'Micronutrition',
-  'Massothérapie',
+  'Hijama',
+  'Accompagnement du jeûne',
 ]
 
 export function AuthorSection() {
   return (
-    <section className="author-section py-20 lg:py-40 px-6 lg:px-20 bg-cream relative">
-      <div className="author-container grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
-        {/* Image Wrapper */}
-        <div className="author-image-wrapper relative">
-          {/* Decorative circle */}
-          <div className="absolute -top-[8%] -left-[8%] w-[50%] aspect-square rounded-full border border-sage/20 pointer-events-none hidden lg:block" />
+    <section className="author-section py-20 lg:py-32 px-6 lg:px-20 bg-cream relative">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 lg:gap-16 items-center">
+          {/* Image */}
+          <div className="relative mx-auto lg:mx-0">
+            {/* Decorative circle */}
+            <div className="absolute -inset-4 rounded-full border border-sage/20 hidden lg:block" />
 
-          {/* Main Image */}
-          <div className="author-image-main w-full aspect-[4/5] rounded-tr-[100px] rounded-bl-[100px] bg-gradient-to-br from-sage-light to-sage overflow-hidden">
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="label text-forest-deep/60 text-center px-8">
-                Portrait Auteure : Femme en hijab assise dans un cadre naturel et chaleureux, expression douce et bienveillante
-              </span>
+            {/* Main Image */}
+            <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-sage-light to-sage overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="label text-forest-deep/60 text-center px-6 text-[0.6rem]">
+                  Portrait Auteure
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Accent Image */}
-          <div className="author-image-accent absolute w-[45%] aspect-square -bottom-[10%] -right-[5%] lg:-right-[15%] rounded-full border-6 border-cream bg-gradient-to-br from-blush to-blush-deep overflow-hidden shadow-xl hidden lg:flex items-center justify-center">
-            <span className="label text-forest-deep/60 text-center px-2 text-[0.55rem]">
-              Plantes
-            </span>
-          </div>
-        </div>
+          {/* Content */}
+          <div>
+            <p className="label text-sage mb-4">Qui est l&apos;auteure ?</p>
+            <h2 className="font-display text-3xl lg:text-4xl text-forest mb-6">
+              Zayneb, Oum Soumayya
+            </h2>
 
-        {/* Content */}
-        <div className="author-content">
-          <p className="label text-sage mb-4">L&apos;auteure</p>
-          <h2 className="font-display text-4xl lg:text-5xl text-forest mb-2">
-            Oum Soumayya
-          </h2>
-          <p className="font-serif text-lg italic text-sage mb-8">
-            Praticienne en médecines naturelles
-          </p>
+            <p className="text-ink-soft mb-8 leading-relaxed text-lg">
+              Accompagne des familles depuis <strong className="text-forest">2009</strong>.
+              Ancienne étudiante en médecine devenue naturopathe, elle a compilé dans ce livre
+              <strong className="text-forest"> 15 années de pratique</strong> et les demandes de ses patientes.
+            </p>
 
-          <p className="text-ink-soft mb-6 leading-relaxed">
-            Après des années de souffrances personnelles – sinusite chronique, allergies, douleurs abdominales
-            insupportables – Oum Soumayya a cherché des réponses au-delà de la médecine conventionnelle.
-            Son parcours de guérison l&apos;a menée vers la naturopathie et les médecines traditionnelles.
-          </p>
-          <p className="text-ink-soft mb-10 leading-relaxed">
-            Aujourd&apos;hui, elle accompagne les femmes – particulièrement les mamans épuisées – vers un bien-être
-            profond alliant science, douceur et spiritualité. Ce livre est le fruit de ses années de pratique
-            et de la demande de ses patientes.
-          </p>
-
-          {/* Credentials */}
-          <div className="author-credentials flex flex-wrap gap-3">
-            {credentials.map((credential) => (
-              <span
-                key={credential}
-                className="px-4 py-2 bg-sage/10 text-forest text-sm font-medium rounded-sm border border-sage/20"
-              >
-                {credential}
-              </span>
-            ))}
+            {/* Credentials */}
+            <div className="flex flex-wrap gap-3">
+              {credentials.map((credential, index) => (
+                <span
+                  key={credential}
+                  className="px-4 py-2 bg-sage/10 text-forest text-sm font-medium rounded-sm border border-sage/20"
+                >
+                  {index > 0 && <span className="mr-2 text-sage/40">·</span>}
+                  {credential}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -15,16 +15,15 @@ export function FinalCTASection() {
 
       <div className="final-cta-content max-w-2xl mx-auto relative z-10">
         <h2 className="display-large text-cream mb-8">
-          Prête à transformer votre santé ?
+          Ne laissez pas passer un Ramadan de plus sans comprendre votre corps.
         </h2>
         <p className="text-cream/70 text-lg mb-10 max-w-xl mx-auto">
-          Ne laissez pas un Ramadan de plus vous épuiser. Offrez à votre corps les soins qu&apos;il mérite
-          et découvrez comment faire de l&apos;alimentation votre meilleur allié santé.
+          Ce livre est le premier pas vers une santé que vous méritez.
         </p>
         <Button variant="primary" size="lg" asChild>
           <a href={AMAZON_LINK} target="_blank" rel="noopener noreferrer">
-            Commander sur Amazon
-            <span>→</span>
+            Commander maintenant sur Amazon
+            <span className="ml-2">→</span>
           </a>
         </Button>
       </div>

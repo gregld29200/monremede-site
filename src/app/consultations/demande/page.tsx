@@ -7,8 +7,8 @@ import { useSearchParams } from 'next/navigation'
 
 const consultationTypes = [
   { id: 'sante-generale', name: 'Santé Générale', price: 50 },
-  { id: 'troubles-digestifs', name: 'Troubles Digestifs', price: 60 },
-  { id: 'equilibre-hormonal', name: 'Équilibre Hormonal', price: 70 },
+  { id: 'troubles-digestifs', name: 'Troubles Digestifs', price: 50 },
+  { id: 'equilibre-hormonal', name: 'Équilibre Hormonal', price: 50 },
   { id: 'suivi-complet', name: 'Suivi Complet', price: 110 },
 ]
 

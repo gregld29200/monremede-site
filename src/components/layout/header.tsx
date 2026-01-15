@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 const navigation = [
   { name: 'Accueil', href: '/' },
@@ -13,9 +14,17 @@ const navigation = [
   { name: 'Recettes', href: '/recettes' },
 ]
 
+// Pages with dark hero backgrounds
+const darkHeroPages = ['/livre']
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const isLivrePage = pathname === '/livre'
+
+  // Determine if current page has a dark hero
+  const hasDarkHero = darkHeroPages.includes(pathname)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +33,15 @@ export function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Text colors based on background
+  const navTextColor = isScrolled || hasDarkHero
+    ? 'text-cream/80 hover:text-gold'
+    : 'text-forest/70 hover:text-forest'
+
+  const mobileButtonColor = isScrolled || hasDarkHero
+    ? 'text-cream'
+    : 'text-forest'
 
   return (
     <header
@@ -44,7 +62,8 @@ export function Header() {
             height={50}
             className={cn(
               "transition-all duration-300 h-auto",
-              isScrolled ? "brightness-0 invert" : ""
+              // Invert logo on dark backgrounds (scrolled or dark hero pages)
+              (isScrolled || hasDarkHero) ? "brightness-0 invert" : ""
             )}
             priority
           />
@@ -56,7 +75,10 @@ export function Header() {
             <Link
               key={item.name}
               href={item.href}
-              className="text-sm text-cream/80 hover:text-gold transition-colors tracking-wide"
+              className={cn(
+                "text-sm transition-colors tracking-wide",
+                navTextColor
+              )}
             >
               {item.name}
             </Link>
@@ -66,16 +88,16 @@ export function Header() {
         {/* CTA Button */}
         <div className="hidden md:block">
           <Link
-            href="/livre"
+            href={isLivrePage ? '/consultations' : '/livre'}
             className="inline-flex items-center gap-2 bg-gold text-forest-deep px-5 py-2.5 text-xs font-medium uppercase tracking-wider hover:bg-gold-light transition-colors"
           >
-            Découvrir le livre
+            {isLivrePage ? 'Prendre rendez-vous' : 'Découvrir le livre'}
           </Link>
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-cream p-2"
+          className={cn("md:hidden p-2", mobileButtonColor)}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -119,11 +141,11 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/livre"
+              href={isLivrePage ? '/consultations' : '/livre'}
               className="inline-flex items-center justify-center gap-2 bg-gold text-forest-deep px-5 py-3 text-sm font-medium uppercase tracking-wider mt-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Découvrir le livre
+              {isLivrePage ? 'Prendre rendez-vous' : 'Découvrir le livre'}
             </Link>
           </nav>
         </div>

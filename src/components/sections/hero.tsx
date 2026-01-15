@@ -8,26 +8,33 @@ export function HeroSection() {
   return (
     <section className="hero min-h-screen bg-forest-deep relative grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
       {/* Left Content */}
-      <div className="hero-left px-6 sm:px-12 lg:px-20 py-20 lg:py-0 flex flex-col justify-center relative z-10">
+      <div className="hero-left px-6 sm:px-12 lg:px-20 pt-40 pb-20 lg:pt-36 lg:pb-20 flex flex-col justify-center relative z-10">
         <Badge
           variant="gold"
-          className="mb-10 animate-[fadeSlideUp_1s_ease_0.2s_both]"
+          className="mb-8 animate-[fadeSlideUp_1s_ease_0.2s_both] self-start"
         >
-          <span className="text-xs">✦</span>
-          Nouveau Livre 2025
+          Plus de 15 ans d&apos;expérience compilés en un guide
         </Badge>
 
-        <h1 className="display-huge text-cream mb-5 animate-[fadeSlideUp_1s_ease_0.4s_both]">
-          La Santé<br/>dans <em className="italic text-gold-light">l&apos;assiette</em>
+        <h1 className="text-cream mb-6 animate-[fadeSlideUp_1s_ease_0.4s_both] max-w-[95%]">
+          <span className="font-display text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.95] block">
+            Et si vous pouviez
+          </span>
+          <span className="font-display text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.95] block">
+            enfin
+          </span>
+          <em className="font-display italic text-gold-light text-[clamp(2.2rem,7vw,4.5rem)] leading-[1.1] block mt-2">
+            comprendre votre corps ?
+          </em>
         </h1>
 
-        <p className="font-serif text-lg sm:text-xl font-light italic text-sage-light mb-10 animate-[fadeSlideUp_1s_ease_0.6s_both]">
-          30 Jours pour se soigner — Ramadan, ma guérison
+        <p className="font-serif text-lg sm:text-xl font-light italic text-sage-light mb-8 max-w-lg animate-[fadeSlideUp_1s_ease_0.6s_both]">
+          &laquo; La Santé dans l&apos;assiette &raquo; — Le guide de naturopathie qui a déjà aidé des centaines de familles à retrouver leur vitalité.
         </p>
 
-        <p className="text-cream/75 max-w-md mb-12 body-large animate-[fadeSlideUp_1s_ease_0.8s_both]">
-          Un guide complet de naturopathie pour transformer votre Ramadan en période de guérison profonde.
-          Retrouvez votre énergie, apaisez votre digestion et reconnectez-vous à votre corps.
+        <p className="text-cream/75 max-w-md mb-10 body-large animate-[fadeSlideUp_1s_ease_0.8s_both]">
+          260+ pages de conseils concrets, de listes d&apos;aliments thérapeutiques et de questionnaires
+          d&apos;auto-évaluation pour reprendre le contrôle de votre santé — naturellement.
         </p>
 
         <div className="flex flex-wrap gap-5 animate-[fadeSlideUp_1s_ease_1s_both]">
@@ -49,7 +56,7 @@ export function HeroSection() {
       <div className="hero-right relative hidden lg:block">
         {/* Main Image */}
         <div
-          className="absolute top-[10%] left-[-15%] w-[90%] h-[75%] rounded-bl-[80px] bg-gradient-to-br from-sage to-sage-light animate-[fadeSlideLeft_1.2s_ease_0.5s_both] overflow-hidden"
+          className="absolute top-[12%] left-0 w-[85%] h-[70%] rounded-bl-[80px] bg-gradient-to-br from-sage to-sage-light animate-[fadeSlideLeft_1.2s_ease_0.5s_both] overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="label text-forest-deep/60 text-center px-8">
@@ -61,7 +68,7 @@ export function HeroSection() {
 
         {/* Secondary Image */}
         <div
-          className="absolute bottom-[5%] right-[8%] w-[45%] h-[35%] rounded-tl-[40px] rounded-br-[40px] bg-gradient-to-br from-blush to-blush-deep shadow-2xl animate-[fadeSlideUp_1.2s_ease_0.8s_both] overflow-hidden"
+          className="absolute bottom-[8%] right-[8%] w-[45%] h-[32%] rounded-tl-[40px] rounded-br-[40px] bg-gradient-to-br from-blush to-blush-deep shadow-2xl animate-[fadeSlideUp_1.2s_ease_0.8s_both] overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="label text-forest-deep/60 text-center px-4 text-[0.6rem]">
@@ -71,7 +78,7 @@ export function HeroSection() {
         </div>
 
         {/* Botanical Decoration */}
-        <div className="absolute top-[15%] right-[10%] w-44 h-44 opacity-15 animate-float">
+        <div className="absolute top-[18%] right-[12%] w-36 h-36 opacity-15 animate-float">
           <svg viewBox="0 0 100 100" className="w-full h-full fill-sage-light">
             <path d="M50 10 Q60 30 50 50 Q40 30 50 10" />
             <path d="M50 50 Q70 40 80 60 Q60 55 50 50" />
