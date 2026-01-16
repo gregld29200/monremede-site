@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import type { Client, ClientStatus, ConsultationType, ClientSource } from '@/types/admin'
 
 interface ClientFormProps {
@@ -35,37 +34,37 @@ export interface ClientFormData {
 }
 
 const statusOptions = [
-  { value: 'actif', label: 'Actif' },
-  { value: 'pause', label: 'En pause' },
-  { value: 'archive', label: 'Archive' },
+  { value: 'actif', label: 'Actif', color: 'sage', icon: '●' },
+  { value: 'pause', label: 'En pause', color: 'gold', icon: '◐' },
+  { value: 'archive', label: 'Archivé', color: 'gray', icon: '○' },
 ]
 
 const sourceOptions = [
-  { value: 'questionnaire', label: 'Questionnaire' },
-  { value: 'import', label: 'Import CSV' },
-  { value: 'manuel', label: 'Saisie manuelle' },
-  { value: 'recommandation', label: 'Recommandation' },
+  { value: 'questionnaire', label: 'Questionnaire', icon: '📝' },
+  { value: 'import', label: 'Import CSV', icon: '📁' },
+  { value: 'manuel', label: 'Saisie manuelle', icon: '✏️' },
+  { value: 'recommandation', label: 'Recommandation', icon: '💬' },
 ]
 
 const consultationOptions = [
-  { value: '', label: 'Non defini' },
-  { value: 'sante-generale', label: 'Sante Generale' },
-  { value: 'troubles-digestifs', label: 'Troubles Digestifs' },
-  { value: 'equilibre-hormonal', label: 'Equilibre Hormonal' },
-  { value: 'suivi-complet', label: 'Suivi Complet' },
+  { value: '', label: 'Non défini', price: '' },
+  { value: 'sante-generale', label: 'Santé Générale', price: '50€' },
+  { value: 'troubles-digestifs', label: 'Troubles Digestifs', price: '60€' },
+  { value: 'equilibre-hormonal', label: 'Équilibre Hormonal', price: '70€' },
+  { value: 'suivi-complet', label: 'Suivi Complet', price: '110€' },
 ]
 
 const concernOptions = [
-  { value: 'digestion', label: 'Digestion' },
-  { value: 'fatigue', label: 'Fatigue' },
-  { value: 'sommeil', label: 'Sommeil' },
-  { value: 'stress', label: 'Stress' },
-  { value: 'poids', label: 'Poids' },
-  { value: 'peau', label: 'Peau' },
-  { value: 'hormones', label: 'Hormones' },
-  { value: 'douleurs', label: 'Douleurs' },
-  { value: 'immunite', label: 'Immunite' },
-  { value: 'autre', label: 'Autre' },
+  { value: 'digestion', label: 'Digestion', icon: '🍃' },
+  { value: 'fatigue', label: 'Fatigue', icon: '⚡' },
+  { value: 'sommeil', label: 'Sommeil', icon: '🌙' },
+  { value: 'stress', label: 'Stress', icon: '🧘' },
+  { value: 'poids', label: 'Poids', icon: '⚖️' },
+  { value: 'peau', label: 'Peau', icon: '✨' },
+  { value: 'hormones', label: 'Hormones', icon: '🔄' },
+  { value: 'douleurs', label: 'Douleurs', icon: '💪' },
+  { value: 'immunite', label: 'Immunité', icon: '🛡️' },
+  { value: 'autre', label: 'Autre', icon: '📌' },
 ]
 
 export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientFormProps) {
@@ -109,78 +108,118 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 stagger-fade">
       {/* Personal info */}
-      <div className="bg-white rounded-lg border border-forest/10 p-6">
-        <h3 className="font-display text-lg text-forest mb-4">Informations personnelles</h3>
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-forest/15 to-forest/5 border border-forest/10 flex items-center justify-center">
+            <svg className="w-4 h-4 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <h3 className="font-display text-lg text-forest">Informations personnelles</h3>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Prenom *
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Prénom <span className="text-blush-deep">*</span>
             </label>
             <input
               type="text"
               value={formData.firstName}
               onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="admin-input"
+              placeholder="Marie"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Nom *
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Nom <span className="text-blush-deep">*</span>
             </label>
             <input
               type="text"
               value={formData.lastName}
               onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="admin-input"
+              placeholder="Dupont"
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Email *
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Email <span className="text-blush-deep">*</span>
             </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-              required
-            />
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft/40">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="admin-input pl-11"
+                placeholder="marie@example.com"
+                required
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Telephone
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Téléphone
             </label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-            />
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft/40">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="admin-input pl-11"
+                placeholder="06 12 34 56 78"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
               Date de naissance
             </label>
-            <input
-              type="date"
-              value={formData.birthDate}
-              onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-            />
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft/40">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <input
+                type="date"
+                value={formData.birthDate}
+                onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
+                className="admin-input pl-11"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Address */}
-      <div className="bg-white rounded-lg border border-forest/10 p-6">
-        <h3 className="font-display text-lg text-forest mb-4">Adresse</h3>
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sage/15 to-sage/5 border border-sage/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3 className="font-display text-lg text-forest">Adresse</h3>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-forest mb-2">
+          <div className="md:col-span-2 space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
               Rue
             </label>
             <input
@@ -190,11 +229,12 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                 ...formData,
                 address: { ...formData.address, street: e.target.value },
               })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="admin-input"
+              placeholder="123 rue de la Santé"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
               Ville
             </label>
             <input
@@ -204,11 +244,12 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                 ...formData,
                 address: { ...formData.address, city: e.target.value },
               })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="admin-input"
+              placeholder="Paris"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
               Code postal
             </label>
             <input
@@ -218,74 +259,132 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                 ...formData,
                 address: { ...formData.address, postalCode: e.target.value },
               })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
+              className="admin-input"
+              placeholder="75001"
             />
           </div>
         </div>
       </div>
 
-      {/* Status and consultation */}
-      <div className="bg-white rounded-lg border border-forest/10 p-6">
-        <h3 className="font-display text-lg text-forest mb-4">Statut et consultation</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Statut
-            </label>
-            <select
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value as ClientStatus })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-            >
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+      {/* Status and Source */}
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/15 to-gold/5 border border-gold/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Source
-            </label>
-            <select
-              value={formData.source}
-              onChange={(e) => setFormData({ ...formData, source: e.target.value as ClientSource })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-            >
-              {sourceOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          <h3 className="font-display text-lg text-forest">Statut et source</h3>
+        </div>
+
+        {/* Status Selection */}
+        <div className="space-y-3 mb-6">
+          <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+            Statut de la cliente
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {statusOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setFormData({ ...formData, status: option.value as ClientStatus })}
+                className={`px-4 py-2.5 rounded-xl font-accent text-xs uppercase tracking-wider transition-all ${
+                  formData.status === option.value
+                    ? option.color === 'sage'
+                      ? 'bg-sage text-cream shadow-md'
+                      : option.color === 'gold'
+                      ? 'bg-gold text-forest-deep shadow-md'
+                      : 'bg-forest/60 text-cream shadow-md'
+                    : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                }`}
+              >
+                <span className="mr-1.5">{option.icon}</span>
+                {option.label}
+              </button>
+            ))}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Type de consultation
-            </label>
-            <select
-              value={formData.consultationType}
-              onChange={(e) => setFormData({ ...formData, consultationType: e.target.value as ConsultationType | '' })}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent"
-            >
-              {consultationOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        </div>
+
+        {/* Source Selection */}
+        <div className="space-y-3">
+          <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+            Source d&apos;acquisition
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {sourceOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setFormData({ ...formData, source: option.value as ClientSource })}
+                className={`px-4 py-3 rounded-xl font-accent text-xs uppercase tracking-wider transition-all text-center ${
+                  formData.source === option.value
+                    ? 'bg-forest text-cream shadow-md'
+                    : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                }`}
+              >
+                <span className="block text-base mb-1">{option.icon}</span>
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
+      {/* Consultation Type */}
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blush/20 to-blush/5 border border-blush/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-blush-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <h3 className="font-display text-lg text-forest">Type de consultation</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {consultationOptions.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setFormData({ ...formData, consultationType: option.value as ConsultationType | '' })}
+              className={`relative p-4 rounded-xl text-left transition-all ${
+                formData.consultationType === option.value
+                  ? 'bg-blush/20 border-2 border-blush-deep/40 shadow-sm'
+                  : 'bg-cream-warm/50 border border-forest/5 hover:border-blush/30 hover:bg-blush/5'
+              }`}
+            >
+              {formData.consultationType === option.value && (
+                <div className="absolute top-3 right-3">
+                  <div className="w-5 h-5 rounded-full bg-blush-deep flex items-center justify-center">
+                    <svg className="w-3 h-3 text-cream" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+              <p className="font-display text-sm text-forest">{option.label}</p>
+              {option.price && (
+                <p className="font-accent text-xs text-blush-deep mt-1">{option.price}</p>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Health profile */}
-      <div className="bg-white rounded-lg border border-forest/10 p-6">
-        <h3 className="font-display text-lg text-forest mb-4">Profil sante</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Preoccupations
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sage/20 to-sage/5 border border-sage/20 flex items-center justify-center">
+            <svg className="w-4 h-4 text-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <h3 className="font-display text-lg text-forest">Profil santé</h3>
+        </div>
+        <div className="space-y-5">
+          {/* Concerns */}
+          <div className="space-y-3">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Préoccupations principales
             </label>
             <div className="flex flex-wrap gap-2">
               {concernOptions.map((concern) => (
@@ -293,19 +392,22 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                   key={concern.value}
                   type="button"
                   onClick={() => toggleConcern(concern.value)}
-                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-accent text-xs uppercase tracking-wider transition-all ${
                     formData.healthProfile.concerns.includes(concern.value)
-                      ? 'bg-gold text-forest-deep'
-                      : 'bg-cream-warm text-forest hover:bg-gold/20'
+                      ? 'bg-sage text-cream shadow-md'
+                      : 'bg-sage/10 text-sage hover:bg-sage/20'
                   }`}
                 >
+                  <span>{concern.icon}</span>
                   {concern.label}
                 </button>
               ))}
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
+
+          {/* Allergies */}
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
               Allergies connues
             </label>
             <textarea
@@ -315,12 +417,15 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                 healthProfile: { ...formData.healthProfile, allergies: e.target.value },
               })}
               rows={2}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
+              className="admin-input resize-none"
+              placeholder="Gluten, lactose, fruits à coque..."
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-forest mb-2">
-              Medicaments en cours
+
+          {/* Medications */}
+          <div className="space-y-2">
+            <label className="font-accent text-xs text-ink-soft/70 uppercase tracking-wider">
+              Médicaments en cours
             </label>
             <textarea
               value={formData.healthProfile.medications}
@@ -329,34 +434,66 @@ export function ClientForm({ client, onSubmit, onCancel, isLoading }: ClientForm
                 healthProfile: { ...formData.healthProfile, medications: e.target.value },
               })}
               rows={2}
-              className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
+              className="admin-input resize-none"
+              placeholder="Levothyrox 50mg, Vitamine D..."
             />
           </div>
         </div>
       </div>
 
-      {/* Notes */}
-      <div className="bg-white rounded-lg border border-forest/10 p-6">
-        <h3 className="font-display text-lg text-forest mb-4">Notes internes</h3>
+      {/* Internal Notes */}
+      <div className="admin-card p-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-forest/10 to-forest/5 border border-forest/10 flex items-center justify-center">
+            <svg className="w-4 h-4 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <h3 className="font-display text-lg text-forest">Notes internes</h3>
+          <span className="font-accent text-[10px] text-ink-soft/50 uppercase tracking-wider">Privé</span>
+        </div>
         <textarea
           value={formData.internalNotes}
           onChange={(e) => setFormData({ ...formData, internalNotes: e.target.value })}
           rows={4}
-          className="w-full px-4 py-2.5 border border-forest/20 rounded-lg bg-white text-forest focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent resize-none"
-          placeholder="Notes privees sur cette cliente..."
+          className="admin-input resize-none"
+          placeholder="Notes privées sur cette cliente (visible uniquement par vous)..."
         />
       </div>
 
       {/* Actions */}
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
         {onCancel && (
-          <Button type="button" variant="ghost" onClick={onCancel} className="flex-1">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 px-6 py-3.5 rounded-xl font-accent text-xs uppercase tracking-wider bg-forest/5 text-forest hover:bg-forest/10 transition-all"
+          >
             Annuler
-          </Button>
+          </button>
         )}
-        <Button type="submit" disabled={isLoading} className="flex-1">
-          {isLoading ? 'Enregistrement...' : client?._id ? 'Mettre a jour' : 'Creer la cliente'}
-        </Button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 group relative px-6 py-3.5 rounded-xl font-accent text-xs uppercase tracking-wider overflow-hidden transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold bg-[length:200%_100%] group-hover:bg-[position:100%_0] transition-all duration-500" />
+          <span className="relative flex items-center justify-center gap-2 text-forest-deep">
+            {isLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-forest-deep/30 border-t-forest-deep rounded-full animate-spin" />
+                Enregistrement...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
+                </svg>
+                {client?._id ? 'Mettre à jour' : 'Créer la cliente'}
+              </>
+            )}
+          </span>
+        </button>
       </div>
     </form>
   )
