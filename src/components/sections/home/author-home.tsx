@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 const specialties = [
   'Naturopathie',
@@ -82,29 +83,26 @@ export function AuthorHome() {
               <div className="absolute -inset-3 border border-gold/20 rounded-sm" />
 
               {/* Main image container */}
-              <div className="relative aspect-[3/4] bg-gradient-to-br from-forest/10 via-sage/15 to-blush/10 rounded-sm overflow-hidden">
-                {/* Placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <div className="text-center">
-                    <div className="w-32 h-40 mx-auto mb-6 bg-forest/5 rounded-full flex items-center justify-center relative">
-                      {/* Silhouette hint */}
-                      <div className="w-20 h-28 bg-forest/10 rounded-full" />
-                      <div className="absolute top-2 w-10 h-10 bg-forest/10 rounded-full" />
-                    </div>
-                    <p className="text-forest/60 text-sm font-accent leading-relaxed max-w-xs">
-                      Femme voilée de dos regardant par une fenêtre lumineuse, intérieur chaleureux avec plantes
-                    </p>
-                  </div>
-                </div>
+              <div className="relative aspect-[3/4] rounded-sm overflow-hidden shadow-xl">
+                <Image
+                  src="/images/cabinet-naturopathie.png"
+                  alt="Cabinet de naturopathie - espace de consultation chaleureux"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                />
+
+                {/* Subtle vignette */}
+                <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(26,46,35,0.1)]" />
 
                 {/* Corner accents */}
                 <div className="absolute top-4 left-4 w-8 h-8">
-                  <div className="absolute top-0 left-0 w-full h-px bg-gold/40" />
-                  <div className="absolute top-0 left-0 h-full w-px bg-gold/40" />
+                  <div className="absolute top-0 left-0 w-full h-px bg-gold/50" />
+                  <div className="absolute top-0 left-0 h-full w-px bg-gold/50" />
                 </div>
                 <div className="absolute bottom-4 right-4 w-8 h-8">
-                  <div className="absolute bottom-0 right-0 w-full h-px bg-gold/40" />
-                  <div className="absolute bottom-0 right-0 h-full w-px bg-gold/40" />
+                  <div className="absolute bottom-0 right-0 w-full h-px bg-gold/50" />
+                  <div className="absolute bottom-0 right-0 h-full w-px bg-gold/50" />
                 </div>
               </div>
 

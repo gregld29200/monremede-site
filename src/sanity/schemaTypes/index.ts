@@ -7,6 +7,9 @@ import {post} from './post'
 import {recipe} from './recipe'
 import {testimonial} from './testimonial'
 import {product} from './product'
+import {questionnaireSubmission} from './questionnaireSubmission'
+import {client} from './client'
+import {clientNote} from './clientNote'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -20,5 +23,10 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     recipe,
     testimonial,
     product,
+    questionnaireSubmission,
+
+    // CRM
+    client,
+    clientNote,
   ],
 }

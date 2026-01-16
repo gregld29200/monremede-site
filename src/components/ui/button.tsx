@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { forwardRef, type ButtonHTMLAttributes, type ReactElement } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
 export function BlogRecipesHome() {
@@ -73,48 +74,45 @@ export function BlogRecipesHome() {
             }`}
           >
             <Link href="/blog" className="block">
-              {/* Visual area */}
-              <div className="relative aspect-[4/3] mb-8 overflow-hidden rounded-sm bg-gradient-to-br from-sage/10 via-forest/5 to-cream-warm">
-                {/* Placeholder illustration */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    {/* Open book with botanical elements */}
-                    <div className="relative w-40 h-28">
-                      {/* Book pages */}
-                      <div className="absolute inset-0 flex">
-                        <div className="w-1/2 h-full bg-cream rounded-l-sm shadow-lg border-r border-sage/10">
-                          <div className="p-3 space-y-2">
-                            <div className="h-1 bg-forest/10 rounded w-full" />
-                            <div className="h-1 bg-forest/10 rounded w-4/5" />
-                            <div className="h-1 bg-forest/10 rounded w-3/5" />
-                          </div>
-                        </div>
-                        <div className="w-1/2 h-full bg-cream rounded-r-sm shadow-lg">
-                          <div className="p-3 space-y-2">
-                            <div className="h-1 bg-forest/10 rounded w-full" />
-                            <div className="h-1 bg-forest/10 rounded w-4/5" />
-                            <div className="h-1 bg-forest/10 rounded w-2/3" />
-                          </div>
-                        </div>
-                      </div>
-                      {/* Botanical accent */}
-                      <svg
-                        className="absolute -top-8 -right-4 w-16 h-24 text-sage/60"
-                        viewBox="0 0 50 80"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                      >
-                        <path d="M25 80 L25 40 Q30 20 25 5 Q20 20 25 40" />
-                        <ellipse cx="35" cy="35" rx="8" ry="5" fill="currentColor" opacity="0.3" />
-                        <ellipse cx="15" cy="25" rx="6" ry="4" fill="currentColor" opacity="0.2" />
-                      </svg>
-                    </div>
+              {/* Visual area with decorative frame */}
+              <div className="relative mb-12">
+                {/* Decorative frame layers */}
+                <div className="absolute -inset-5 border border-sage/10 rounded-sm" />
+                <div className="absolute -inset-2 border border-gold/20 rounded-sm" />
+
+                {/* Image container */}
+                <div className="relative aspect-[4/3] overflow-hidden rounded-sm shadow-lg">
+                  <Image
+                    src="/images/blog-placeholder.png"
+                    alt="Le blog Mon Remède - Articles naturopathie"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+
+                  {/* Subtle vignette */}
+                  <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(26,46,35,0.08)]" />
+
+                  {/* Corner accents */}
+                  <div className="absolute top-3 left-3 w-6 h-6">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gold/50" />
+                    <div className="absolute top-0 left-0 h-full w-px bg-gold/50" />
                   </div>
+                  <div className="absolute bottom-3 right-3 w-6 h-6">
+                    <div className="absolute bottom-0 right-0 w-full h-px bg-gold/50" />
+                    <div className="absolute bottom-0 right-0 h-full w-px bg-gold/50" />
+                  </div>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-forest/0 group-hover:bg-forest/5 transition-colors duration-500" />
                 </div>
 
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-forest/0 group-hover:bg-forest/5 transition-colors duration-500" />
+                {/* Caption label */}
+                <div className="absolute -bottom-3 left-6 bg-cream px-3 py-1 shadow-sm">
+                  <span className="text-[9px] tracking-[0.2em] uppercase text-sage">
+                    Articles
+                  </span>
+                </div>
               </div>
 
               {/* Content */}
@@ -156,41 +154,45 @@ export function BlogRecipesHome() {
             }`}
           >
             <Link href="/recettes" className="block">
-              {/* Visual area */}
-              <div className="relative aspect-[4/3] mb-8 overflow-hidden rounded-sm bg-gradient-to-br from-blush/10 via-gold/5 to-cream-warm">
-                {/* Placeholder illustration */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    {/* Bowl with ingredients */}
-                    <div className="relative w-36 h-28">
-                      {/* Bowl */}
-                      <div className="absolute bottom-0 w-full h-20 bg-cream-warm rounded-b-full border-2 border-sage/30 overflow-hidden">
-                        {/* Contents */}
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                          <div className="w-6 h-6 rounded-full bg-sage/40" />
-                          <div className="w-4 h-4 rounded-full bg-gold/40 mt-2" />
-                          <div className="w-5 h-5 rounded-full bg-blush/50 mt-1" />
-                        </div>
-                      </div>
-                      {/* Spoon */}
-                      <div className="absolute -right-4 bottom-6 w-16 h-3 bg-cream rounded-full border border-sage/20 transform rotate-45 origin-left" />
-                      {/* Steam/herb accent */}
-                      <svg
-                        className="absolute -top-4 -left-4 w-12 h-16 text-sage/50"
-                        viewBox="0 0 40 60"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                      >
-                        <path d="M20 60 L20 35 Q25 20 20 5 Q15 20 20 35" />
-                        <ellipse cx="12" cy="20" rx="5" ry="3" fill="currentColor" opacity="0.3" />
-                      </svg>
-                    </div>
+              {/* Visual area with decorative frame */}
+              <div className="relative mb-12">
+                {/* Decorative frame layers */}
+                <div className="absolute -inset-5 border border-sage/10 rounded-sm" />
+                <div className="absolute -inset-2 border border-gold/20 rounded-sm" />
+
+                {/* Image container */}
+                <div className="relative aspect-[4/3] overflow-hidden rounded-sm shadow-lg">
+                  <Image
+                    src="/images/recipes-placeholder.png"
+                    alt="Recettes saines - Cuisine naturelle"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+
+                  {/* Subtle vignette */}
+                  <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(26,46,35,0.08)]" />
+
+                  {/* Corner accents */}
+                  <div className="absolute top-3 left-3 w-6 h-6">
+                    <div className="absolute top-0 left-0 w-full h-px bg-gold/50" />
+                    <div className="absolute top-0 left-0 h-full w-px bg-gold/50" />
                   </div>
+                  <div className="absolute bottom-3 right-3 w-6 h-6">
+                    <div className="absolute bottom-0 right-0 w-full h-px bg-gold/50" />
+                    <div className="absolute bottom-0 right-0 h-full w-px bg-gold/50" />
+                  </div>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/5 transition-colors duration-500" />
                 </div>
 
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-blush/0 group-hover:bg-blush/5 transition-colors duration-500" />
+                {/* Caption label */}
+                <div className="absolute -bottom-3 left-6 bg-cream px-3 py-1 shadow-sm">
+                  <span className="text-[9px] tracking-[0.2em] uppercase text-sage">
+                    Cuisine
+                  </span>
+                </div>
               </div>
 
               {/* Content */}

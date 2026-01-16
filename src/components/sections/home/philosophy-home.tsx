@@ -4,40 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 
 const pillars = [
   {
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-        <circle cx="24" cy="20" r="8" />
-        <path d="M24 28 L24 44" />
-        <path d="M16 36 L32 36" />
-        <path d="M8 20 Q16 12 24 12 Q32 12 40 20" strokeDasharray="2 2" />
-      </svg>
-    ),
     title: "L'alimentation",
-    description: 'Votre premier médicament. Apprendre à nourrir plutôt qu\'à remplir.',
+    description: "Votre premier médicament. Apprendre à nourrir plutôt qu'à remplir.",
   },
   {
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-        <circle cx="24" cy="24" r="16" />
-        <path d="M24 8 L24 12" />
-        <path d="M24 36 L24 40" />
-        <circle cx="24" cy="24" r="4" fill="currentColor" opacity="0.3" />
-        <path d="M24 24 L24 14" strokeLinecap="round" />
-        <path d="M24 24 L30 24" strokeLinecap="round" />
-      </svg>
-    ),
     title: 'Le jeûne',
     description: 'Un outil de nettoyage et de guérison pratiqué depuis des millénaires.',
   },
   {
-    icon: (
-      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full">
-        <path d="M12 24 Q12 12 24 12 Q36 12 36 24 Q36 36 24 44 Q12 36 12 24" />
-        <path d="M20 20 L28 20" strokeLinecap="round" />
-        <path d="M20 28 L28 28" strokeLinecap="round" />
-        <circle cx="24" cy="24" r="2" fill="currentColor" opacity="0.5" />
-      </svg>
-    ),
     title: "L'accompagnement",
     description: 'Un regard extérieur pour comprendre vos signaux et adapter votre parcours.',
   },
@@ -148,37 +122,78 @@ export function PhilosophyHome() {
           </div>
         </div>
 
-        {/* Three pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {pillars.map((pillar, index) => (
-            <div
-              key={index}
-              className={`group relative transition-all duration-700 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-              }`}
-              style={{ transitionDelay: `${400 + index * 150}ms` }}
-            >
-              {/* Card */}
-              <div className="relative p-8 lg:p-10 border border-sage/20 rounded-sm bg-forest/40 backdrop-blur-sm hover:border-gold/30 hover:bg-forest/60 transition-all duration-500">
-                {/* Number indicator */}
-                <span className="absolute top-4 right-4 text-xs tracking-widest text-sage/40 font-mono">
-                  0{index + 1}
-                </span>
+        {/* Three pillars - Editorial Bold Style */}
+        <div className="relative">
+          {/* Editorial grid lines */}
+          <div className="absolute inset-0 pointer-events-none hidden md:block">
+            <div className="absolute left-1/3 top-0 bottom-0 w-px bg-cream/5" />
+            <div className="absolute left-2/3 top-0 bottom-0 w-px bg-cream/5" />
+          </div>
 
-                {/* Icon */}
-                <div className="w-16 h-16 mb-8 text-sage-light group-hover:text-gold transition-colors duration-500">
-                  {pillar.icon}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+            {pillars.map((pillar, index) => (
+              <div
+                key={index}
+                className={`group relative border-t md:border-t-0 md:border-l border-cream/10 first:border-t-0 md:first:border-l-0 transition-all duration-700 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+                }`}
+                style={{ transitionDelay: `${400 + index * 150}ms` }}
+              >
+                {/* Giant number background */}
+                <div className="absolute top-0 left-0 right-0 overflow-hidden pointer-events-none">
+                  <span
+                    className="font-display text-[10rem] lg:text-[14rem] leading-none text-cream/[0.03] group-hover:text-gold/[0.06] transition-colors duration-700"
+                    style={{ marginLeft: '-0.1em' }}
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
                 </div>
 
                 {/* Content */}
-                <h3 className="font-display text-2xl lg:text-3xl text-cream mb-4">{pillar.title}</h3>
-                <p className="text-cream/60 leading-relaxed">{pillar.description}</p>
+                <div className="relative p-8 lg:p-12 min-h-[320px] flex flex-col">
+                  {/* Top label */}
+                  <div className="flex items-center gap-3 mb-auto">
+                    <span className="text-[10px] tracking-[0.3em] uppercase text-gold">
+                      Pilier
+                    </span>
+                    <span className="h-px flex-1 bg-gold/30" />
+                    <span className="font-display text-lg text-gold">
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                  </div>
 
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  {/* Title - dramatic typography */}
+                  <div className="my-8">
+                    <h3 className="font-display text-3xl lg:text-4xl text-cream leading-tight">
+                      {pillar.title.split(' ').map((word, i) => (
+                        <span key={i} className="block">
+                          {i === 0 ? (
+                            <span className="italic text-sage-light">{word}</span>
+                          ) : (
+                            word
+                          )}
+                        </span>
+                      ))}
+                    </h3>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-cream/50 leading-relaxed text-sm lg:text-base mt-auto">
+                    {pillar.description}
+                  </p>
+
+                  {/* Bottom accent */}
+                  <div className="mt-8 flex items-center gap-2">
+                    <div className="w-8 h-px bg-gold group-hover:w-16 transition-all duration-500" />
+                    <div className="w-1 h-1 rounded-full bg-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  </div>
+                </div>
+
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
