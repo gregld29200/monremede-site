@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { Badge, Button } from '@/components/ui'
 
 const AMAZON_LINK = 'https://www.amazon.fr/dp/2959216601'
@@ -53,27 +54,32 @@ export function HeroSection() {
 
       {/* Right Visual */}
       <div className="hero-right relative hidden lg:block">
-        {/* Main Image */}
+        {/* Main Image - Book Mockup */}
         <div
-          className="absolute top-[12%] left-0 w-[85%] h-[70%] rounded-bl-[80px] bg-gradient-to-br from-sage to-sage-light animate-[fadeSlideLeft_1.2s_ease_0.5s_both] overflow-hidden"
+          className="absolute top-[12%] left-0 w-[85%] h-[70%] rounded-bl-[80px] animate-[fadeSlideLeft_1.2s_ease_0.5s_both] overflow-hidden"
         >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="label text-forest-deep/60 text-center px-8">
-              Image Hero : Femme en hijab cuisinant sereinement des légumes frais dans une cuisine lumineuse aux tons neutres
-            </span>
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-sage/50 animate-shimmer" />
+          <Image
+            src="/images/book-mockup-hero.png"
+            alt="La Santé dans l'assiette - Livre de naturopathie par Oum Soumayya"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-forest-deep/20" />
         </div>
 
-        {/* Secondary Image */}
+        {/* Secondary Image - Ingredients */}
         <div
-          className="absolute bottom-[8%] right-[8%] w-[45%] h-[32%] rounded-tl-[40px] rounded-br-[40px] bg-gradient-to-br from-blush to-blush-deep shadow-2xl animate-[fadeSlideUp_1.2s_ease_0.8s_both] overflow-hidden"
+          className="absolute bottom-[8%] right-[8%] w-[45%] h-[32%] rounded-tl-[40px] rounded-br-[40px] shadow-2xl animate-[fadeSlideUp_1.2s_ease_0.8s_both] overflow-hidden"
         >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="label text-forest-deep/60 text-center px-4 text-[0.6rem]">
-              Ingrédients naturels
-            </span>
-          </div>
+          <Image
+            src="/images/ingredients-hero.png"
+            alt="Ingrédients naturels pour une alimentation saine"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 50vw, 25vw"
+          />
         </div>
 
         {/* Botanical Decoration */}
