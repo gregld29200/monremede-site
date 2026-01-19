@@ -69,13 +69,13 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-forest-deep/20" />
         </div>
 
-        {/* Secondary Image - Ingredients */}
+        {/* Secondary Image - Open Book */}
         <div
           className="absolute bottom-[8%] right-[8%] w-[45%] h-[32%] rounded-tl-[40px] rounded-br-[40px] shadow-2xl animate-[fadeSlideUp_1.2s_ease_0.8s_both] overflow-hidden"
         >
           <Image
-            src="/images/ingredients-hero.png"
-            alt="Ingrédients naturels pour une alimentation saine"
+            src="/images/book-hero-small.png"
+            alt="Livre ouvert sur une table avec une tasse de thé"
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 50vw, 25vw"
