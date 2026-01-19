@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 
 /**
- * PainPointsHome - Scroll-based Morphing Effect
- * L'image se transforme progressivement du brouillard au soleil
- * en fonction du scroll dans la section
+ * PainPointsHome - Scroll + Auto-Loop Morphing Effect
+ * L'image se transforme du brouillard au soleil :
+ * - En fonction du scroll dans la section
+ * - Continue en boucle automatique quand on arrête de scroller
  */
 
 const painPoints = [
@@ -38,15 +39,21 @@ const painPoints = [
 
 export function PainPointsHome() {
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [loopProgress, setLoopProgress] = useState(0)
+  const [isScrolling, setIsScrolling] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [isInView, setIsInView] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const animationRef = useRef<number | null>(null)
 
   // Intersection observer for entrance animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setIsVisible(true)
+        setIsInView(entry.isIntersecting)
       },
       { threshold: 0.1 }
     )
@@ -55,35 +62,83 @@ export function PainPointsHome() {
   }, [])
 
   // Scroll-based morphing effect
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!imageRef.current) return
+  const handleScroll = useCallback(() => {
+    if (!imageRef.current) return
 
-      const rect = imageRef.current.getBoundingClientRect()
-      const windowHeight = window.innerHeight
-
-      // Calculate progress: 0 when image enters viewport, 1 when it exits top
-      // Start transition when image is 80% visible from bottom
-      const startPoint = windowHeight * 0.8
-      const endPoint = windowHeight * 0.2
-
-      if (rect.top > startPoint) {
-        setScrollProgress(0)
-      } else if (rect.top < endPoint) {
-        setScrollProgress(1)
-      } else {
-        const progress = (startPoint - rect.top) / (startPoint - endPoint)
-        setScrollProgress(Math.max(0, Math.min(1, progress)))
-      }
+    // Mark as scrolling and reset timeout
+    setIsScrolling(true)
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current)
     }
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false)
+    }, 150) // Consider stopped after 150ms of no scroll
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // Initial check
+    const rect = imageRef.current.getBoundingClientRect()
+    const windowHeight = window.innerHeight
 
-    return () => window.removeEventListener('scroll', handleScroll)
+    const startPoint = windowHeight * 0.8
+    const endPoint = windowHeight * 0.2
+
+    if (rect.top > startPoint) {
+      setScrollProgress(0)
+    } else if (rect.top < endPoint) {
+      setScrollProgress(1)
+    } else {
+      const progress = (startPoint - rect.top) / (startPoint - endPoint)
+      setScrollProgress(Math.max(0, Math.min(1, progress)))
+    }
   }, [])
 
-  const isRevealed = scrollProgress > 0.5
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    // Initial check on mount - intentional setState in effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    handleScroll()
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
+    }
+  }, [handleScroll])
+
+  // Auto-loop animation when not scrolling and in view
+  useEffect(() => {
+    if (isScrolling || !isInView) {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
+      }
+      return
+    }
+
+    let startTime: number | null = null
+    const duration = 6000 // 6 seconds for full cycle
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp
+      const elapsed = timestamp - startTime
+
+      // Sine wave for smooth back-and-forth: 0 → 1 → 0 → 1...
+      const cycle = (Math.sin((elapsed / duration) * Math.PI * 2 - Math.PI / 2) + 1) / 2
+      setLoopProgress(cycle)
+
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [isScrolling, isInView])
+
+  // Combine scroll and loop progress
+  // When scrolling: use scroll progress
+  // When not scrolling: blend towards loop progress
+  const displayProgress = isScrolling ? scrollProgress : loopProgress
+  const isRevealed = displayProgress > 0.5
 
   return (
     <section
@@ -135,7 +190,7 @@ export function PainPointsHome() {
               {/* Base layer - Fog image */}
               <div
                 className="absolute inset-0"
-                style={{ opacity: 1 - scrollProgress }}
+                style={{ opacity: 1 - displayProgress }}
               >
                 <Image
                   src="/images/painpoint-fog.png"
@@ -150,7 +205,7 @@ export function PainPointsHome() {
               {/* Revealed layer - Sunny image */}
               <div
                 className="absolute inset-0"
-                style={{ opacity: scrollProgress }}
+                style={{ opacity: displayProgress }}
               >
                 <Image
                   src="/images/painpoint-sunny.png"
@@ -222,8 +277,8 @@ export function PainPointsHome() {
               <span
                 className="w-2 h-2 rounded-full transition-transform duration-150"
                 style={{
-                  backgroundColor: `rgba(139, 158, 126, ${1 - scrollProgress * 0.7})`,
-                  transform: `scale(${1 - scrollProgress * 0.25})`
+                  backgroundColor: `rgba(139, 158, 126, ${1 - displayProgress * 0.7})`,
+                  transform: `scale(${1 - displayProgress * 0.25})`
                 }}
               />
               <span className="font-accent text-sm text-ink-soft italic">
@@ -232,8 +287,8 @@ export function PainPointsHome() {
               <span
                 className="w-2 h-2 rounded-full transition-transform duration-150"
                 style={{
-                  backgroundColor: `rgba(196, 163, 90, ${0.3 + scrollProgress * 0.7})`,
-                  transform: `scale(${0.75 + scrollProgress * 0.25})`
+                  backgroundColor: `rgba(196, 163, 90, ${0.3 + displayProgress * 0.7})`,
+                  transform: `scale(${0.75 + displayProgress * 0.25})`
                 }}
               />
             </div>
@@ -293,7 +348,7 @@ export function PainPointsHome() {
             <div className="w-20 h-1 bg-sage/20 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-sage to-gold rounded-full transition-all duration-100"
-                style={{ width: `${scrollProgress * 100}%` }}
+                style={{ width: `${displayProgress * 100}%` }}
               />
             </div>
           </div>
