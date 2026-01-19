@@ -69,14 +69,6 @@ export function QuestionnaireIntro() {
         <div className="relative">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold" />
-              <span className="text-xs tracking-[0.3em] uppercase text-sage font-medium">
-                Questionnaire Santé
-              </span>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold" />
-            </div>
-
             <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl text-forest mb-6 leading-tight">
               Faites le point sur<br />
               <span className="text-sage italic">votre état de santé</span>

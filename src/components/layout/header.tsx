@@ -18,7 +18,7 @@ const navigation = [
 const darkHeroPages = ['/livre']
 
 // Pages that need a solid light header background (no transparency)
-const solidLightHeaderPages = ['/consultations/demande']
+const solidLightHeaderPages: string[] = []
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)

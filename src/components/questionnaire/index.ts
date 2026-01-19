@@ -1,6 +1,6 @@
 // Questionnaire Components
 export { QuestionnaireProvider, useQuestionnaire } from './context'
-export { QuestionnaireProgress } from './progress'
+export { QuestionnaireProgress, QuestionnaireProgressBar, QuestionnaireCounter } from './progress'
 export { QuestionnaireIntro } from './intro'
 export { QuestionnaireQuestion } from './question'
 export { QuestionnaireLoading } from './loading'

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useQuestionnaire } from './context'
-import { categories } from './data'
+import { categories, questions } from './data'
 import { Button } from '@/components/ui'
 
 export function QuestionnaireQuestion() {
@@ -18,6 +18,7 @@ export function QuestionnaireQuestion() {
     goToStep,
     calculateResults,
     submitQuestionnaire,
+    progress,
   } = useQuestionnaire()
 
   const [isAnimating, setIsAnimating] = useState(false)
@@ -134,7 +135,7 @@ export function QuestionnaireQuestion() {
   if (!currentQuestion) return null
 
   return (
-    <div className="min-h-screen flex flex-col pt-40">
+    <div className="min-h-screen flex flex-col pt-24">
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div
@@ -239,8 +240,17 @@ export function QuestionnaireQuestion() {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation with integrated progress */}
       <div className="sticky bottom-0 bg-cream/95 backdrop-blur-sm border-t border-sage/10">
+        {/* Progress bar */}
+        <div className="h-1 bg-sage/20">
+          <div
+            className="h-full bg-gradient-to-r from-gold to-gold-light transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* Navigation row */}
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={handlePrev}
@@ -267,6 +277,11 @@ export function QuestionnaireQuestion() {
             </svg>
             <span className="hidden sm:inline">Précédent</span>
           </button>
+
+          {/* Question counter */}
+          <span className="text-xs text-sage tabular-nums">
+            {state.currentQuestionIndex + 1} / {questions.length}
+          </span>
 
           <Button
             onClick={handleNext}
