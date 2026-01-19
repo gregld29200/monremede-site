@@ -112,7 +112,7 @@ export function PainPointsHome() {
             <div className="relative aspect-[16/9] rounded-sm overflow-hidden shadow-xl">
               {/* Base layer - Fog image */}
               <div
-                className={`absolute inset-0 transition-opacity duration-[2500ms] ease-in-out ${
+                className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
                   isRevealed ? 'opacity-0' : 'opacity-100'
                 }`}
               >
@@ -128,7 +128,7 @@ export function PainPointsHome() {
 
               {/* Revealed layer - Sunny image */}
               <div
-                className={`absolute inset-0 transition-opacity duration-[2500ms] ease-in-out ${
+                className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
                   isRevealed ? 'opacity-100' : 'opacity-0'
                 }`}
               >
@@ -155,16 +155,16 @@ export function PainPointsHome() {
 
               {/* Corner accents */}
               <div className="absolute top-4 left-4 w-8 h-8">
-                <div className={`absolute top-0 left-0 w-full h-px transition-colors duration-[2000ms] ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
-                <div className={`absolute top-0 left-0 h-full w-px transition-colors duration-[2000ms] ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div className={`absolute top-0 left-0 w-full h-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div className={`absolute top-0 left-0 h-full w-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
               </div>
               <div className="absolute bottom-4 right-4 w-8 h-8">
-                <div className={`absolute bottom-0 right-0 w-full h-px transition-colors duration-[2000ms] ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
-                <div className={`absolute bottom-0 right-0 h-full w-px transition-colors duration-[2000ms] ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div className={`absolute bottom-0 right-0 w-full h-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div className={`absolute bottom-0 right-0 h-full w-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
               </div>
 
               {/* State indicator */}
-              <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-sm transition-all duration-[2000ms] ease-in-out ${
+              <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-sm transition-all duration-300 ease-in-out ${
                 isRevealed ? 'bg-gold/90 text-forest-deep' : 'bg-cream/80 text-forest'
               }`}>
                 <span className="text-[10px] tracking-[0.2em] uppercase font-medium">
@@ -175,11 +175,11 @@ export function PainPointsHome() {
 
             {/* Caption with animated dots */}
             <div className="flex items-center justify-center gap-3 mt-6">
-              <span className={`w-2 h-2 rounded-full transition-all duration-[2000ms] ${!isRevealed ? 'bg-sage scale-100' : 'bg-sage/30 scale-75'}`} />
+              <span className={`w-2 h-2 rounded-full transition-all duration-300 ${!isRevealed ? 'bg-sage scale-100' : 'bg-sage/30 scale-75'}`} />
               <span className="font-accent text-sm text-ink-soft italic">
                 Du brouillard à la lumière
               </span>
-              <span className={`w-2 h-2 rounded-full transition-all duration-[2000ms] ${isRevealed ? 'bg-gold scale-100' : 'bg-gold/30 scale-75'}`} />
+              <span className={`w-2 h-2 rounded-full transition-all duration-300 ${isRevealed ? 'bg-gold scale-100' : 'bg-gold/30 scale-75'}`} />
             </div>
           </div>
         </div>
@@ -189,14 +189,14 @@ export function PainPointsHome() {
           {painPoints.map((point, index) => (
             <article
               key={index}
-              className={`relative p-8 rounded-sm transition-all duration-[2000ms] ease-in-out ${
+              className={`relative p-8 rounded-sm transition-all duration-300 ease-in-out ${
                 isRevealed
                   ? 'bg-gradient-to-br from-gold/5 to-transparent border border-gold/20'
                   : 'bg-gradient-to-br from-sage/5 to-transparent border border-sage/15'
               } ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
               style={{ transitionDelay: isVisible ? `${500 + index * 100}ms` : '0ms' }}
             >
-              <span className={`absolute -top-4 -left-2 font-display text-6xl leading-none transition-colors duration-[2000ms] ease-in-out ${
+              <span className={`absolute -top-4 -left-2 font-display text-6xl leading-none transition-colors duration-300 ease-in-out ${
                 isRevealed ? 'text-gold/20' : 'text-forest/10'
               }`}>
                 {String(index + 1).padStart(2, '0')}
@@ -205,7 +205,7 @@ export function PainPointsHome() {
                 {point.title}
               </h3>
               <p className="text-ink-soft leading-relaxed">{point.description}</p>
-              <span className={`block mt-4 font-display text-xl italic transition-colors duration-[2000ms] ease-in-out ${
+              <span className={`block mt-4 font-display text-xl italic transition-colors duration-300 ease-in-out ${
                 isRevealed ? 'text-gold/30' : 'text-terracotta/20'
               }`}>
                 {point.pullQuote}
@@ -225,7 +225,7 @@ export function PainPointsHome() {
             <p className="font-accent text-3xl lg:text-4xl text-forest italic leading-snug mb-4">
               Ce n&apos;est pas dans votre tête.
             </p>
-            <p className={`font-display text-xl tracking-wide transition-colors duration-[2000ms] ease-in-out ${
+            <p className={`font-display text-xl tracking-wide transition-colors duration-300 ease-in-out ${
               isRevealed ? 'text-gold' : 'text-sage'
             }`}>
               Il existe un autre chemin.
@@ -234,8 +234,8 @@ export function PainPointsHome() {
 
           {/* Animated progress indicator */}
           <div className="flex justify-center gap-2 mt-8">
-            <span className={`h-1 rounded-full transition-all duration-[2000ms] ease-in-out ${!isRevealed ? 'w-8 bg-sage' : 'w-2 bg-sage/30'}`} />
-            <span className={`h-1 rounded-full transition-all duration-[2000ms] ease-in-out ${isRevealed ? 'w-8 bg-gold' : 'w-2 bg-gold/30'}`} />
+            <span className={`h-1 rounded-full transition-all duration-300 ease-in-out ${!isRevealed ? 'w-8 bg-sage' : 'w-2 bg-sage/30'}`} />
+            <span className={`h-1 rounded-full transition-all duration-300 ease-in-out ${isRevealed ? 'w-8 bg-gold' : 'w-2 bg-gold/30'}`} />
           </div>
         </div>
       </div>
