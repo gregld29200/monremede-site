@@ -54,22 +54,22 @@ export function BookContentSection() {
             ))}
           </div>
 
-          {/* Center - Book */}
+          {/* Center - Book Front & Back */}
           <div className="col-span-12 lg:col-span-6 flex justify-center py-10 order-first lg:order-none">
             <div className="relative">
               {/* Shadow */}
               <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-forest-deep/20 blur-xl rounded-full" />
 
               <Image
-                src="/images/book-mockup-hero.png"
-                alt="La Santé dans l'assiette"
-                width={450}
-                height={560}
+                src="/images/book-central-section.png"
+                alt="La Santé dans l'assiette - Couverture recto et verso"
+                width={600}
+                height={448}
                 className="relative z-10 drop-shadow-2xl hover:scale-105 transition-transform duration-500"
               />
 
               {/* Decorative badge */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 bg-gold rounded-full flex items-center justify-center text-forest-deep font-display text-sm text-center shadow-lg">
+              <div className="absolute -top-2 -right-2 w-16 h-16 bg-gold rounded-full flex items-center justify-center text-forest-deep font-display text-xs text-center shadow-lg">
                 Best<br/>seller
               </div>
             </div>
