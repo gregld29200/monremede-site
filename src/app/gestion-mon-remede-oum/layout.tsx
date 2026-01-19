@@ -24,7 +24,7 @@ export default function AdminLayout({
   return (
     <div className="admin-layout">
       {/* Ambient background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-cream via-cream-warm to-cream-light -z-10" />
+      <div className="fixed inset-0 bg-gradient-to-br from-white via-[#fafafa] to-[#f5f5f5] -z-10" />
       <div className="fixed inset-0 opacity-[0.015] -z-10" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
       }} />
@@ -81,7 +81,7 @@ export default function AdminLayout({
         /* Organic card hover effect */
         .admin-card {
           position: relative;
-          background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(247,243,236,0.9) 100%);
+          background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(250,250,250,0.95) 100%);
           border: 1px solid rgba(45, 74, 62, 0.08);
           border-radius: 16px;
           box-shadow:
@@ -356,7 +356,7 @@ export default function AdminLayout({
           padding: 12px 16px;
           text-align: left;
           border-bottom: 1px solid rgba(45, 74, 62, 0.08);
-          background: rgba(247, 244, 237, 0.5);
+          background: rgba(250, 250, 250, 0.8);
         }
 
         .admin-table td {

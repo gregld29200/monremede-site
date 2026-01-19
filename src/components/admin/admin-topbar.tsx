@@ -55,6 +55,14 @@ const getPageTitle = (pathname: string): { title: string; subtitle: string } => 
   if (pathname.includes('/recettes')) {
     return { title: 'Recettes', subtitle: 'Gérer vos recettes' }
   }
+  // Categories pages
+  if (pathname.includes('/categories')) {
+    return { title: 'Catégories', subtitle: 'Organiser vos contenus' }
+  }
+  // Guide page
+  if (pathname.includes('/guide')) {
+    return { title: 'Guide', subtitle: 'Comment utiliser l\'administration' }
+  }
   return { title: 'Administration', subtitle: 'Mon Remède' }
 }
 
@@ -86,7 +94,7 @@ export function AdminTopbar() {
   const greeting = getGreeting()
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-xl bg-cream/80 border-b border-forest/5">
+    <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-forest/5">
       <div className="px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Left section - Page info */}

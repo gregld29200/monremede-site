@@ -13,6 +13,9 @@ interface AdminImageUploadProps {
   label?: string
   description?: string
   className?: string
+  aspectRatio?: string       // ex: "16:9", "4:3"
+  recommendedWidth?: number  // ex: 1200
+  recommendedHeight?: number // ex: 675
 }
 
 export function AdminImageUpload({
@@ -21,6 +24,9 @@ export function AdminImageUpload({
   label = 'Image',
   description,
   className,
+  aspectRatio,
+  recommendedWidth,
+  recommendedHeight,
 }: AdminImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -232,6 +238,13 @@ export function AdminImageUpload({
                   <p className="font-body text-xs text-ink-soft/50 mt-1">
                     JPG, PNG, GIF ou WebP • Max 5 Mo
                   </p>
+                  {(aspectRatio || (recommendedWidth && recommendedHeight)) && (
+                    <p className="font-body text-xs text-gold/70 mt-1.5">
+                      {aspectRatio && `Ratio ${aspectRatio}`}
+                      {aspectRatio && recommendedWidth && recommendedHeight && ' • '}
+                      {recommendedWidth && recommendedHeight && `${recommendedWidth}×${recommendedHeight}px`}
+                    </p>
+                  )}
                 </div>
               </>
             )}

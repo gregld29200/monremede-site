@@ -43,6 +43,25 @@ export const post = defineType({
       ],
     }),
     defineField({
+      name: 'gallery',
+      title: 'Galerie d\'images',
+      type: 'array',
+      description: 'Images supplémentaires pour l\'article',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Texte alternatif',
+            },
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: 'categories',
       title: 'Catégories',
       type: 'array',

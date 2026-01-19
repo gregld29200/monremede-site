@@ -172,13 +172,25 @@ export interface CSVImportResult {
 // ============================================
 
 // Category type (shared between blog and recipes)
+export type CategoryColor = 'forest' | 'sage' | 'gold' | 'blush'
+
 export interface Category {
   _id: string
   _type: 'category'
   title: string
   slug: { current: string }
   description?: string
+  color?: CategoryColor
 }
+
+export interface CreateCategoryInput {
+  title: string
+  slug?: string
+  description?: string
+  color?: CategoryColor
+}
+
+export type UpdateCategoryInput = Partial<CreateCategoryInput>
 
 // Author type
 export interface Author {
@@ -246,6 +258,11 @@ export interface SEO {
   metaDescription?: string
 }
 
+// Gallery image type
+export interface GalleryImage extends SanityImage {
+  _key: string
+}
+
 // Blog Post types
 export interface Post {
   _id: string
@@ -257,6 +274,7 @@ export interface Post {
     _type: 'reference'
   }
   mainImage?: SanityImage
+  gallery?: GalleryImage[]
   categories?: Array<{
     _ref: string
     _type: 'reference'
@@ -303,6 +321,7 @@ export interface Recipe {
     _type: 'reference'
   }
   mainImage?: SanityImage
+  gallery?: GalleryImage[]
   categories?: Array<{
     _ref: string
     _type: 'reference'
@@ -334,6 +353,7 @@ export interface CreatePostInput {
   slug: string
   authorId?: string
   mainImage?: SanityImage
+  gallery?: GalleryImage[]
   categoryIds?: string[]
   publishedAt?: string
   excerpt?: string
@@ -349,6 +369,7 @@ export interface CreateRecipeInput {
   slug: string
   authorId?: string
   mainImage?: SanityImage
+  gallery?: GalleryImage[]
   categoryIds?: string[]
   publishedAt?: string
   description?: string

@@ -21,6 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         image
       },
       mainImage,
+      gallery,
       categories[]->{
         _id,
         title,
@@ -137,6 +138,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
       } else {
         unset.push('mainImage')
+      }
+    }
+
+    // Handle gallery
+    if (body.gallery !== undefined) {
+      if (body.gallery && body.gallery.length > 0) {
+        patch.gallery = body.gallery.map((img) => ({
+          _key: img._key,
+          _type: 'image',
+          asset: { _type: 'reference', _ref: img.asset._ref },
+          alt: img.alt || '',
+        }))
+      } else {
+        unset.push('gallery')
       }
     }
 

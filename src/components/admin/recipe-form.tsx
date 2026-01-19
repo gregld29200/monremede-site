@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import type { RecipeExpanded, Category, SanityImage, BlockContent, Ingredient, RecipeStep, RecipeDifficulty } from '@/types/admin'
+import type { RecipeExpanded, Category, SanityImage, GalleryImage, BlockContent, Ingredient, RecipeStep, RecipeDifficulty } from '@/types/admin'
 import { AdminImageUpload } from './admin-image-upload'
+import { AdminGalleryUpload } from './admin-gallery-upload'
 import { AdminSlugInput } from './admin-slug-input'
 import { AdminRichEditor } from './admin-rich-editor'
 import { AdminIngredientsEditor } from './admin-ingredients-editor'
@@ -53,6 +54,7 @@ export function RecipeForm({ recipe, isEdit = false }: RecipeFormProps) {
   const [mainImage, setMainImage] = useState<SanityImage | null>(
     recipe?.mainImage || null
   )
+  const [gallery, setGallery] = useState<GalleryImage[]>(recipe?.gallery || [])
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     recipe?.categories?.map((c) => c._id) || []
   )
@@ -99,6 +101,7 @@ export function RecipeForm({ recipe, isEdit = false }: RecipeFormProps) {
         slug: slug.trim(),
         description: description.trim() || undefined,
         mainImage: mainImage || undefined,
+        gallery: gallery.length > 0 ? gallery : undefined,
         categoryIds: selectedCategories.length > 0 ? selectedCategories : undefined,
         prepTime: prepTime || undefined,
         cookTime: cookTime || undefined,
@@ -134,7 +137,7 @@ export function RecipeForm({ recipe, isEdit = false }: RecipeFormProps) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [title, slug, description, mainImage, selectedCategories, prepTime, cookTime, servings, difficulty, ingredients, steps, healthBenefits, tips, featured, isEdit, recipe?._id, router])
+  }, [title, slug, description, mainImage, gallery, selectedCategories, prepTime, cookTime, servings, difficulty, ingredients, steps, healthBenefits, tips, featured, isEdit, recipe?._id, router])
 
   const handleCategoryToggle = useCallback((categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -317,6 +320,21 @@ export function RecipeForm({ recipe, isEdit = false }: RecipeFormProps) {
                 onChange={setMainImage}
                 label="Photo du plat"
                 description="Photo principale de la recette"
+                aspectRatio="4:3"
+                recommendedWidth={1200}
+                recommendedHeight={900}
+              />
+
+              {/* Gallery */}
+              <AdminGalleryUpload
+                value={gallery}
+                onChange={setGallery}
+                label="Galerie d'images"
+                description="Photos supplémentaires de la recette"
+                maxImages={6}
+                aspectRatio="4:3"
+                recommendedWidth={800}
+                recommendedHeight={600}
               />
 
               {/* Description */}

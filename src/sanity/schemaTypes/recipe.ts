@@ -43,6 +43,25 @@ export const recipe = defineType({
       ],
     }),
     defineField({
+      name: 'gallery',
+      title: 'Galerie d\'images',
+      type: 'array',
+      description: 'Photos supplémentaires de la recette',
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Texte alternatif',
+            },
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: 'categories',
       title: 'Catégories',
       type: 'array',

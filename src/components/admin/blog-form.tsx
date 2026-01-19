@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import type { PostExpanded, Category, SanityImage, BlockContent, SEO } from '@/types/admin'
+import type { PostExpanded, Category, SanityImage, GalleryImage, BlockContent, SEO } from '@/types/admin'
 import { AdminImageUpload } from './admin-image-upload'
+import { AdminGalleryUpload } from './admin-gallery-upload'
 import { AdminSlugInput } from './admin-slug-input'
 import { AdminRichEditor } from './admin-rich-editor'
 
@@ -30,6 +31,7 @@ export function BlogForm({ post, isEdit = false }: BlogFormProps) {
   const [mainImage, setMainImage] = useState<SanityImage | null>(
     post?.mainImage || null
   )
+  const [gallery, setGallery] = useState<GalleryImage[]>(post?.gallery || [])
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     post?.categories?.map((c) => c._id) || []
   )
@@ -70,6 +72,7 @@ export function BlogForm({ post, isEdit = false }: BlogFormProps) {
         excerpt: excerpt.trim() || undefined,
         body: body.length > 0 ? body : undefined,
         mainImage: mainImage || undefined,
+        gallery: gallery.length > 0 ? gallery : undefined,
         categoryIds: selectedCategories.length > 0 ? selectedCategories : undefined,
         featured,
         seo: seo.metaTitle || seo.metaDescription ? seo : undefined,
@@ -98,7 +101,7 @@ export function BlogForm({ post, isEdit = false }: BlogFormProps) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [title, slug, excerpt, body, mainImage, selectedCategories, featured, seo, isEdit, post?._id, router])
+  }, [title, slug, excerpt, body, mainImage, gallery, selectedCategories, featured, seo, isEdit, post?._id, router])
 
   const handleCategoryToggle = useCallback((categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -254,6 +257,23 @@ export function BlogForm({ post, isEdit = false }: BlogFormProps) {
               onChange={setMainImage}
               label="Image principale"
               description="Image de couverture de l'article"
+              aspectRatio="16:9"
+              recommendedWidth={1200}
+              recommendedHeight={675}
+            />
+          </div>
+
+          {/* Gallery */}
+          <div className="bg-white border border-forest/5 rounded-2xl p-5">
+            <AdminGalleryUpload
+              value={gallery}
+              onChange={setGallery}
+              label="Galerie d'images"
+              description="Images supplémentaires pour l'article"
+              maxImages={8}
+              aspectRatio="4:3"
+              recommendedWidth={800}
+              recommendedHeight={600}
             />
           </div>
 

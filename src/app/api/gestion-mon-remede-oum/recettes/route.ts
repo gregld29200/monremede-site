@@ -57,6 +57,7 @@ export async function GET(request: NextRequest) {
           image
         },
         mainImage,
+        gallery,
         categories[]->{
           _id,
           title,
@@ -161,6 +162,16 @@ export async function POST(request: NextRequest) {
         asset: { _type: 'reference', _ref: body.mainImage.asset._ref },
         alt: body.mainImage.alt || body.title,
       }
+    }
+
+    // Add gallery if provided
+    if (body.gallery && body.gallery.length > 0) {
+      doc.gallery = body.gallery.map((img) => ({
+        _key: img._key,
+        _type: 'image',
+        asset: { _type: 'reference', _ref: img.asset._ref },
+        alt: img.alt || '',
+      }))
     }
 
     // Add categories if provided
