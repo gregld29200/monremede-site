@@ -26,7 +26,7 @@ const services = [
   {
     id: 'suivi-complet',
     title: 'Suivi Complet',
-    description: 'Accompagnement sur 3 mois pour une transformation profonde.',
+    description: 'Accompagnement sur 3 semaines pour une transformation profonde.',
     price: 110,
     color: 'gold',
     popular: true,

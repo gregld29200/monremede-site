@@ -17,6 +17,9 @@ const navigation = [
 // Pages with dark hero backgrounds
 const darkHeroPages = ['/livre']
 
+// Pages that need a solid light header background (no transparency)
+const solidLightHeaderPages = ['/consultations/demande']
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -25,6 +28,9 @@ export function Header() {
 
   // Determine if current page has a dark hero
   const hasDarkHero = darkHeroPages.includes(pathname)
+
+  // Determine if current page needs a solid light header
+  const needsSolidLightHeader = solidLightHeaderPages.includes(pathname)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,21 +41,30 @@ export function Header() {
   }, [])
 
   // Text colors based on background
-  const navTextColor = isScrolled || hasDarkHero
-    ? 'text-cream/80 hover:text-gold'
-    : 'text-forest/70 hover:text-forest'
+  const navTextColor = needsSolidLightHeader
+    ? 'text-forest/70 hover:text-forest'
+    : isScrolled || hasDarkHero
+      ? 'text-cream/80 hover:text-gold'
+      : 'text-forest/70 hover:text-forest'
 
-  const mobileButtonColor = isScrolled || hasDarkHero
-    ? 'text-cream'
-    : 'text-forest'
+  const mobileButtonColor = needsSolidLightHeader
+    ? 'text-forest'
+    : isScrolled || hasDarkHero
+      ? 'text-cream'
+      : 'text-forest'
+
+  // Determine header background
+  const headerBg = needsSolidLightHeader
+    ? 'bg-cream/95 backdrop-blur-md border-b border-sage/10 py-4'
+    : isScrolled
+      ? 'bg-forest-deep/95 backdrop-blur-md shadow-lg py-4'
+      : 'bg-transparent py-6'
 
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-forest-deep/95 backdrop-blur-md shadow-lg py-4'
-          : 'bg-transparent py-6'
+        headerBg
       )}
     >
       <div className="mx-auto max-w-7xl px-6 flex items-center justify-between">
@@ -62,8 +77,8 @@ export function Header() {
             height={50}
             className={cn(
               "transition-all duration-300 h-auto",
-              // Invert logo on dark backgrounds (scrolled or dark hero pages)
-              (isScrolled || hasDarkHero) ? "brightness-0 invert" : ""
+              // Invert logo on dark backgrounds (scrolled or dark hero pages), but not on solid light header pages
+              (isScrolled || hasDarkHero) && !needsSolidLightHeader ? "brightness-0 invert" : ""
             )}
             priority
           />

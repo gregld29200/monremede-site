@@ -30,7 +30,7 @@ export function BookContentSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <span className="inline-block bg-forest-deep text-gold px-4 py-1 text-[10px] tracking-[0.3em] uppercase mb-6">
-            260+ pages de sagesse
+            190+ pages de sagesse
           </span>
           <h2 className="font-display text-5xl lg:text-6xl text-forest-deep leading-tight">
             Dans ce livre,<br />

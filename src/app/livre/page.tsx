@@ -12,7 +12,7 @@ import {
 
 export const metadata = {
   title: 'La Santé dans l\'assiette – Oum Soumayya',
-  description: 'Et si vous pouviez enfin comprendre votre corps ? 260+ pages de conseils concrets pour reprendre le contrôle de votre santé naturellement.',
+  description: 'Et si vous pouviez enfin comprendre votre corps ? 190+ pages de conseils concrets pour reprendre le contrôle de votre santé naturellement.',
 }
 
 export default function LivrePage() {

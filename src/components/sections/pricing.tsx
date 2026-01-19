@@ -3,7 +3,7 @@ import { Button } from '@/components/ui'
 const AMAZON_LINK = 'https://www.amazon.fr/dp/2959216601'
 
 const features = [
-  '260+ pages de conseils concrets',
+  '190+ pages de conseils concrets',
   'Applicable toute l\'année (pas seulement le Ramadan)',
   'Questionnaires d\'auto-évaluation inclus',
   'Listes d\'aliments thérapeutiques',

@@ -23,7 +23,7 @@ export function QuestionnaireResults() {
   const alertCategories = getAlertCategories(state.categoryScores)
 
   return (
-    <div className="min-h-screen bg-cream py-12 px-6">
+    <div className="min-h-screen bg-cream pt-28 pb-12 px-6">
       {/* Decorative background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-96 h-96 bg-sage/10 rounded-full blur-3xl" />

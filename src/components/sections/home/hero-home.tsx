@@ -100,7 +100,7 @@ export function HeroHome() {
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Depuis 15 ans, j&apos;accompagne ceux qui souffrent à retrouver leur vitalité
+              Depuis 2009, j&apos;accompagne ceux qui souffrent à retrouver leur vitalité
               grâce à une approche naturelle : l&apos;alimentation comme premier médicament,
               le jeûne comme outil de guérison.
             </p>

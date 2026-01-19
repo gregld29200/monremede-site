@@ -134,7 +134,7 @@ export function QuestionnaireQuestion() {
   if (!currentQuestion) return null
 
   return (
-    <div className="min-h-screen flex flex-col pt-20">
+    <div className="min-h-screen flex flex-col pt-40">
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div

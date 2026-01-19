@@ -13,7 +13,7 @@ export function HeroSection() {
           variant="gold"
           className="mb-8 animate-[fadeSlideUp_1s_ease_0.2s_both] self-start"
         >
-          Plus de 15 ans d&apos;expérience compilés en un guide
+          Depuis 2009, mon expérience compilée en un guide
         </Badge>
 
         <h1 className="text-cream mb-6 animate-[fadeSlideUp_1s_ease_0.4s_both] max-w-[95%]">
@@ -33,7 +33,7 @@ export function HeroSection() {
         </p>
 
         <p className="text-cream/75 max-w-md mb-10 body-large animate-[fadeSlideUp_1s_ease_0.8s_both]">
-          260+ pages de conseils concrets, de listes d&apos;aliments thérapeutiques et de questionnaires
+          190+ pages de conseils concrets, de listes d&apos;aliments thérapeutiques et de questionnaires
           d&apos;auto-évaluation pour reprendre le contrôle de votre santé — naturellement.
         </p>
 

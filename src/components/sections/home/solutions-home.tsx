@@ -19,7 +19,7 @@ const consultationFormulas = [
   { name: 'Santé Générale', price: 50, duration: '45 min' },
   { name: 'Troubles Digestifs', price: 50, duration: '45 min' },
   { name: 'Équilibre Hormonal', price: 50, duration: '45 min' },
-  { name: 'Suivi Complet', price: 110, duration: '3 mois', popular: true },
+  { name: 'Suivi Complet', price: 110, duration: '3 semaines', popular: true },
 ]
 
 export function SolutionsHome() {
