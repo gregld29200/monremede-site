@@ -166,3 +166,212 @@ export interface CSVImportResult {
     error: string
   }>
 }
+
+// ============================================
+// BLOG & RECIPES TYPES
+// ============================================
+
+// Category type (shared between blog and recipes)
+export interface Category {
+  _id: string
+  _type: 'category'
+  title: string
+  slug: { current: string }
+  description?: string
+}
+
+// Author type
+export interface Author {
+  _id: string
+  _type: 'author'
+  name: string
+  slug?: { current: string }
+  image?: SanityImage
+  bio?: BlockContent[]
+}
+
+// Sanity image type
+export interface SanityImage {
+  _type: 'image'
+  asset: {
+    _ref: string
+    _type: 'reference'
+  }
+  alt?: string
+  caption?: string
+  hotspot?: {
+    x: number
+    y: number
+    height: number
+    width: number
+  }
+  crop?: {
+    top: number
+    bottom: number
+    left: number
+    right: number
+  }
+}
+
+// Block content type (for rich text)
+export interface BlockContent {
+  _type: 'block' | 'image'
+  _key: string
+  style?: 'normal' | 'h2' | 'h3' | 'h4' | 'blockquote'
+  children?: Array<{
+    _type: 'span'
+    _key: string
+    text: string
+    marks?: string[]
+  }>
+  markDefs?: Array<{
+    _type: 'link'
+    _key: string
+    href: string
+  }>
+  listItem?: 'bullet' | 'number'
+  level?: number
+  // For images in block content
+  asset?: {
+    _ref: string
+    _type: 'reference'
+  }
+  alt?: string
+  caption?: string
+}
+
+// SEO type
+export interface SEO {
+  metaTitle?: string
+  metaDescription?: string
+}
+
+// Blog Post types
+export interface Post {
+  _id: string
+  _type: 'post'
+  title: string
+  slug: { current: string }
+  author?: {
+    _ref: string
+    _type: 'reference'
+  }
+  mainImage?: SanityImage
+  categories?: Array<{
+    _ref: string
+    _type: 'reference'
+  }>
+  publishedAt?: string
+  excerpt?: string
+  body?: BlockContent[]
+  featured?: boolean
+  seo?: SEO
+  _createdAt?: string
+  _updatedAt?: string
+}
+
+// Expanded post with resolved references
+export interface PostExpanded extends Omit<Post, 'author' | 'categories'> {
+  author?: Author
+  categories?: Category[]
+}
+
+// Recipe types
+export type RecipeDifficulty = 'easy' | 'medium' | 'hard'
+
+export interface Ingredient {
+  _key?: string
+  quantity?: string
+  ingredient: string
+  notes?: string
+}
+
+export interface RecipeStep {
+  _key?: string
+  step: string
+  image?: SanityImage
+  tip?: string
+}
+
+export interface Recipe {
+  _id: string
+  _type: 'recipe'
+  title: string
+  slug: { current: string }
+  author?: {
+    _ref: string
+    _type: 'reference'
+  }
+  mainImage?: SanityImage
+  categories?: Array<{
+    _ref: string
+    _type: 'reference'
+  }>
+  publishedAt?: string
+  description?: string
+  prepTime?: number
+  cookTime?: number
+  servings?: number
+  difficulty?: RecipeDifficulty
+  ingredients?: Ingredient[]
+  steps?: RecipeStep[]
+  healthBenefits?: string[]
+  tips?: BlockContent[]
+  featured?: boolean
+  _createdAt?: string
+  _updatedAt?: string
+}
+
+// Expanded recipe with resolved references
+export interface RecipeExpanded extends Omit<Recipe, 'author' | 'categories'> {
+  author?: Author
+  categories?: Category[]
+}
+
+// Form input types for creating/updating
+export interface CreatePostInput {
+  title: string
+  slug: string
+  authorId?: string
+  mainImage?: SanityImage
+  categoryIds?: string[]
+  publishedAt?: string
+  excerpt?: string
+  body?: BlockContent[]
+  featured?: boolean
+  seo?: SEO
+}
+
+export type UpdatePostInput = Partial<CreatePostInput>
+
+export interface CreateRecipeInput {
+  title: string
+  slug: string
+  authorId?: string
+  mainImage?: SanityImage
+  categoryIds?: string[]
+  publishedAt?: string
+  description?: string
+  prepTime?: number
+  cookTime?: number
+  servings?: number
+  difficulty?: RecipeDifficulty
+  ingredients?: Ingredient[]
+  steps?: RecipeStep[]
+  healthBenefits?: string[]
+  tips?: BlockContent[]
+  featured?: boolean
+}
+
+export type UpdateRecipeInput = Partial<CreateRecipeInput>
+
+// API response types
+export interface PostListResponse {
+  posts: PostExpanded[]
+  total: number
+}
+
+export interface RecipeListResponse {
+  recipes: RecipeExpanded[]
+  total: number
+}

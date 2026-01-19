@@ -35,6 +35,26 @@ const getPageTitle = (pathname: string): { title: string; subtitle: string } => 
   if (pathname.includes('/clients')) {
     return { title: 'Clientes', subtitle: 'Gestion de votre clientèle' }
   }
+  // Blog pages
+  if (pathname.includes('/blog/nouveau')) {
+    return { title: 'Nouvel article', subtitle: 'Créer un article de blog' }
+  }
+  if (pathname.includes('/blog') && pathname.split('/').length > 3) {
+    return { title: 'Modifier l\'article', subtitle: 'Édition du contenu' }
+  }
+  if (pathname.includes('/blog')) {
+    return { title: 'Articles de blog', subtitle: 'Gérer vos articles' }
+  }
+  // Recipes pages
+  if (pathname.includes('/recettes/nouveau')) {
+    return { title: 'Nouvelle recette', subtitle: 'Créer une recette santé' }
+  }
+  if (pathname.includes('/recettes') && pathname.split('/').length > 3) {
+    return { title: 'Modifier la recette', subtitle: 'Édition de la recette' }
+  }
+  if (pathname.includes('/recettes')) {
+    return { title: 'Recettes', subtitle: 'Gérer vos recettes' }
+  }
   return { title: 'Administration', subtitle: 'Mon Remède' }
 }
 

@@ -44,7 +44,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // DEBUG: Log hash info (REMOVE IN PRODUCTION)
+    const hashFromEnv = process.env.ADMIN_PASSWORD_HASH
+    console.log('[DEBUG] Hash from env (first 10 chars):', hashFromEnv?.substring(0, 10))
+    console.log('[DEBUG] Hash length:', hashFromEnv?.length)
+    console.log('[DEBUG] Hash starts with quote:', hashFromEnv?.startsWith('"'))
+
     const isValid = await checkAdminPassword(password)
+    console.log('[DEBUG] Password validation result:', isValid)
 
     if (!isValid) {
       // Record failed attempt
