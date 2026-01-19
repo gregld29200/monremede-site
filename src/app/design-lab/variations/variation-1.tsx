@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 
 /**
  * Variation 1: Image brouillard en haut, pain points, image soleil en bas
@@ -35,12 +35,7 @@ const painPoints = [
 ]
 
 export default function Variation1() {
-  const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    setIsVisible(true)
-  }, [])
 
   return (
     <section
