@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 /**
- * PainPointsHome - Animation Automatique Brouillard → Soleil
- * Transition douce et continue entre les deux états
- * Pain points avec effet visuel synchronisé
+ * PainPointsHome - Scroll-based Morphing Effect
+ * L'image se transforme progressivement du brouillard au soleil
+ * en fonction du scroll dans la section
  */
 
 const painPoints = [
@@ -37,9 +37,10 @@ const painPoints = [
 ]
 
 export function PainPointsHome() {
-  const [isRevealed, setIsRevealed] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
   // Intersection observer for entrance animation
   useEffect(() => {
@@ -53,16 +54,36 @@ export function PainPointsHome() {
     return () => observer.disconnect()
   }, [])
 
-  // Animation automatique avec cycle de 6 secondes
+  // Scroll-based morphing effect
   useEffect(() => {
-    if (!isVisible) return
+    const handleScroll = () => {
+      if (!imageRef.current) return
 
-    const interval = setInterval(() => {
-      setIsRevealed((prev) => !prev)
-    }, 6000)
+      const rect = imageRef.current.getBoundingClientRect()
+      const windowHeight = window.innerHeight
 
-    return () => clearInterval(interval)
-  }, [isVisible])
+      // Calculate progress: 0 when image enters viewport, 1 when it exits top
+      // Start transition when image is 80% visible from bottom
+      const startPoint = windowHeight * 0.8
+      const endPoint = windowHeight * 0.2
+
+      if (rect.top > startPoint) {
+        setScrollProgress(0)
+      } else if (rect.top < endPoint) {
+        setScrollProgress(1)
+      } else {
+        const progress = (startPoint - rect.top) / (startPoint - endPoint)
+        setScrollProgress(Math.max(0, Math.min(1, progress)))
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const isRevealed = scrollProgress > 0.5
 
   return (
     <section
@@ -99,6 +120,7 @@ export function PainPointsHome() {
 
         {/* Animated landscape image - centered */}
         <div
+          ref={imageRef}
           className={`max-w-4xl mx-auto mb-20 transition-all duration-1000 delay-300 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
           }`}
@@ -112,9 +134,8 @@ export function PainPointsHome() {
             <div className="relative aspect-[16/9] rounded-sm overflow-hidden shadow-xl">
               {/* Base layer - Fog image */}
               <div
-                className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
-                  isRevealed ? 'opacity-0' : 'opacity-100'
-                }`}
+                className="absolute inset-0"
+                style={{ opacity: 1 - scrollProgress }}
               >
                 <Image
                   src="/images/painpoint-fog.png"
@@ -128,9 +149,8 @@ export function PainPointsHome() {
 
               {/* Revealed layer - Sunny image */}
               <div
-                className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
-                  isRevealed ? 'opacity-100' : 'opacity-0'
-                }`}
+                className="absolute inset-0"
+                style={{ opacity: scrollProgress }}
               >
                 <Image
                   src="/images/painpoint-sunny.png"
@@ -155,31 +175,67 @@ export function PainPointsHome() {
 
               {/* Corner accents */}
               <div className="absolute top-4 left-4 w-8 h-8">
-                <div className={`absolute top-0 left-0 w-full h-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
-                <div className={`absolute top-0 left-0 h-full w-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div
+                  className="absolute top-0 left-0 w-full h-px"
+                  style={{
+                    backgroundColor: `rgba(${isRevealed ? '196, 163, 90' : '255, 255, 255'}, ${isRevealed ? 0.6 : 0.3})`
+                  }}
+                />
+                <div
+                  className="absolute top-0 left-0 h-full w-px"
+                  style={{
+                    backgroundColor: `rgba(${isRevealed ? '196, 163, 90' : '255, 255, 255'}, ${isRevealed ? 0.6 : 0.3})`
+                  }}
+                />
               </div>
               <div className="absolute bottom-4 right-4 w-8 h-8">
-                <div className={`absolute bottom-0 right-0 w-full h-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
-                <div className={`absolute bottom-0 right-0 h-full w-px transition-colors duration-300 ease-in-out ${isRevealed ? 'bg-gold/60' : 'bg-white/30'}`} />
+                <div
+                  className="absolute bottom-0 right-0 w-full h-px"
+                  style={{
+                    backgroundColor: `rgba(${isRevealed ? '196, 163, 90' : '255, 255, 255'}, ${isRevealed ? 0.6 : 0.3})`
+                  }}
+                />
+                <div
+                  className="absolute bottom-0 right-0 h-full w-px"
+                  style={{
+                    backgroundColor: `rgba(${isRevealed ? '196, 163, 90' : '255, 255, 255'}, ${isRevealed ? 0.6 : 0.3})`
+                  }}
+                />
               </div>
 
-              {/* State indicator */}
-              <div className={`absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-sm transition-all duration-300 ease-in-out ${
-                isRevealed ? 'bg-gold/90 text-forest-deep' : 'bg-cream/80 text-forest'
-              }`}>
+              {/* State indicator with progress */}
+              <div
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-sm"
+                style={{
+                  backgroundColor: `rgba(${isRevealed ? '196, 163, 90' : '247, 244, 237'}, ${isRevealed ? 0.9 : 0.8})`,
+                  color: isRevealed ? '#1a2e23' : '#2D4A3E'
+                }}
+              >
                 <span className="text-[10px] tracking-[0.2em] uppercase font-medium">
                   {isRevealed ? 'Vers la clarté' : 'Dans le brouillard'}
                 </span>
               </div>
             </div>
 
-            {/* Caption with animated dots */}
+            {/* Caption with progress indicator */}
             <div className="flex items-center justify-center gap-3 mt-6">
-              <span className={`w-2 h-2 rounded-full transition-all duration-300 ${!isRevealed ? 'bg-sage scale-100' : 'bg-sage/30 scale-75'}`} />
+              <span
+                className="w-2 h-2 rounded-full transition-transform duration-150"
+                style={{
+                  backgroundColor: `rgba(139, 158, 126, ${1 - scrollProgress * 0.7})`,
+                  transform: `scale(${1 - scrollProgress * 0.25})`
+                }}
+              />
               <span className="font-accent text-sm text-ink-soft italic">
                 Du brouillard à la lumière
               </span>
-              <span className={`w-2 h-2 rounded-full transition-all duration-300 ${isRevealed ? 'bg-gold scale-100' : 'bg-gold/30 scale-75'}`} />
+              <span
+                className="w-2 h-2 rounded-full transition-transform duration-150"
+                style={{
+                  backgroundColor: `rgba(196, 163, 90, ${0.3 + scrollProgress * 0.7})`,
+                  transform: `scale(${0.75 + scrollProgress * 0.25})`
+                }}
+              />
             </div>
           </div>
         </div>
@@ -232,10 +288,14 @@ export function PainPointsHome() {
             </p>
           </blockquote>
 
-          {/* Animated progress indicator */}
+          {/* Progress bar */}
           <div className="flex justify-center gap-2 mt-8">
-            <span className={`h-1 rounded-full transition-all duration-300 ease-in-out ${!isRevealed ? 'w-8 bg-sage' : 'w-2 bg-sage/30'}`} />
-            <span className={`h-1 rounded-full transition-all duration-300 ease-in-out ${isRevealed ? 'w-8 bg-gold' : 'w-2 bg-gold/30'}`} />
+            <div className="w-20 h-1 bg-sage/20 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-sage to-gold rounded-full transition-all duration-100"
+                style={{ width: `${scrollProgress * 100}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
