@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui'
 
-// TODO: Replace with actual Amazon link when available
-const AMAZON_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
+const AMAZON_LINK = 'https://www.amazon.fr/dp/2959216601'
 
 const features = [
   '260+ pages de conseils concrets',

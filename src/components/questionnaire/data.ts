@@ -298,5 +298,4 @@ export const profiles: Record<string, ProfileInfo> = {
   },
 }
 
-// Lien Amazon du livre (à remplacer par le vrai lien)
-export const AMAZON_BOOK_LINK = 'https://www.amazon.fr/dp/XXXXXXXXXX'
+export const AMAZON_BOOK_LINK = 'https://www.amazon.fr/dp/2959216601'
