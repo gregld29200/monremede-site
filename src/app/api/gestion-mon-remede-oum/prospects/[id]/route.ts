@@ -72,3 +72,36 @@ export async function PATCH(
     )
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+
+    // Verify the document exists and is a questionnaireSubmission
+    const existing = await client.fetch(
+      `*[_type == "questionnaireSubmission" && _id == $id][0]{ _id }`,
+      { id }
+    )
+
+    if (!existing) {
+      return NextResponse.json(
+        { error: 'Prospect non trouvé' },
+        { status: 404 }
+      )
+    }
+
+    // Delete the document
+    await writeClient.delete(id)
+
+    return NextResponse.json({ success: true, message: 'Prospect supprimé avec succès' })
+  } catch (error) {
+    console.error('Prospect delete error:', error)
+    return NextResponse.json(
+      { error: 'Erreur lors de la suppression du prospect' },
+      { status: 500 }
+    )
+  }
+}

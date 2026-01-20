@@ -28,7 +28,9 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [showConvertModal, setShowConvertModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState<ProspectStatus>('nouveau')
   const [convertData, setConvertData] = useState({
@@ -88,6 +90,24 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
     } finally {
       setIsConverting(false)
       setShowConvertModal(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/gestion-mon-remede-oum/prospects/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) throw new Error('Delete failed')
+
+      router.push('/gestion-mon-remede-oum/prospects')
+    } catch (error) {
+      console.error('Delete error:', error)
+    } finally {
+      setIsDeleting(false)
+      setShowDeleteModal(false)
     }
   }
 
@@ -175,20 +195,30 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        {prospect.status !== 'converti' && (
+        <div className="flex items-center gap-3">
+          {prospect.status !== 'converti' && (
+            <button
+              onClick={() => setShowConvertModal(true)}
+              className="group relative px-6 py-3 rounded-xl font-display text-sm tracking-wide overflow-hidden transition-all"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold bg-[length:200%_100%] group-hover:bg-[position:100%_0] transition-all duration-500" />
+              <span className="relative flex items-center gap-2 text-forest-deep">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                Convertir en cliente
+              </span>
+            </button>
+          )}
           <button
-            onClick={() => setShowConvertModal(true)}
-            className="group relative px-6 py-3 rounded-xl font-display text-sm tracking-wide overflow-hidden transition-all"
+            onClick={() => setShowDeleteModal(true)}
+            className="px-4 py-3 rounded-xl font-display text-sm tracking-wide bg-red-50 text-red-600 hover:bg-red-100 transition-all"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-gold via-gold-light to-gold bg-[length:200%_100%] group-hover:bg-[position:100%_0] transition-all duration-500" />
-            <span className="relative flex items-center gap-2 text-forest-deep">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-              </svg>
-              Convertir en cliente
-            </span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
           </button>
-        )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -481,6 +511,74 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
                       </span>
                     ) : (
                       'Convertir'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-forest-deep/60 backdrop-blur-sm"
+            onClick={() => setShowDeleteModal(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative w-full max-w-md animate-scale-up">
+            {/* Modal glow */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 via-cream/10 to-red-500/20 rounded-3xl blur-xl opacity-50" />
+
+            <div className="relative bg-gradient-to-br from-cream to-cream-warm rounded-2xl shadow-2xl overflow-hidden">
+              {/* Modal header accent */}
+              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-red-400/40 to-transparent" />
+
+              <div className="p-6 pt-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-100 to-red-50 border border-red-200 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="font-display text-xl text-forest">Supprimer ce prospect ?</h2>
+                    <p className="font-body text-sm text-ink-soft/70">
+                      {prospect.firstName} {prospect.lastName}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="font-body text-sm text-ink-soft/80 mb-6">
+                  Cette action est irréversible. Toutes les données du questionnaire seront définitivement supprimées.
+                </p>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 py-3 rounded-xl font-display text-sm tracking-wide bg-forest/5 text-forest hover:bg-forest/10 transition-all"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="flex-1 py-3 rounded-xl font-display text-sm tracking-wide bg-red-500 text-white hover:bg-red-600 transition-all disabled:opacity-50"
+                  >
+                    {isDeleting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Suppression...
+                      </span>
+                    ) : (
+                      'Supprimer'
                     )}
                   </button>
                 </div>
