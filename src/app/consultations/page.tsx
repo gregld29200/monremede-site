@@ -235,7 +235,7 @@ export default function ConsultationsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { number: '500+', label: 'Personnes accompagnées' },
-                { number: '5 ans', label: 'D\'expérience' },
+                { number: '15 ans', label: 'D\'expérience' },
                 { number: '98%', label: 'Satisfaction' },
               ].map((stat, index) => (
                 <div key={index} className="p-6">

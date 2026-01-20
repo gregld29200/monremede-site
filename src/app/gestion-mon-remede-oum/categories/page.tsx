@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils'
-import type { Category, CategoryColor, CreateCategoryInput } from '@/types/admin'
+import type { Category, CategoryColor } from '@/types/admin'
 import { CategoryForm } from '@/components/admin/category-form'
 
 const API_ADMIN_PATH = '/api/gestion-mon-remede-oum'
@@ -189,7 +189,7 @@ export default function CategoriesPage() {
                   </td>
                   <td>
                     <code className="font-mono text-xs text-ink-soft/60 bg-forest/5 px-2 py-1 rounded">
-                      {category.slug?.current || category.slug}
+                      {typeof category.slug === 'string' ? category.slug : category.slug?.current}
                     </code>
                   </td>
                   <td>

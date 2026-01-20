@@ -144,7 +144,7 @@ export function CategoryForm({ category, onSuccess, onCancel }: CategoryFormProp
           Couleur
         </label>
         <p className="text-xs text-ink-soft/60 mb-3">
-          Couleur d'affichage pour les badges de catégorie.
+          Couleur d&apos;affichage pour les badges de catégorie.
         </p>
         <div className="flex flex-wrap gap-2">
           <button
