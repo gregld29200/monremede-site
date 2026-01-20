@@ -81,6 +81,7 @@ export function Header() {
               (isScrolled || hasDarkHero) && !needsSolidLightHeader ? "brightness-0 invert" : ""
             )}
             priority
+            fetchPriority="high"
           />
         </Link>
 
