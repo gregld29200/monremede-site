@@ -1,4 +1,5 @@
 import { Header, Footer } from '@/components/layout'
+import { FloatingQuestionnaire } from '@/components/ui'
 import {
   HeroHome,
   PainPointsHome,
@@ -27,6 +28,7 @@ export default function Home() {
         <CTAFinalHome />
       </main>
       <Footer />
+      <FloatingQuestionnaire />
     </>
   )
 }
