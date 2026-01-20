@@ -60,7 +60,7 @@ export function QuestionnaireIntro() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-20">
+    <div className="min-h-screen flex items-center justify-center px-6 pt-32 pb-20">
       <div className="max-w-xl w-full">
         {/* Decorative elements */}
         <div className="absolute top-20 right-10 w-64 h-64 bg-sage/10 rounded-full blur-3xl pointer-events-none" />

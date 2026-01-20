@@ -1,5 +1,6 @@
 export { HeroHome } from './hero-home'
 export { PainPointsHome } from './pain-points-home'
+export { QuestionnaireHome } from './questionnaire-home'
 export { PhilosophyHome } from './philosophy-home'
 export { SolutionsHome } from './solutions-home'
 export { AuthorHome } from './author-home'

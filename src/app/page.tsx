@@ -2,6 +2,7 @@ import { Header, Footer } from '@/components/layout'
 import {
   HeroHome,
   PainPointsHome,
+  QuestionnaireHome,
   PhilosophyHome,
   SolutionsHome,
   AuthorHome,
@@ -17,6 +18,7 @@ export default function Home() {
       <main>
         <HeroHome />
         <PainPointsHome />
+        <QuestionnaireHome />
         <PhilosophyHome />
         <SolutionsHome />
         <AuthorHome />
