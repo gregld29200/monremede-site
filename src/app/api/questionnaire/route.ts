@@ -1,7 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeClient } from '@/sanity/lib/writeClient'
+import { createClient } from 'next-sanity'
 import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
 import { generateQuestionnaireResultsEmail, getEmailSubject } from '@/lib/email-templates/questionnaire-results'
+
+// Create write client at request time to ensure env vars are available
+function getWriteClient() {
+  const token = process.env.SANITY_API_WRITE_TOKEN
+
+  // Debug logging (will appear in Vercel logs)
+  console.log('[Sanity Debug] Token exists:', !!token)
+  console.log('[Sanity Debug] Token length:', token?.length || 0)
+  console.log('[Sanity Debug] Token prefix:', token?.substring(0, 10) || 'MISSING')
+  console.log('[Sanity Debug] Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID)
+  console.log('[Sanity Debug] Dataset:', process.env.NEXT_PUBLIC_SANITY_DATASET)
+
+  if (!token) {
+    throw new Error('SANITY_API_WRITE_TOKEN is not configured')
+  }
+
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '4otm8dqd',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2026-01-13',
+    useCdn: false,
+    token,
+  })
+}
 
 interface AnswerData {
   questionId: string
@@ -52,6 +76,9 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Get client at request time (ensures env vars are loaded)
+    const writeClient = getWriteClient()
 
     // Créer le document dans Sanity
     const result = await writeClient.create({
@@ -109,8 +136,24 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Erreur lors de la sauvegarde:', error)
+
+    // Extract detailed error info for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorDetails = error instanceof Error && 'response' in error
+      ? JSON.stringify((error as { response?: unknown }).response)
+      : undefined
+
+    console.error('[Sanity Error Details]:', {
+      message: errorMessage,
+      details: errorDetails,
+      tokenConfigured: !!process.env.SANITY_API_WRITE_TOKEN,
+    })
+
     return NextResponse.json(
-      { error: 'Erreur lors de la sauvegarde du questionnaire' },
+      {
+        error: 'Erreur lors de la sauvegarde du questionnaire',
+        debug: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     )
   }
