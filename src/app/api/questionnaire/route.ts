@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { writeClient } from '@/sanity/lib/writeClient'
+import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
+import { generateQuestionnaireResultsEmail, getEmailSubject } from '@/lib/email-templates/questionnaire-results'
 
 interface AnswerData {
   questionId: string
@@ -72,6 +74,33 @@ export async function POST(request: NextRequest) {
       status: 'nouveau',
       submittedAt: new Date().toISOString(),
     })
+
+    // Envoyer l'email avec les résultats
+    const resend = getResendClient()
+    if (resend) {
+      try {
+        const emailHtml = generateQuestionnaireResultsEmail({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          totalScore: data.totalScore,
+          profile: data.profile,
+          categoryScores: data.categoryScores,
+        })
+
+        await resend.emails.send({
+          from: FROM_EMAIL,
+          to: data.email,
+          replyTo: REPLY_TO_EMAIL,
+          subject: getEmailSubject(data.profile),
+          html: emailHtml,
+        })
+
+        console.log(`Email envoyé à ${data.email}`)
+      } catch (emailError) {
+        // Log l'erreur mais ne bloque pas la réponse
+        console.error('Erreur lors de l\'envoi de l\'email:', emailError)
+      }
+    }
 
     return NextResponse.json({
       success: true,

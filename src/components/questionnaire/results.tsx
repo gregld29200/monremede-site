@@ -3,24 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useQuestionnaire } from './context'
-import {
-  getProfileInfo,
-  getAlertCategories,
-  getCategoryName,
-  getCategoryScorePercentage,
-} from './utils'
-import { categories, AMAZON_BOOK_LINK } from './data'
+import { AMAZON_BOOK_LINK } from './data'
 import { Button } from '@/components/ui'
 
 export function QuestionnaireResults() {
   const { state, reset } = useQuestionnaire()
-  // Use a ref-based approach to trigger animations without useEffect
   const [mounted] = useState(true)
 
   if (!state.profile || !state.categoryScores) return null
-
-  const profileInfo = getProfileInfo(state.profile)
-  const alertCategories = getAlertCategories(state.categoryScores)
 
   return (
     <div className="min-h-screen bg-cream pt-28 pb-12 px-6">
@@ -30,231 +20,150 @@ export function QuestionnaireResults() {
         <div className="absolute bottom-20 left-10 w-64 h-64 bg-gold/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-3xl mx-auto">
-        {/* Score Section */}
+      <div className="relative max-w-2xl mx-auto">
+        {/* Thank You Section */}
         <section
-          className={`text-center mb-16 transition-all duration-1000 ${
+          className={`text-center mb-12 transition-all duration-1000 ${
             mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <div className="flex items-center justify-center gap-4 mb-8">
+          {/* Success Icon */}
+          <div className="mb-8">
+            <div className="w-24 h-24 mx-auto bg-sage/20 rounded-full flex items-center justify-center">
+              <svg
+                className="w-12 h-12 text-sage"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 mb-6">
             <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold" />
             <span className="text-xs tracking-[0.3em] uppercase text-sage font-medium">
-              Vos Résultats
+              Questionnaire complété
             </span>
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold" />
           </div>
 
-          {/* Score display */}
-          <div className="relative inline-block mb-8">
-            <div className="w-40 h-40 rounded-full bg-cream-warm border-4 border-sage/20 flex items-center justify-center">
-              <div className="text-center">
-                <span className="font-display text-5xl text-forest">
-                  {state.totalScore}
-                </span>
-                <span className="text-sage text-lg">/50</span>
-              </div>
-            </div>
-            {/* Profile emoji badge */}
-            <div className="absolute -top-2 -right-2 w-12 h-12 bg-cream rounded-full border-2 border-gold flex items-center justify-center text-2xl shadow-lg">
-              {profileInfo.emoji}
-            </div>
-          </div>
-
-          {/* Profile title */}
-          <h1 className="font-display text-3xl sm:text-4xl text-forest mb-4">
-            {profileInfo.title}
+          <h1 className="font-display text-3xl sm:text-4xl text-forest mb-6">
+            Merci {state.personalInfo?.firstName} !
           </h1>
 
-          {/* Profile description */}
-          <p className="text-ink-soft text-lg max-w-xl mx-auto leading-relaxed">
-            {profileInfo.description}
+          <p className="text-ink-soft text-lg max-w-lg mx-auto leading-relaxed mb-4">
+            Nous analysons vos réponses. Vous recevrez votre{' '}
+            <span className="text-forest font-medium">pré-bilan de santé personnalisé</span>{' '}
+            par email dans quelques minutes.
           </p>
-        </section>
 
-        {/* Category Breakdown */}
-        <section
-          className={`mb-16 transition-all duration-1000 delay-200 ${
-            mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <h2 className="heading text-forest text-center mb-8">
-            Analyse par catégorie
-          </h2>
-
-          <div className="bg-cream-warm rounded-2xl p-6 sm:p-8">
-            <div className="space-y-4">
-              {categories.map((category) => {
-                const score = state.categoryScores![category.id]
-                const percentage = getCategoryScorePercentage(category.id, score)
-                const isAlert = alertCategories.includes(category.id)
-
-                return (
-                  <div key={category.id}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-ink-soft">{category.name}</span>
-                      <span
-                        className={`text-sm font-medium ${
-                          isAlert ? 'text-blush-deep' : 'text-sage'
-                        }`}
-                      >
-                        {score}/{category.maxScore}
-                        {isAlert && ' ⚠️'}
-                      </span>
-                    </div>
-                    <div className="h-2 bg-sage/20 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-1000 ${
-                          isAlert
-                            ? 'bg-gradient-to-r from-blush-deep to-blush'
-                            : 'bg-gradient-to-r from-sage to-sage-light'
-                        }`}
-                        style={{
-                          width: mounted ? `${percentage}%` : '0%',
-                          transitionDelay: '500ms',
-                        }}
-                      />
-                    </div>
-                  </div>
-                )
-              })}
+          {/* Email Info */}
+          <div className="bg-cream-warm rounded-xl p-6 mb-8">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <svg
+                className="w-5 h-5 text-gold"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              <span className="text-forest font-medium">{state.personalInfo?.email}</span>
             </div>
+            <p className="text-sm text-ink-soft">
+              Pensez à vérifier vos <span className="text-sage font-medium">spams</span> si vous ne recevez pas l&apos;email.
+            </p>
           </div>
         </section>
 
-        {/* Alert Categories */}
-        {alertCategories.length > 0 && (
-          <section
-            className={`mb-16 transition-all duration-1000 delay-300 ${
-              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <h2 className="heading text-forest text-center mb-6">
-              Points d&apos;attention
-            </h2>
-
-            <div className="bg-blush/20 border border-blush-deep/20 rounded-2xl p-6">
-              <p className="text-ink-soft mb-4">
-                Les catégories suivantes nécessitent une attention particulière :
-              </p>
-              <ul className="space-y-2">
-                {alertCategories.map((catId) => (
-                  <li key={catId} className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-blush-deep" />
-                    <span className="text-ink">{getCategoryName(catId)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-        )}
-
-        {/* Recommendations */}
+        {/* What's Next Section */}
         <section
-          className={`mb-16 transition-all duration-1000 delay-400 ${
+          className={`mb-12 transition-all duration-1000 delay-200 ${
             mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
           <h2 className="heading text-forest text-center mb-6">
-            {state.profile === 'equilibre'
-              ? 'Ce que vous pouvez améliorer'
-              : 'Ce que votre corps essaie de vous dire'}
+            En attendant votre bilan...
           </h2>
 
-          <div className="grid gap-4">
-            {profileInfo.recommendations.map((rec, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 p-4 bg-cream-warm rounded-xl"
-              >
-                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-sage/20 text-forest flex items-center justify-center text-sm font-medium">
-                  {index + 1}
-                </span>
-                <p className="text-ink-soft">{rec}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+          <div className="space-y-4">
+            {/* Book CTA Card */}
+            <div className="bg-forest-deep rounded-2xl p-6 sm:p-8 text-center relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-sage/10 rounded-full blur-2xl" />
 
-        {/* Book CTA Section */}
-        <section
-          className={`transition-all duration-1000 delay-500 ${
-            mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="bg-forest-deep rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-gold/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-sage/10 rounded-full blur-2xl" />
-
-            <div className="relative">
-              <p className="label text-gold mb-4">La solution</p>
-
-              <h2 className="font-display text-2xl sm:text-3xl text-cream mb-6">
-                Découvrez « La Santé dans l&apos;Assiette »
-              </h2>
-
-              <p className="text-cream/70 mb-8 max-w-lg mx-auto">
-                Votre guide complet pour transformer le Ramadan en cure de régénération
-                — par Oum Soumayya, praticienne en Médecine Prophétique et Naturopathie.
-              </p>
-
-              {/* Book benefits */}
-              <div className="text-left bg-cream/10 rounded-xl p-6 mb-8">
-                <p className="text-gold text-sm uppercase tracking-wider mb-4">
-                  Dans ce livre, vous découvrirez :
+              <div className="relative">
+                <p className="label text-gold mb-3">Le livre</p>
+                <h3 className="font-display text-xl sm:text-2xl text-cream mb-4">
+                  « La Santé dans l&apos;Assiette »
+                </h3>
+                <p className="text-cream/70 text-sm mb-6 max-w-md mx-auto">
+                  30 jours pour guérir naturellement — Votre guide complet en naturopathie
+                  et médecine prophétique par Oum Soumayya.
                 </p>
-                <ul className="space-y-3">
-                  {profileInfo.bookBenefits.slice(0, 5).map((benefit, index) => (
-                    <li key={index} className="flex items-start gap-3 text-cream/90">
-                      <span className="text-gold mt-1">✓</span>
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
+                <Button variant="primary" size="lg" asChild>
+                  <a href={AMAZON_BOOK_LINK} target="_blank" rel="noopener noreferrer">
+                    Commander sur Amazon
+                    <svg
+                      className="w-5 h-5 ml-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
+                </Button>
+                <p className="text-cream/50 text-xs mt-3">
+                  Disponible en format broché et Kindle
+                </p>
               </div>
+            </div>
 
-              {/* CTA Button */}
-              <Button
-                variant="primary"
-                size="lg"
-                asChild
-                className="mb-4"
-              >
-                <a href={AMAZON_BOOK_LINK} target="_blank" rel="noopener noreferrer">
-                  Commander sur Amazon
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </Button>
-
-              <p className="text-cream/50 text-sm">
-                Disponible en format broché et Kindle
+            {/* Consultations CTA Card */}
+            <div className="bg-cream-warm rounded-2xl p-6 sm:p-8 text-center">
+              <p className="label text-sage mb-3">Accompagnement personnalisé</p>
+              <h3 className="font-display text-xl text-forest mb-4">
+                Consultations en naturopathie
+              </h3>
+              <p className="text-ink-soft text-sm mb-6 max-w-md mx-auto">
+                Bénéficiez d&apos;un suivi personnalisé avec Oum Soumayya pour un
+                accompagnement adapté à vos besoins spécifiques.
               </p>
+              <Button variant="outline" asChild>
+                <Link href="/consultations">
+                  Découvrir les consultations
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
 
         {/* Footer actions */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button variant="outline" onClick={reset}>
+        <div
+          className={`text-center transition-all duration-1000 delay-300 ${
+            mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          <Button variant="ghost" onClick={reset}>
             Refaire le questionnaire
-          </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/consultations">
-              Découvrir les consultations
-            </Link>
           </Button>
         </div>
 

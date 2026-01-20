@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, Lora } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-display",
@@ -43,6 +44,9 @@ export const metadata: Metadata = {
     "theme-color": "#2D4A3E",
     "msapplication-TileColor": "#f7f4ed",
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION_ID,
+  },
 };
 
 export default function RootLayout({
@@ -55,6 +59,7 @@ export default function RootLayout({
       <body
         className={`${playfairDisplay.variable} ${cormorantGaramond.variable} ${lora.variable} antialiased`}
       >
+        <GoogleAnalytics />
         {children}
       </body>
     </html>

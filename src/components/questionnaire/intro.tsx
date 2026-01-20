@@ -149,6 +149,9 @@ export function QuestionnaireIntro() {
                   {errors.email && (
                     <p className="text-blush-deep text-xs mt-1">{errors.email}</p>
                   )}
+                  <p className="text-xs text-sage mt-1.5">
+                    C&apos;est à cette adresse que vous recevrez votre pré-bilan de santé personnalisé.
+                  </p>
                 </div>
 
                 <div>
