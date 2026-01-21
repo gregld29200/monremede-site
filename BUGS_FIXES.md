@@ -43,3 +43,31 @@ Quiz/questionnaire submissions on `/consultations/demande` were returning 500 er
 - Tested with real submission: Grégory Le Dall (greg.ledall@hotmail.com)
 
 ---
+
+## 2026-01-21: Email Not Sent After Quiz Submission
+
+### Problem
+Users were not receiving confirmation emails after completing the questionnaire on `/consultations/demande`. Submissions were being saved to Sanity, but no email was sent.
+
+### Root Cause
+The `RESEND_API_KEY` environment variable was missing from Vercel production environment. The code in `/src/lib/resend.ts` checks for this key and returns `null` if not set, causing email sending to be silently skipped.
+
+From Vercel logs:
+```
+Warning: RESEND_API_KEY is not set. Email sending will be skipped.
+```
+
+### Solution
+1. Added `RESEND_API_KEY` environment variable to Vercel project settings (All Environments)
+2. Triggered a new deployment to apply the environment variable
+
+### Files Involved
+- `/src/lib/resend.ts` - Contains `getResendClient()` which checks for the API key
+- `/src/app/api/questionnaire/route.ts` - Calls `getResendClient()` and sends email if client exists
+
+### Verification
+- Vercel environment variables now shows `RESEND_API_KEY` configured for All Environments
+- New deployment completed successfully
+- Test by submitting a new questionnaire and checking email delivery
+
+---
