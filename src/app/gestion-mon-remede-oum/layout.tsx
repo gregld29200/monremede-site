@@ -32,10 +32,10 @@ export default function AdminLayout({
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
 
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-72'}`}>
+        <div className={`flex-1 flex flex-col transition-[margin] duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-72'}`}>
           <AdminTopbar />
 
-          <main className="flex-1 p-8 overflow-auto">
+          <main className="flex-1 p-8 overflow-auto scroll-pt-4">
             <div className="max-w-7xl mx-auto animate-fade-up">
               {children}
             </div>

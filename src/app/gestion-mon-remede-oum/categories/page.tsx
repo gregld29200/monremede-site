@@ -250,37 +250,40 @@ export default function CategoriesPage() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             onClick={handleModalClose}
           />
 
-          {/* Modal content */}
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto animate-scale-up">
-            {/* Header */}
-            <div className="sticky top-0 bg-white px-6 py-4 border-b border-forest/5 flex items-center justify-between">
-              <h3 className="font-display text-lg text-forest">
-                {editingCategory ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
-              </h3>
-              <button
-                onClick={handleModalClose}
-                className="p-2 rounded-lg text-ink-soft/40 hover:text-forest hover:bg-forest/5 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+          {/* Centering wrapper */}
+          <div className="min-h-full flex items-center justify-center p-4">
+            {/* Modal content */}
+            <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-lg my-8 flex flex-col animate-scale-up">
+              {/* Header */}
+              <div className="flex-shrink-0 bg-white px-6 py-4 border-b border-forest/5 flex items-center justify-between rounded-t-2xl">
+                <h3 className="font-display text-lg text-forest">
+                  {editingCategory ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
+                </h3>
+                <button
+                  onClick={handleModalClose}
+                  className="p-2 rounded-lg text-ink-soft/40 hover:text-forest hover:bg-forest/5 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
 
-            {/* Form */}
-            <div className="p-6">
-              <CategoryForm
-                category={editingCategory}
-                onSuccess={handleFormSuccess}
-                onCancel={handleModalClose}
-              />
+              {/* Form content */}
+              <div className="p-6">
+                <CategoryForm
+                  category={editingCategory}
+                  onSuccess={handleFormSuccess}
+                  onCancel={handleModalClose}
+                />
+              </div>
             </div>
           </div>
         </div>
