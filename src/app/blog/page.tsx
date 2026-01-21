@@ -7,6 +7,8 @@ import type { Post } from '@/types/sanity'
 import Link from 'next/link'
 import Image from 'next/image'
 
+export const revalidate = 60
+
 export const metadata = {
   title: 'Blog - Oum Soumayya',
   description: 'Articles sur la naturopathie, la santé naturelle et le bien-être. Conseils pratiques pour une vie saine.',
