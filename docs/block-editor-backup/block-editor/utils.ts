@@ -199,8 +199,21 @@ export function getBlockTypeLabel(type: BlockType): string {
   }
 }
 
-// Slash commands
-export const SLASH_COMMANDS = [
+// Slash command definition with action type
+export interface SlashCommandDef {
+  id: string
+  label: string
+  description: string
+  icon: string
+  blockType?: BlockType
+  shortcut: string
+  shortcuts?: string[] // Alternative shortcuts
+  action?: 'openImageUpload' // Special actions instead of block type change
+}
+
+// Slash commands - Image is first in the list
+export const SLASH_COMMANDS: SlashCommandDef[] = [
+  { id: 'image', label: 'Image', description: 'Insérer une image', icon: '🖼️', shortcut: '/image', shortcuts: ['/image', '/img'], action: 'openImageUpload' },
   { id: 'paragraph', label: 'Paragraphe', description: 'Texte simple', icon: '¶', blockType: 'paragraph' as BlockType, shortcut: '/p' },
   { id: 'h2', label: 'Titre 2', description: 'Grand titre de section', icon: 'H2', blockType: 'h2' as BlockType, shortcut: '/h2' },
   { id: 'h3', label: 'Titre 3', description: 'Sous-titre', icon: 'H3', blockType: 'h3' as BlockType, shortcut: '/h3' },
@@ -211,15 +224,21 @@ export const SLASH_COMMANDS = [
 ]
 
 // Filter slash commands based on query
-export function filterSlashCommands(query: string) {
+export function filterSlashCommands(query: string): SlashCommandDef[] {
   if (!query) return SLASH_COMMANDS
 
   const lowerQuery = query.toLowerCase()
-  return SLASH_COMMANDS.filter(cmd =>
-    cmd.label.toLowerCase().includes(lowerQuery) ||
-    cmd.shortcut?.toLowerCase().includes('/' + lowerQuery) ||
-    cmd.id.toLowerCase().includes(lowerQuery)
-  )
+  return SLASH_COMMANDS.filter(cmd => {
+    // Check label
+    if (cmd.label.toLowerCase().includes(lowerQuery)) return true
+    // Check id
+    if (cmd.id.toLowerCase().includes(lowerQuery)) return true
+    // Check main shortcut
+    if (cmd.shortcut?.toLowerCase().includes('/' + lowerQuery)) return true
+    // Check alternative shortcuts
+    if (cmd.shortcuts?.some(s => s.toLowerCase().includes('/' + lowerQuery))) return true
+    return false
+  })
 }
 
 // Check if block is a heading

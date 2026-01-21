@@ -3,14 +3,15 @@
 import { createContext, useContext, useReducer, useCallback, useRef } from 'react'
 import type { ReactNode, Dispatch, RefObject } from 'react'
 import type { BlockContent } from '@/types/admin'
-import type { EditorState, EditorAction, BlockType } from './types'
+import type { EditorState, EditorAction, BlockType, ImageAlignment, ImageSize } from './types'
 import {
   blocksToEditorBlocks,
   editorBlocksToBlocks,
   createEmptyBlock,
   rebuildBlockData,
   blockTypeToStyle,
-  blockTypeToListItem
+  blockTypeToListItem,
+  generateKey
 } from './utils'
 
 // Initial state
@@ -23,7 +24,9 @@ const initialState: EditorState = {
   slashMenuFilter: '',
   showOutline: false,
   showInlineToolbar: false,
-  inlineToolbarPosition: { x: 0, y: 0 }
+  inlineToolbarPosition: { x: 0, y: 0 },
+  showImageUploadModal: false,
+  imageUploadTargetBlockId: null
 }
 
 // Reducer
@@ -187,6 +190,39 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       }
     }
 
+    case 'SHOW_IMAGE_UPLOAD_MODAL':
+      return {
+        ...state,
+        showImageUploadModal: true,
+        imageUploadTargetBlockId: action.targetBlockId,
+        showSlashMenu: false,
+        slashMenuFilter: ''
+      }
+
+    case 'HIDE_IMAGE_UPLOAD_MODAL':
+      return {
+        ...state,
+        showImageUploadModal: false,
+        imageUploadTargetBlockId: null
+      }
+
+    case 'UPDATE_IMAGE_OPTIONS': {
+      return {
+        ...state,
+        blocks: state.blocks.map(block => {
+          if (block.id !== action.blockId || block.type !== 'image') return block
+          return {
+            ...block,
+            data: {
+              ...block.data,
+              ...(action.alignment !== undefined && { alignment: action.alignment }),
+              ...(action.size !== undefined && { size: action.size })
+            }
+          }
+        })
+      }
+    }
+
     default:
       return state
   }
@@ -205,6 +241,11 @@ interface BlockEditorContextType {
   changeBlockType: (blockId: string, newType: BlockType) => void
   focusBlock: (blockId: string | null) => void
   getBlocksAsContent: () => BlockContent[]
+  // Image functions
+  insertImageBlock: (assetRef: string, alt: string, targetBlockId?: string | null) => string
+  updateImageOptions: (blockId: string, options: { alignment?: ImageAlignment; size?: ImageSize }) => void
+  showImageUploadModal: (targetBlockId: string | null) => void
+  hideImageUploadModal: () => void
   // Refs for block elements
   blockRefs: RefObject<Map<string, HTMLDivElement>>
 }
@@ -376,6 +417,74 @@ export function BlockEditorProvider({
     return editorBlocksToBlocks(state.blocks)
   }, [state.blocks])
 
+  // Insert image block
+  const insertImageBlock = useCallback((assetRef: string, alt: string, targetBlockId?: string | null) => {
+    const key = generateKey()
+    const afterId = targetBlockId ?? state.focusedBlockId
+
+    const imageBlock = {
+      id: key,
+      type: 'image' as BlockType,
+      content: alt,
+      marks: [],
+      data: {
+        _type: 'image' as const,
+        _key: key,
+        asset: {
+          _ref: assetRef,
+          _type: 'reference' as const
+        },
+        alt,
+        caption: '',
+        alignment: 'center' as ImageAlignment,
+        size: 'medium' as ImageSize
+      },
+      meta: {}
+    }
+
+    dispatch({ type: 'ADD_BLOCK', afterId, block: imageBlock })
+
+    // Notify parent
+    const afterIndex = afterId
+      ? state.blocks.findIndex(b => b.id === afterId)
+      : -1
+
+    const newBlocks = [...state.blocks]
+    newBlocks.splice(afterIndex + 1, 0, imageBlock)
+    onChange(editorBlocksToBlocks(newBlocks))
+
+    return key
+  }, [state.blocks, state.focusedBlockId, onChange])
+
+  // Update image options
+  const updateImageOptions = useCallback((blockId: string, options: { alignment?: ImageAlignment; size?: ImageSize }) => {
+    dispatch({ type: 'UPDATE_IMAGE_OPTIONS', blockId, ...options })
+
+    // Notify parent
+    const newBlocks = state.blocks.map(block => {
+      if (block.id !== blockId || block.type !== 'image') return block
+      return {
+        ...block,
+        data: {
+          ...block.data,
+          ...(options.alignment !== undefined && { alignment: options.alignment }),
+          ...(options.size !== undefined && { size: options.size })
+        }
+      }
+    })
+    onChange(editorBlocksToBlocks(newBlocks))
+  }, [state.blocks, onChange])
+
+  // Show image upload modal
+  const showImageUploadModalFn = useCallback((targetBlockId: string | null) => {
+    dispatch({ type: 'SHOW_IMAGE_UPLOAD_MODAL', targetBlockId })
+  }, [])
+
+  // Hide image upload modal
+  const hideImageUploadModal = useCallback(() => {
+    dispatch({ type: 'HIDE_IMAGE_UPLOAD_MODAL' })
+  }, [])
+
   const value: BlockEditorContextType = {
     state,
     dispatch,
@@ -387,6 +496,10 @@ export function BlockEditorProvider({
     changeBlockType,
     focusBlock,
     getBlocksAsContent,
+    insertImageBlock,
+    updateImageOptions,
+    showImageUploadModal: showImageUploadModalFn,
+    hideImageUploadModal,
     blockRefs
   }
 

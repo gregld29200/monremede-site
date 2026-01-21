@@ -4,11 +4,11 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { useBlockEditorContext } from '../BlockEditorContext'
-import { filterSlashCommands } from '../utils'
+import { filterSlashCommands, type SlashCommandDef } from '../utils'
 import type { BlockType } from '../types'
 
 export function SlashCommandMenu() {
-  const { state, dispatch, changeBlockType } = useBlockEditorContext()
+  const { state, dispatch, changeBlockType, showImageUploadModal } = useBlockEditorContext()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -18,18 +18,27 @@ export function SlashCommandMenu() {
   const clampedIndex = Math.min(selectedIndex, Math.max(0, filteredCommands.length - 1))
 
   // Select command handler
-  const selectCommand = useCallback((blockType: BlockType) => {
+  const selectCommand = useCallback((command: SlashCommandDef) => {
+    // Clear the slash command text first
     if (state.focusedBlockId) {
-      // Clear the slash command text first
       const blockEl = document.querySelector(`[data-block-id="${state.focusedBlockId}"]`) as HTMLElement
       if (blockEl) {
         blockEl.textContent = ''
       }
-      // Change block type
-      changeBlockType(state.focusedBlockId, blockType)
+    }
+
+    // Handle special actions
+    if (command.action === 'openImageUpload') {
+      showImageUploadModal(state.focusedBlockId)
+      return
+    }
+
+    // Default: change block type
+    if (state.focusedBlockId && command.blockType) {
+      changeBlockType(state.focusedBlockId, command.blockType)
     }
     dispatch({ type: 'HIDE_SLASH_MENU' })
-  }, [state.focusedBlockId, changeBlockType, dispatch])
+  }, [state.focusedBlockId, changeBlockType, dispatch, showImageUploadModal])
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -46,7 +55,7 @@ export function SlashCommandMenu() {
         e.preventDefault()
         const idx = Math.min(selectedIndex, filteredCommands.length - 1)
         if (filteredCommands[idx]) {
-          selectCommand(filteredCommands[idx].blockType)
+          selectCommand(filteredCommands[idx])
         }
       } else if (e.key === 'Escape') {
         e.preventDefault()
@@ -117,7 +126,7 @@ export function SlashCommandMenu() {
           <button
             key={cmd.id}
             type="button"
-            onClick={() => selectCommand(cmd.blockType)}
+            onClick={() => selectCommand(cmd)}
             onMouseEnter={() => setSelectedIndex(index)}
             className={cn(
               'w-full px-3 py-2 flex items-center gap-3 text-left transition-colors',

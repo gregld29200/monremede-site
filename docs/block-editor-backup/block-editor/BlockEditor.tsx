@@ -8,6 +8,7 @@ import { Block } from './components/Block'
 import { SlashCommandMenu } from './components/SlashCommandMenu'
 import { InlineToolbar } from './components/InlineToolbar'
 import { DocumentOutline } from './components/DocumentOutline'
+import { ImageUploadModal } from './components/ImageUploadModal'
 import { AddBlockButton } from './components/BlockToolbar'
 import { useBlockNavigation } from './hooks/useBlockNavigation'
 
@@ -97,6 +98,9 @@ function BlockEditorInner({
 
       {/* Slash command menu */}
       <SlashCommandMenu />
+
+      {/* Image upload modal */}
+      <ImageUploadModal />
 
       {/* Inline formatting toolbar */}
       <InlineToolbar />

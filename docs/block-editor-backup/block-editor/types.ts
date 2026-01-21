@@ -3,13 +3,23 @@ import type { BlockContent } from '@/types/admin'
 // Block types supported by the editor
 export type BlockType = 'paragraph' | 'h2' | 'h3' | 'h4' | 'blockquote' | 'bulletList' | 'numberList' | 'image'
 
+// Image alignment options
+export type ImageAlignment = 'left' | 'center' | 'full'
+
+// Image size options
+export type ImageSize = 'small' | 'medium' | 'large'
+
 // Internal editor block representation
 export interface EditorBlock {
   id: string // Corresponds to _key
   type: BlockType
   content: string // Plain text content (for text blocks)
   marks: InlineMark[] // Inline formatting marks
-  data: BlockContent // Original Sanity data
+  data: BlockContent & {
+    // Extended for image blocks
+    alignment?: ImageAlignment
+    size?: ImageSize
+  }
   meta: {
     collapsed?: boolean // For collapsible sections
     level?: number // Heading level or list indentation
@@ -43,6 +53,9 @@ export interface EditorState {
   showOutline: boolean
   showInlineToolbar: boolean
   inlineToolbarPosition: { x: number; y: number }
+  // Image upload modal
+  showImageUploadModal: boolean
+  imageUploadTargetBlockId: string | null // The block to replace or insert after
 }
 
 // Editor actions
@@ -64,6 +77,11 @@ export type EditorAction =
   | { type: 'HIDE_INLINE_TOOLBAR' }
   | { type: 'APPLY_MARK'; blockId: string; mark: InlineMark }
   | { type: 'REMOVE_MARK'; blockId: string; markType: string; start: number; end: number }
+  // Image upload modal actions
+  | { type: 'SHOW_IMAGE_UPLOAD_MODAL'; targetBlockId: string | null }
+  | { type: 'HIDE_IMAGE_UPLOAD_MODAL' }
+  // Image options actions
+  | { type: 'UPDATE_IMAGE_OPTIONS'; blockId: string; alignment?: ImageAlignment; size?: ImageSize }
 
 // Block editor props
 export interface BlockEditorProps {
