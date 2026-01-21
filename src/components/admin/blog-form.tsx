@@ -7,7 +7,7 @@ import type { PostExpanded, Category, SanityImage, GalleryImage, BlockContent, S
 import { AdminImageUpload } from './admin-image-upload'
 import { AdminGalleryUpload } from './admin-gallery-upload'
 import { AdminSlugInput } from './admin-slug-input'
-import { AdminRichEditor } from './admin-rich-editor'
+import { BlockEditor } from './block-editor'
 
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 const API_ADMIN_PATH = '/api/gestion-mon-remede-oum'
@@ -170,7 +170,7 @@ export function BlogForm({ post, isEdit = false }: BlogFormProps) {
           </div>
 
           {/* Body */}
-          <AdminRichEditor
+          <BlockEditor
             value={body}
             onChange={setBody}
             label="Contenu"
