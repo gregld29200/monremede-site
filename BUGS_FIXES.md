@@ -44,6 +44,47 @@ Quiz/questionnaire submissions on `/consultations/demande` were returning 500 er
 
 ---
 
+## 2026-01-21: Prospect Delete Not Working
+
+### Problem
+Deleting prospects from the admin dashboard appeared to work (modal showed, button clicked) but:
+1. Prospects were not actually deleted from Sanity
+2. Deleted prospects reappeared when returning to the list
+3. No error feedback was shown to the user
+
+### Root Causes
+1. **writeClient Token Issue**: Same as questionnaire bug - `writeClient` was created at module load time before environment variables were available in Vercel's serverless environment
+2. **CDN Caching**: The read `client` used `useCdn: true`, returning cached data even after successful deletion
+3. **No Error Feedback**: Frontend didn't display errors when deletion failed
+
+### Solution
+1. **API Route Fix** (`/src/app/api/gestion-mon-remede-oum/prospects/[id]/route.ts`):
+   - Created `getWriteClient()` and `getReadClient()` functions at request time
+   - Both use `useCdn: false` for real-time data
+   - Added debug logging for deletion operations
+
+2. **Prospects List API Fix** (`/src/app/api/gestion-mon-remede-oum/prospects/route.ts`):
+   - Created `getReadClient()` with `useCdn: false`
+   - Ensures list always shows current data
+
+3. **Frontend Error Handling** (`/src/app/gestion-mon-remede-oum/prospects/[id]/page.tsx`):
+   - Added `deleteError` state
+   - Shows error banner when deletion fails
+   - Proper error extraction from API response
+
+### Files Modified
+- `/src/app/api/gestion-mon-remede-oum/prospects/[id]/route.ts` - Request-time client creation
+- `/src/app/api/gestion-mon-remede-oum/prospects/route.ts` - Non-CDN client for list
+- `/src/app/gestion-mon-remede-oum/prospects/[id]/page.tsx` - Error feedback UI
+
+### Verification
+- Build succeeds
+- Delete operations now use valid token at request time
+- List API returns real-time data (no CDN caching)
+- User sees error message if deletion fails
+
+---
+
 ## 2026-01-21: Email Not Sent After Quiz Submission
 
 ### Problem

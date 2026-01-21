@@ -1,7 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { client } from '@/sanity/lib/client'
-import { writeClient } from '@/sanity/lib/writeClient'
+import { createClient } from 'next-sanity'
 import type { Prospect } from '@/types/admin'
+
+// Create read client at request time (no CDN for admin routes)
+function getReadClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '4otm8dqd',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2026-01-13',
+    useCdn: false, // No CDN for admin - need real-time data
+  })
+}
+
+// Create write client at request time to ensure env vars are available
+function getWriteClient() {
+  const token = process.env.SANITY_API_WRITE_TOKEN
+
+  if (!token) {
+    console.error('[Sanity Delete] SANITY_API_WRITE_TOKEN is not configured')
+    throw new Error('SANITY_API_WRITE_TOKEN is not configured')
+  }
+
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '4otm8dqd',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2026-01-13',
+    useCdn: false,
+    token,
+  })
+}
 
 export async function GET(
   request: NextRequest,
@@ -9,6 +36,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
+    const client = getReadClient()
 
     const prospect = await client.fetch<Prospect>(
       `*[_type == "questionnaireSubmission" && _id == $id][0]{
@@ -52,6 +80,7 @@ export async function PATCH(
   try {
     const { id } = await params
     const updates = await request.json()
+    const writeClient = getWriteClient()
 
     // Only allow updating status and notes
     const allowedUpdates: Record<string, unknown> = {}
@@ -79,6 +108,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const client = getReadClient()
+    const writeClient = getWriteClient()
+
+    console.log('[Prospect Delete] Attempting to delete:', id)
 
     // Verify the document exists and is a questionnaireSubmission
     const existing = await client.fetch(
@@ -87,6 +120,7 @@ export async function DELETE(
     )
 
     if (!existing) {
+      console.log('[Prospect Delete] Document not found:', id)
       return NextResponse.json(
         { error: 'Prospect non trouvé' },
         { status: 404 }
@@ -94,7 +128,9 @@ export async function DELETE(
     }
 
     // Delete the document
+    console.log('[Prospect Delete] Deleting document:', id)
     await writeClient.delete(id)
+    console.log('[Prospect Delete] Successfully deleted:', id)
 
     return NextResponse.json({ success: true, message: 'Prospect supprimé avec succès' })
   } catch (error) {
