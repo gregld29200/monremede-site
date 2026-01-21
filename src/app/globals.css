@@ -121,6 +121,12 @@ body::before {
   100% { transform: translate3d(-7rem, 0, 0); }
 }
 
+/* Disable grain overlay in Sanity Studio */
+body:has([data-sanity])::before,
+body:has([data-ui])::before {
+  display: none !important;
+}
+
 /* Utility class for subtle grain on dark backgrounds */
 .grain-overlay::after {
   content: '';
