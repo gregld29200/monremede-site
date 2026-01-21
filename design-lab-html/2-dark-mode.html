@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style 2: Warm Dark - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink-deep: #0c0a09;
+      --ink: #1c1917;
+      --ink-light: #292524;
+      --ink-lighter: #44403c;
+      --stone: #78716c;
+      --stone-light: #a8a29e;
+      --cream: #fafaf9;
+      --amber: #f59e0b;
+      --amber-soft: #fbbf24;
+      --amber-glow: rgba(245, 158, 11, 0.15);
+      --emerald: #10b981;
+      --rose: #f43f5e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--ink-deep);
+      color: var(--cream);
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Subtle noise texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 40px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+    }
+
+    .header-badge {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--amber);
+      padding: 6px 12px;
+      background: var(--amber-glow);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 6px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--ink);
+      border: 1px solid var(--ink-light);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--ink-lighter);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--amber-glow), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .stat-card:hover::after {
+      opacity: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--stone);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--cream);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .stat-change.positive {
+      color: var(--emerald);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .stat-change.negative {
+      color: var(--rose);
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    /* Filters */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 16px 20px;
+      background: var(--ink);
+      border: 1px solid var(--ink-light);
+      border-radius: 12px;
+    }
+
+    .search-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--stone);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 32px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--cream);
+      background: var(--ink-deep);
+      border: 1px solid var(--ink-light);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input::placeholder {
+      color: var(--stone);
+    }
+
+    .search-input:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px var(--amber-glow);
+    }
+
+    .divider {
+      width: 1px;
+      height: 32px;
+      background: var(--ink-light);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-pill {
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-pill.active {
+      background: var(--amber);
+      color: var(--ink-deep);
+    }
+
+    .filter-pill:not(.active) {
+      background: var(--ink-light);
+      color: var(--stone-light);
+    }
+
+    .filter-pill:not(.active):hover {
+      background: var(--ink-lighter);
+      color: var(--cream);
+    }
+
+    /* Table Card */
+    .table-card {
+      background: var(--ink);
+      border: 1px solid var(--ink-light);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--stone);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--ink-deep);
+      border-bottom: 1px solid var(--ink-light);
+    }
+
+    .data-table th:last-child { text-align: right; }
+
+    .data-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--ink-light);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background 0.15s;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Prospect Cell */
+    .prospect-cell {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .prospect-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--ink-lighter), var(--ink-light));
+      border: 1px solid var(--ink-lighter);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--stone-light);
+    }
+
+    .prospect-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 2px;
+    }
+
+    .prospect-email {
+      font-size: 13px;
+      color: var(--stone);
+    }
+
+    /* Score */
+    .score-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .score-track {
+      width: 80px;
+      height: 6px;
+      background: var(--ink-light);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .score-fill.critical {
+      background: linear-gradient(90deg, var(--rose), #fb7185);
+    }
+
+    .score-fill.warning {
+      background: linear-gradient(90deg, var(--amber), var(--amber-soft));
+    }
+
+    .score-fill.good {
+      background: linear-gradient(90deg, var(--emerald), #34d399);
+    }
+
+    .score-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--stone-light);
+      font-variant-numeric: tabular-nums;
+      min-width: 40px;
+    }
+
+    /* Status */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .status-badge.nouveau {
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+    }
+    .status-badge.nouveau::before { background: #60a5fa; }
+
+    .status-badge.contacte {
+      background: rgba(120, 113, 108, 0.15);
+      color: var(--stone-light);
+    }
+    .status-badge.contacte::before { background: var(--stone-light); }
+
+    .status-badge.discussion {
+      background: var(--amber-glow);
+      color: var(--amber-soft);
+    }
+    .status-badge.discussion::before { background: var(--amber); }
+
+    .status-badge.converti {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+    }
+    .status-badge.converti::before { background: var(--emerald); }
+
+    /* Date */
+    .date-cell {
+      font-size: 13px;
+      color: var(--stone);
+    }
+
+    /* Action */
+    .action-cell {
+      text-align: right;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--stone-light);
+      background: transparent;
+      border: 1px solid var(--ink-lighter);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .action-btn:hover {
+      color: var(--amber);
+      border-color: var(--amber);
+      background: var(--amber-glow);
+    }
+
+    .action-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Footer */
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: var(--ink-deep);
+      border-top: 1px solid var(--ink-light);
+    }
+
+    .footer-info {
+      font-size: 13px;
+      color: var(--stone);
+    }
+
+    .footer-info strong {
+      color: var(--cream);
+      font-weight: 600;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 8px;
+    }
+
+    .page-btn {
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--ink-light);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .page-btn.prev {
+      background: transparent;
+      color: var(--stone);
+    }
+
+    .page-btn.next {
+      background: var(--ink-light);
+      color: var(--cream);
+    }
+
+    .page-btn:hover {
+      border-color: var(--ink-lighter);
+      background: var(--ink-light);
+      color: var(--cream);
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .filter-pills { display: none; }
+      .divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Prospects</h1>
+      <span class="header-badge">Warm Dark</span>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Prospects</div>
+        <div class="stat-row">
+          <span class="stat-value">156</span>
+          <span class="stat-change positive">+12%</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Nouveaux</div>
+        <div class="stat-row">
+          <span class="stat-value">23</span>
+          <span class="stat-change positive">+5</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">En Discussion</div>
+        <div class="stat-row">
+          <span class="stat-value">18</span>
+          <span class="stat-change negative">−2</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Convertis</div>
+        <div class="stat-row">
+          <span class="stat-value">45</span>
+          <span class="stat-change positive">+8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-bar">
+      <div class="search-wrapper">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="Rechercher un prospect...">
+      </div>
+      <div class="divider"></div>
+      <div class="filter-pills">
+        <button class="filter-pill active">Tous</button>
+        <button class="filter-pill">Nouveau</button>
+        <button class="filter-pill">Contacté</button>
+        <button class="filter-pill">Discussion</button>
+        <button class="filter-pill">Converti</button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Prospect</th>
+            <th>Score Santé</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="prospect-cell">
+                <div class="prospect-avatar">MD</div>
+                <div>
+                  <div class="prospect-name">Marie Dupont</div>
+                  <div class="prospect-email">marie.dupont@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-track"><div class="score-fill critical" style="width: 76%"></div></div>
+                <span class="score-value">38/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Aujourd'hui</td>
+            <td class="action-cell">
+              <a href="#" class="action-btn">
+                Voir
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="prospect-cell">
+                <div class="prospect-avatar">JM</div>
+                <div>
+                  <div class="prospect-name">Jean Martin</div>
+                  <div class="prospect-email">jean.martin@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-track"><div class="score-fill warning" style="width: 50%"></div></div>
+                <span class="score-value">25/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge contacte">Contacté</span></td>
+            <td class="date-cell">Hier</td>
+            <td class="action-cell">
+              <a href="#" class="action-btn">
+                Voir
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="prospect-cell">
+                <div class="prospect-avatar">SB</div>
+                <div>
+                  <div class="prospect-name">Sophie Bernard</div>
+                  <div class="prospect-email">sophie.b@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-track"><div class="score-fill critical" style="width: 84%"></div></div>
+                <span class="score-value">42/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge discussion">Discussion</span></td>
+            <td class="date-cell">Il y a 3 jours</td>
+            <td class="action-cell">
+              <a href="#" class="action-btn">
+                Voir
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="prospect-cell">
+                <div class="prospect-avatar">PL</div>
+                <div>
+                  <div class="prospect-name">Pierre Leroy</div>
+                  <div class="prospect-email">p.leroy@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-track"><div class="score-fill good" style="width: 36%"></div></div>
+                <span class="score-value">18/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge converti">Converti</span></td>
+            <td class="date-cell">Il y a 5 jours</td>
+            <td class="action-cell">
+              <a href="#" class="action-btn">
+                Voir
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="prospect-cell">
+                <div class="prospect-avatar">CM</div>
+                <div>
+                  <div class="prospect-name">Claire Moreau</div>
+                  <div class="prospect-email">claire.m@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-track"><div class="score-fill warning" style="width: 62%"></div></div>
+                <span class="score-value">31/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Il y a 1 semaine</td>
+            <td class="action-cell">
+              <a href="#" class="action-btn">
+                Voir
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-footer">
+        <span class="footer-info">Affichage de <strong>5</strong> sur <strong>156</strong> prospects</span>
+        <div class="pagination">
+          <button class="page-btn prev">Précédent</button>
+          <button class="page-btn next">Suivant</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

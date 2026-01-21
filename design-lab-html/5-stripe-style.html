@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style 5: Stripe Polish - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f6f9fc;
+      --bg-card: #ffffff;
+      --bg-row-hover: #f7fafc;
+      --bg-header: #fafbfc;
+      --border: #e6ebf1;
+      --border-light: #f0f3f7;
+      --text: #1a1f36;
+      --text-secondary: #697386;
+      --text-tertiary: #8792a2;
+      --indigo: #635bff;
+      --indigo-light: #7a73ff;
+      --indigo-bg: #f0efff;
+      --green: #0d9488;
+      --green-bg: #ecfdf5;
+      --green-text: #047857;
+      --red: #df1b41;
+      --red-bg: #fef2f2;
+      --red-text: #b91c1c;
+      --yellow: #ca8a04;
+      --yellow-bg: #fefce8;
+      --gray-bg: #f3f4f6;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-page);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .header-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--indigo);
+      background: var(--indigo-bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .stat-change {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .stat-change.up {
+      color: var(--green-text);
+      background: var(--green-bg);
+    }
+
+    .stat-change.down {
+      color: var(--red-text);
+      background: var(--red-bg);
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    /* Main Card */
+    .main-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 360px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-tertiary);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 12px 9px 40px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .search-input:hover {
+      border-color: #c4cdd5;
+    }
+
+    .search-input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px var(--indigo-bg);
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .filter-select {
+      padding: 8px 32px 8px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      transition: all 0.15s;
+    }
+
+    .filter-select:hover {
+      border-color: #c4cdd5;
+    }
+
+    .filter-select:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px var(--indigo-bg);
+    }
+
+    .export-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: white;
+      background: var(--indigo);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .export-btn:hover {
+      background: var(--indigo-light);
+    }
+
+    .export-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table thead {
+      background: var(--bg-header);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th:last-child { text-align: right; }
+
+    .data-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background 0.1s;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--bg-row-hover);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* User Cell */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--indigo), var(--indigo-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 1px;
+    }
+
+    .user-email {
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    /* Score */
+    .score-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .score-bar {
+      width: 72px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .score-fill.critical { background: var(--red); }
+    .score-fill.warning { background: var(--yellow); }
+    .score-fill.good { background: var(--green); }
+
+    .score-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Status */
+    .status-badge {
+      display: inline-flex;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge.nouveau {
+      background: var(--indigo-bg);
+      color: var(--indigo);
+    }
+
+    .status-badge.contacte {
+      background: var(--gray-bg);
+      color: var(--text-secondary);
+    }
+
+    .status-badge.discussion {
+      background: var(--yellow-bg);
+      color: var(--yellow);
+    }
+
+    .status-badge.converti {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    /* Date */
+    .date-cell {
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+
+    /* Action */
+    .action-cell {
+      text-align: right;
+    }
+
+    .view-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--indigo);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .view-btn:hover {
+      background: var(--indigo-bg);
+    }
+
+    .view-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Footer */
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--bg-header);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .footer-info strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pagination {
+      display: flex;
+      gap: 8px;
+    }
+
+    .page-btn {
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .page-btn.prev {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .page-btn.next {
+      background: var(--bg-card);
+      color: var(--text);
+    }
+
+    .page-btn:hover {
+      background: var(--bg-card);
+      border-color: #c4cdd5;
+      color: var(--text);
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .toolbar-divider { display: none; }
+      .filter-group { display: none; }
+      .export-btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Prospects</h1>
+      <span class="header-badge">Stripe Style</span>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Total Prospects</span>
+          <span class="stat-change up">+12%</span>
+        </div>
+        <div class="stat-value">156</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Nouveaux</span>
+          <span class="stat-change up">+5</span>
+        </div>
+        <div class="stat-value">23</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">En Discussion</span>
+          <span class="stat-change down">−2</span>
+        </div>
+        <div class="stat-value">18</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-label">Convertis</span>
+          <span class="stat-change up">+8%</span>
+        </div>
+        <div class="stat-value">45</div>
+      </div>
+    </div>
+
+    <div class="main-card">
+      <div class="toolbar">
+        <div class="search-box">
+          <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input type="text" class="search-input" placeholder="Rechercher des prospects...">
+        </div>
+        <div class="toolbar-divider"></div>
+        <div class="filter-group">
+          <span class="filter-label">Statut</span>
+          <select class="filter-select">
+            <option>Tous les statuts</option>
+            <option>Nouveau</option>
+            <option>Contacté</option>
+            <option>En discussion</option>
+            <option>Converti</option>
+          </select>
+        </div>
+        <button class="export-btn">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          <span>Exporter</span>
+        </button>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Prospect</th>
+            <th>Score Santé</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">MD</div>
+                <div>
+                  <div class="user-name">Marie Dupont</div>
+                  <div class="user-email">marie.dupont@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-bar"><div class="score-fill critical" style="width: 76%"></div></div>
+                <span class="score-value">38/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Aujourd'hui</td>
+            <td class="action-cell">
+              <a href="#" class="view-btn">
+                Voir détails
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">JM</div>
+                <div>
+                  <div class="user-name">Jean Martin</div>
+                  <div class="user-email">jean.martin@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-bar"><div class="score-fill warning" style="width: 50%"></div></div>
+                <span class="score-value">25/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge contacte">Contacté</span></td>
+            <td class="date-cell">Hier</td>
+            <td class="action-cell">
+              <a href="#" class="view-btn">
+                Voir détails
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">SB</div>
+                <div>
+                  <div class="user-name">Sophie Bernard</div>
+                  <div class="user-email">sophie.b@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-bar"><div class="score-fill critical" style="width: 84%"></div></div>
+                <span class="score-value">42/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge discussion">Discussion</span></td>
+            <td class="date-cell">Il y a 3 jours</td>
+            <td class="action-cell">
+              <a href="#" class="view-btn">
+                Voir détails
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">PL</div>
+                <div>
+                  <div class="user-name">Pierre Leroy</div>
+                  <div class="user-email">p.leroy@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-bar"><div class="score-fill good" style="width: 36%"></div></div>
+                <span class="score-value">18/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge converti">Converti</span></td>
+            <td class="date-cell">Il y a 5 jours</td>
+            <td class="action-cell">
+              <a href="#" class="view-btn">
+                Voir détails
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">CM</div>
+                <div>
+                  <div class="user-name">Claire Moreau</div>
+                  <div class="user-email">claire.m@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="score-cell">
+                <div class="score-bar"><div class="score-fill warning" style="width: 62%"></div></div>
+                <span class="score-value">31/50</span>
+              </div>
+            </td>
+            <td><span class="status-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Il y a 1 semaine</td>
+            <td class="action-cell">
+              <a href="#" class="view-btn">
+                Voir détails
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="table-footer">
+        <span class="footer-info">Affichage de <strong>5</strong> sur <strong>156</strong> prospects</span>
+        <div class="pagination">
+          <button class="page-btn prev">Précédent</button>
+          <button class="page-btn next">Suivant</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

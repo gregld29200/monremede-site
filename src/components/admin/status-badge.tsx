@@ -11,49 +11,49 @@ export function StatusBadge({ status, type = 'client', className }: StatusBadgeP
     if (type === 'client') {
       switch (status) {
         case 'actif':
-          return { label: 'Actif', color: 'bg-sage/20 text-sage border-sage/30' }
+          return { label: 'Actif', color: 'bg-[#d1fae5] text-[#059669] border-[#a7f3d0]' }
         case 'pause':
-          return { label: 'En pause', color: 'bg-gold/20 text-gold border-gold/30' }
+          return { label: 'En pause', color: 'bg-[#fef3c7] text-[#d97706] border-[#fde68a]' }
         case 'archive':
-          return { label: 'Archive', color: 'bg-forest/10 text-forest/60 border-forest/20' }
+          return { label: 'Archive', color: 'bg-[#f3f4f6] text-[#6b7280] border-[#e5e7eb]' }
         default:
-          return { label: status, color: 'bg-forest/10 text-forest border-forest/20' }
+          return { label: status, color: 'bg-[#f3f4f6] text-[#374151] border-[#e5e7eb]' }
       }
     }
 
     if (type === 'prospect') {
       switch (status) {
         case 'nouveau':
-          return { label: 'Nouveau', color: 'bg-gold/20 text-gold border-gold/30' }
+          return { label: 'Nouveau', color: 'bg-[#dbeafe] text-[#1d4ed8] border-[#bfdbfe]' }
         case 'contacte':
-          return { label: 'Contacte', color: 'bg-sage/20 text-sage border-sage/30' }
+          return { label: 'Contacte', color: 'bg-[#f3f4f6] text-[#374151] border-[#e5e7eb]' }
         case 'discussion':
-          return { label: 'En discussion', color: 'bg-blush/20 text-blush-deep border-blush/30' }
+          return { label: 'En discussion', color: 'bg-[#fef3c7] text-[#d97706] border-[#fde68a]' }
         case 'converti':
-          return { label: 'Converti', color: 'bg-sage/30 text-forest border-sage/40' }
+          return { label: 'Converti', color: 'bg-[#d1fae5] text-[#059669] border-[#a7f3d0]' }
         case 'non_interesse':
-          return { label: 'Non interesse', color: 'bg-forest/10 text-forest/60 border-forest/20' }
+          return { label: 'Non interesse', color: 'bg-[#f3f4f6] text-[#6b7280] border-[#e5e7eb]' }
         default:
-          return { label: status, color: 'bg-forest/10 text-forest border-forest/20' }
+          return { label: status, color: 'bg-[#f3f4f6] text-[#374151] border-[#e5e7eb]' }
       }
     }
 
     if (type === 'profile') {
       switch (status) {
         case 'equilibre':
-          return { label: 'Equilibre', color: 'bg-sage/20 text-sage border-sage/30' }
+          return { label: 'Equilibre', color: 'bg-[#d1fae5] text-[#059669] border-[#a7f3d0]' }
         case 'alerte':
-          return { label: 'En Alerte', color: 'bg-gold/20 text-gold border-gold/30' }
+          return { label: 'En Alerte', color: 'bg-[#fef3c7] text-[#d97706] border-[#fde68a]' }
         case 'difficulte':
-          return { label: 'En Difficulte', color: 'bg-blush/20 text-blush-deep border-blush/30' }
+          return { label: 'En Difficulte', color: 'bg-[#fed7aa] text-[#c2410c] border-[#fdba74]' }
         case 'urgent':
-          return { label: 'Urgent', color: 'bg-red-100 text-red-700 border-red-200' }
+          return { label: 'Urgent', color: 'bg-[#fee2e2] text-[#dc2626] border-[#fecaca]' }
         default:
-          return { label: status || 'Non evalue', color: 'bg-forest/10 text-forest border-forest/20' }
+          return { label: status || 'Non evalue', color: 'bg-[#f3f4f6] text-[#6b7280] border-[#e5e7eb]' }
       }
     }
 
-    return { label: status, color: 'bg-forest/10 text-forest border-forest/20' }
+    return { label: status, color: 'bg-[#f3f4f6] text-[#374151] border-[#e5e7eb]' }
   }
 
   const config = getStatusConfig()
@@ -61,7 +61,7 @@ export function StatusBadge({ status, type = 'client', className }: StatusBadgeP
   return (
     <span
       className={cn(
-        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border',
+        'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border',
         config.color,
         className
       )}

@@ -47,10 +47,28 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  /* Admin-specific colors - neutral, high readability */
+  --color-admin-bg: #f8f9fa;
+  --color-admin-card: #ffffff;
+  --color-admin-border: #e5e7eb;
+  --color-admin-border-light: #f3f4f6;
+  --color-admin-text: #111827;
+  --color-admin-text-secondary: #6b7280;
+  --color-admin-text-muted: #9ca3af;
+  --color-admin-accent: #2563eb;
+  --color-admin-accent-light: #dbeafe;
+  --color-admin-success: #059669;
+  --color-admin-success-light: #d1fae5;
+  --color-admin-warning: #d97706;
+  --color-admin-warning-light: #fef3c7;
+  --color-admin-danger: #dc2626;
+  --color-admin-danger-light: #fee2e2;
+
   /* Fonts - Charte Mon Remède */
   --font-display: "Playfair Display", serif;     /* Titres principaux */
   --font-accent: "Cormorant Garamond", serif;    /* Sous-titres, labels */
   --font-body: "Lora", serif;                    /* Corps de texte */
+  --font-admin: "Inter", -apple-system, sans-serif; /* Admin interface */
 
   /* Animations */
   --animate-shimmer: shimmer 3s infinite;

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style 3: Notion Warm - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fffefc;
+      --bg-warm: #faf8f5;
+      --bg-hover: #f5f3f0;
+      --border: #e8e5df;
+      --border-strong: #d4d0c8;
+      --text: #37352f;
+      --text-secondary: #787774;
+      --text-tertiary: #9b9a97;
+      --blue: #2eaadc;
+      --blue-bg: #e7f3f8;
+      --orange: #d9730d;
+      --orange-bg: #fdecc8;
+      --green: #0f7b6c;
+      --green-bg: #dbeddb;
+      --gray-bg: #ebeced;
+      --red: #e03e3e;
+      --red-bg: #ffe2dd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 64px;
+    }
+
+    /* Page Title - Notion style with icon */
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-title {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .page-badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-warm);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* Stats as Notion callout blocks */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .stat-block {
+      background: var(--bg-warm);
+      border-radius: 6px;
+      padding: 16px;
+      transition: background 0.15s;
+      cursor: default;
+    }
+
+    .stat-block:hover {
+      background: var(--bg-hover);
+    }
+
+    .stat-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .stat-change.up {
+      color: var(--green);
+      background: var(--green-bg);
+    }
+
+    .stat-change.down {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    /* Filters - Notion toolbar style */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 280px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-tertiary);
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 6px 10px 6px 32px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid transparent;
+      border-radius: 4px;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .search-input:hover {
+      background: var(--bg-warm);
+    }
+
+    .search-input:focus {
+      background: var(--bg);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(46, 170, 220, 0.15);
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .filter-tab {
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .filter-tab:hover {
+      background: var(--bg-hover);
+      color: var(--text);
+    }
+
+    .filter-tab.active {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* Database Table - Notion style */
+    .database {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .database-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .database-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: var(--bg-warm);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .database-table th:last-child {
+      text-align: right;
+    }
+
+    .database-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .database-table tbody tr {
+      transition: background 0.1s;
+    }
+
+    .database-table tbody tr:hover {
+      background: var(--bg-warm);
+    }
+
+    .database-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Person Cell */
+    .person-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .person-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange-bg), #fce7c3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange);
+    }
+
+    .person-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .person-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .person-name:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .person-email {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* Progress Bar - Notion style */
+    .progress-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .progress-track {
+      width: 72px;
+      height: 8px;
+      background: var(--gray-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .progress-fill.danger { background: var(--red); }
+    .progress-fill.warning { background: var(--orange); }
+    .progress-fill.success { background: var(--green); }
+
+    .progress-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+      min-width: 28px;
+    }
+
+    /* Select/Status - Notion select style */
+    .select-badge {
+      display: inline-flex;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .select-badge.nouveau {
+      background: var(--blue-bg);
+      color: #0b6e99;
+    }
+
+    .select-badge.contacte {
+      background: var(--gray-bg);
+      color: #6b6b6b;
+    }
+
+    .select-badge.discussion {
+      background: var(--orange-bg);
+      color: #9f6b00;
+    }
+
+    .select-badge.converti {
+      background: var(--green-bg);
+      color: #0f7b6c;
+    }
+
+    /* Date */
+    .date-cell {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Action */
+    .action-cell {
+      text-align: right;
+    }
+
+    .open-link {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--blue);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.1s;
+    }
+
+    .open-link:hover {
+      background: var(--blue-bg);
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    .database-footer {
+      padding: 8px 12px;
+      background: var(--bg-warm);
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    @media (max-width: 800px) {
+      .container { padding: 32px 24px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .filter-tabs { display: none; }
+      .toolbar-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <span class="page-icon">👥</span>
+      <div class="page-title-row">
+        <h1 class="page-title">Prospects</h1>
+        <span class="page-badge">Notion Style</span>
+      </div>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-block">
+        <span class="stat-icon">📊</span>
+        <div class="stat-label">Total Prospects</div>
+        <div class="stat-row">
+          <span class="stat-value">156</span>
+          <span class="stat-change up">+12%</span>
+        </div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-icon">✨</span>
+        <div class="stat-label">Nouveaux</div>
+        <div class="stat-row">
+          <span class="stat-value">23</span>
+          <span class="stat-change up">+5</span>
+        </div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-icon">💬</span>
+        <div class="stat-label">En Discussion</div>
+        <div class="stat-row">
+          <span class="stat-value">18</span>
+          <span class="stat-change down">−2</span>
+        </div>
+      </div>
+      <div class="stat-block">
+        <span class="stat-icon">🎉</span>
+        <div class="stat-label">Convertis</div>
+        <div class="stat-row">
+          <span class="stat-value">45</span>
+          <span class="stat-change up">+8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input type="text" class="search-input" placeholder="Rechercher...">
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="filter-tabs">
+        <button class="filter-tab active">Tous</button>
+        <button class="filter-tab">Nouveau</button>
+        <button class="filter-tab">Contacté</button>
+        <button class="filter-tab">Discussion</button>
+        <button class="filter-tab">Converti</button>
+      </div>
+    </div>
+
+    <div class="database">
+      <table class="database-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Score Santé</th>
+            <th>Statut</th>
+            <th>Ajouté</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">MD</div>
+                <div class="person-info">
+                  <span class="person-name">Marie Dupont</span>
+                  <span class="person-email">marie.dupont@email.com</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-track"><div class="progress-fill danger" style="width: 76%"></div></div>
+                <span class="progress-value">38</span>
+              </div>
+            </td>
+            <td><span class="select-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Aujourd'hui</td>
+            <td class="action-cell"><a href="#" class="open-link">Ouvrir</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">JM</div>
+                <div class="person-info">
+                  <span class="person-name">Jean Martin</span>
+                  <span class="person-email">jean.martin@email.com</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-track"><div class="progress-fill warning" style="width: 50%"></div></div>
+                <span class="progress-value">25</span>
+              </div>
+            </td>
+            <td><span class="select-badge contacte">Contacté</span></td>
+            <td class="date-cell">Hier</td>
+            <td class="action-cell"><a href="#" class="open-link">Ouvrir</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">SB</div>
+                <div class="person-info">
+                  <span class="person-name">Sophie Bernard</span>
+                  <span class="person-email">sophie.b@email.com</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-track"><div class="progress-fill danger" style="width: 84%"></div></div>
+                <span class="progress-value">42</span>
+              </div>
+            </td>
+            <td><span class="select-badge discussion">Discussion</span></td>
+            <td class="date-cell">Il y a 3 jours</td>
+            <td class="action-cell"><a href="#" class="open-link">Ouvrir</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">PL</div>
+                <div class="person-info">
+                  <span class="person-name">Pierre Leroy</span>
+                  <span class="person-email">p.leroy@email.com</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-track"><div class="progress-fill success" style="width: 36%"></div></div>
+                <span class="progress-value">18</span>
+              </div>
+            </td>
+            <td><span class="select-badge converti">Converti</span></td>
+            <td class="date-cell">Il y a 5 jours</td>
+            <td class="action-cell"><a href="#" class="open-link">Ouvrir</a></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">CM</div>
+                <div class="person-info">
+                  <span class="person-name">Claire Moreau</span>
+                  <span class="person-email">claire.m@email.com</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="progress-cell">
+                <div class="progress-track"><div class="progress-fill warning" style="width: 62%"></div></div>
+                <span class="progress-value">31</span>
+              </div>
+            </td>
+            <td><span class="select-badge nouveau">Nouveau</span></td>
+            <td class="date-cell">Il y a 1 semaine</td>
+            <td class="action-cell"><a href="#" class="open-link">Ouvrir</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="database-footer">5 résultats sur 156</div>
+    </div>
+  </div>
+</body>
+</html>

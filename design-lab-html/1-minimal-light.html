@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style 1: Swiss Minimal - Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --red: #ff0000;
+      --gray-100: #f5f5f5;
+      --gray-200: #e0e0e0;
+      --gray-400: #9e9e9e;
+      --gray-600: #666666;
+      --unit: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.4;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Swiss Grid System */
+    .grid-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: calc(var(--unit) * 6) calc(var(--unit) * 8);
+    }
+
+    /* Header - Stark, typographic */
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: calc(var(--unit) * 6);
+      border-bottom: 2px solid var(--black);
+      margin-bottom: calc(var(--unit) * 6);
+    }
+
+    .header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+    }
+
+    /* Stats - Grid-based, mathematical */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--black);
+      margin-bottom: calc(var(--unit) * 8);
+    }
+
+    .stat-cell {
+      background: var(--white);
+      padding: calc(var(--unit) * 4);
+      position: relative;
+    }
+
+    .stat-cell::before {
+      content: attr(data-index);
+      position: absolute;
+      top: calc(var(--unit) * 2);
+      right: calc(var(--unit) * 2);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-400);
+      letter-spacing: 0.05em;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: calc(var(--unit) * 2);
+    }
+
+    .stat-value {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .stat-change {
+      display: inline-block;
+      margin-top: calc(var(--unit) * 2);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .stat-change.negative {
+      background: var(--red);
+    }
+
+    /* Toolbar - Functional, no decoration */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--unit) * 4);
+      margin-bottom: calc(var(--unit) * 4);
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: calc(var(--unit) * 2) 0;
+      font-family: inherit;
+      font-size: 14px;
+      border: none;
+      border-bottom: 2px solid var(--black);
+      background: transparent;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--gray-400);
+    }
+
+    .search-box input:focus {
+      border-bottom-color: var(--red);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 2px;
+    }
+
+    .filter-btn {
+      padding: calc(var(--unit) * 1.5) calc(var(--unit) * 2);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .filter-btn.active {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .filter-btn:not(.active) {
+      background: var(--gray-100);
+      color: var(--black);
+    }
+
+    .filter-btn:not(.active):hover {
+      background: var(--gray-200);
+    }
+
+    /* Table - Pure function */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table thead {
+      border-top: 2px solid var(--black);
+      border-bottom: 2px solid var(--black);
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: calc(var(--unit) * 2) calc(var(--unit) * 2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--black);
+    }
+
+    .data-table th:last-child { text-align: right; }
+
+    .data-table td {
+      padding: calc(var(--unit) * 3) calc(var(--unit) * 2);
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover td {
+      background: var(--gray-100);
+    }
+
+    /* Prospect Cell */
+    .prospect-cell {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--unit) * 2);
+    }
+
+    .prospect-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--black);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .prospect-info .name {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .prospect-info .email {
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+
+    /* Score - Minimal bar */
+    .score-cell {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--unit) * 2);
+    }
+
+    .score-bar {
+      width: 80px;
+      height: 4px;
+      background: var(--gray-200);
+      position: relative;
+    }
+
+    .score-fill {
+      height: 100%;
+      background: var(--black);
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .score-fill.critical {
+      background: var(--red);
+    }
+
+    .score-value {
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      min-width: 36px;
+    }
+
+    /* Status - Typography only */
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .status-badge.nouveau { color: var(--red); }
+    .status-badge.contacte { color: var(--gray-600); }
+    .status-badge.discussion { color: var(--black); }
+    .status-badge.converti { color: var(--black); text-decoration: underline; }
+
+    /* Date */
+    .date-cell {
+      font-size: 13px;
+      color: var(--gray-600);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Action */
+    .action-cell {
+      text-align: right;
+    }
+
+    .action-link {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      padding: calc(var(--unit)) calc(var(--unit) * 2);
+      border: 2px solid var(--black);
+      transition: all 0.1s;
+    }
+
+    .action-link:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    /* Footer */
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: calc(var(--unit) * 3);
+      border-top: 2px solid var(--black);
+      margin-top: calc(var(--unit) * 4);
+    }
+
+    .footer-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-600);
+    }
+
+    .footer-text strong {
+      color: var(--black);
+    }
+
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-value { font-size: 40px; }
+      .filter-group { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-container">
+    <header class="header">
+      <h1>Prospects</h1>
+      <span class="header-meta">Swiss Minimal</span>
+    </header>
+
+    <div class="stats-row">
+      <div class="stat-cell" data-index="01">
+        <div class="stat-label">Total Prospects</div>
+        <div class="stat-value">156</div>
+        <span class="stat-change">+12%</span>
+      </div>
+      <div class="stat-cell" data-index="02">
+        <div class="stat-label">Nouveaux</div>
+        <div class="stat-value">23</div>
+        <span class="stat-change">+5</span>
+      </div>
+      <div class="stat-cell" data-index="03">
+        <div class="stat-label">En Discussion</div>
+        <div class="stat-value">18</div>
+        <span class="stat-change negative">−2</span>
+      </div>
+      <div class="stat-cell" data-index="04">
+        <div class="stat-label">Convertis</div>
+        <div class="stat-value">45</div>
+        <span class="stat-change">+8%</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" placeholder="Rechercher par nom ou email">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active">Tous</button>
+        <button class="filter-btn">Nouveau</button>
+        <button class="filter-btn">Contacté</button>
+        <button class="filter-btn">Discussion</button>
+        <button class="filter-btn">Converti</button>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Prospect</th>
+          <th>Score</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="prospect-cell">
+              <div class="prospect-avatar">MD</div>
+              <div class="prospect-info">
+                <div class="name">Marie Dupont</div>
+                <div class="email">marie.dupont@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="score-cell">
+              <div class="score-bar"><div class="score-fill critical" style="width: 76%"></div></div>
+              <span class="score-value">38/50</span>
+            </div>
+          </td>
+          <td><span class="status-badge nouveau">Nouveau</span></td>
+          <td class="date-cell">Aujourd'hui</td>
+          <td class="action-cell"><a href="#" class="action-link">Voir</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="prospect-cell">
+              <div class="prospect-avatar">JM</div>
+              <div class="prospect-info">
+                <div class="name">Jean Martin</div>
+                <div class="email">jean.martin@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="score-cell">
+              <div class="score-bar"><div class="score-fill" style="width: 50%"></div></div>
+              <span class="score-value">25/50</span>
+            </div>
+          </td>
+          <td><span class="status-badge contacte">Contacté</span></td>
+          <td class="date-cell">Hier</td>
+          <td class="action-cell"><a href="#" class="action-link">Voir</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="prospect-cell">
+              <div class="prospect-avatar">SB</div>
+              <div class="prospect-info">
+                <div class="name">Sophie Bernard</div>
+                <div class="email">sophie.b@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="score-cell">
+              <div class="score-bar"><div class="score-fill critical" style="width: 84%"></div></div>
+              <span class="score-value">42/50</span>
+            </div>
+          </td>
+          <td><span class="status-badge discussion">Discussion</span></td>
+          <td class="date-cell">Il y a 3j</td>
+          <td class="action-cell"><a href="#" class="action-link">Voir</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="prospect-cell">
+              <div class="prospect-avatar">PL</div>
+              <div class="prospect-info">
+                <div class="name">Pierre Leroy</div>
+                <div class="email">p.leroy@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="score-cell">
+              <div class="score-bar"><div class="score-fill" style="width: 36%"></div></div>
+              <span class="score-value">18/50</span>
+            </div>
+          </td>
+          <td><span class="status-badge converti">Converti</span></td>
+          <td class="date-cell">Il y a 5j</td>
+          <td class="action-cell"><a href="#" class="action-link">Voir</a></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="prospect-cell">
+              <div class="prospect-avatar">CM</div>
+              <div class="prospect-info">
+                <div class="name">Claire Moreau</div>
+                <div class="email">claire.m@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="score-cell">
+              <div class="score-bar"><div class="score-fill" style="width: 62%"></div></div>
+              <span class="score-value">31/50</span>
+            </div>
+          </td>
+          <td><span class="status-badge nouveau">Nouveau</span></td>
+          <td class="date-cell">Il y a 1sem</td>
+          <td class="action-cell"><a href="#" class="action-link">Voir</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="table-footer">
+      <span class="footer-text">Affichage <strong>5</strong> sur <strong>156</strong></span>
+      <span class="footer-text">Page 1/32</span>
+    </div>
+  </div>
+</body>
+</html>

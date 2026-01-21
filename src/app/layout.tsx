@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Cormorant_Garamond, Lora } from "next/font/google";
+import { Playfair_Display, Cormorant_Garamond, Lora, Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
@@ -22,6 +22,12 @@ const lora = Lora({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const inter = Inter({
+  variable: "--font-admin",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -57,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${playfairDisplay.variable} ${cormorantGaramond.variable} ${lora.variable} antialiased`}
+        className={`${playfairDisplay.variable} ${cormorantGaramond.variable} ${lora.variable} ${inter.variable} antialiased`}
       >
         <GoogleAnalytics />
         {children}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard Style Variations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 3rem 1.5rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      display: block;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+    .card-preview {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    .card-preview.light { background: #fafafa; }
+    .card-preview.dark { background: #0f0f0f; }
+    .card-preview.notion { background: #ffffff; border-bottom: 1px solid #e8e5e0; }
+    .card-preview.linear { background: #08070b; }
+    .card-preview.stripe { background: #f6f9fc; }
+    .card-content {
+      padding: 1.25rem;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 0.375rem;
+    }
+    .card-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Dashboard Styles</h1>
+    <p class="subtitle">Choisissez le style qui convient le mieux à votre tableau de bord</p>
+
+    <div class="grid">
+      <a href="1-minimal-light.html" class="card">
+        <div class="card-preview light">
+          <span>☀️</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">1. Minimal Light</h2>
+          <p class="card-description">Design épuré avec fond blanc et bordures subtiles. Parfait pour une interface claire et lisible.</p>
+          <span class="badge">Fond clair</span>
+        </div>
+      </a>
+
+      <a href="2-dark-mode.html" class="card">
+        <div class="card-preview dark">
+          <span>🌙</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">2. Dark Mode</h2>
+          <p class="card-description">Interface sombre avec contrastes élevés. Idéal pour réduire la fatigue oculaire.</p>
+          <span class="badge">Fond sombre</span>
+        </div>
+      </a>
+
+      <a href="3-notion-style.html" class="card">
+        <div class="card-preview notion">
+          <span>📝</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">3. Notion Style</h2>
+          <p class="card-description">Style chaleureux inspiré de Notion. Coins arrondis, emojis et tons beiges.</p>
+          <span class="badge">Chaleureux</span>
+        </div>
+      </a>
+
+      <a href="4-linear-style.html" class="card">
+        <div class="card-preview linear">
+          <span>🚀</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">4. Linear Style</h2>
+          <p class="card-description">Design futuriste avec accents violets et effets de verre. Style moderne et premium.</p>
+          <span class="badge">Futuriste</span>
+        </div>
+      </a>
+
+      <a href="5-stripe-style.html" class="card">
+        <div class="card-preview stripe">
+          <span>💳</span>
+        </div>
+        <div class="card-content">
+          <h2 class="card-title">5. Stripe Style</h2>
+          <p class="card-description">Interface professionnelle inspirée de Stripe. Accents bleus, typographie claire.</p>
+          <span class="badge">Professionnel</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
