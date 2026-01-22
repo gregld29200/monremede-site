@@ -85,6 +85,14 @@
 - [ ] Connexion Cloudflare Pages
 - [ ] Variables d'environnement production
 
+## Phase 8: Email (Resend) ✅
+
+- [x] Configuration du domaine `monremede.com` dans Resend
+- [x] Enregistrement DKIM vérifié
+- [x] Enregistrement MX (send) configuré dans Namecheap
+- [x] Enregistrement TXT SPF (send) configuré
+- [x] Domaine vérifié et prêt à envoyer des emails
+
 ---
 
 ## Prochaines étapes
@@ -109,6 +117,15 @@
 ---
 
 ## Journal des sessions
+
+### Session 2 - 22 janvier 2025
+- Configuration email Resend
+- Vérification du domaine `monremede.com` dans Resend
+- Ajout des enregistrements DNS dans Namecheap:
+  - MX record: `send` → `feedback-smtp.eu-west-1.amazonses.com` (priorité 10)
+  - TXT record SPF: `send` → `v=spf1 include:amazonses.com ~all`
+- Tous les enregistrements DNS vérifiés (DKIM, MX, TXT) ✅
+- Domaine prêt à envoyer des emails
 
 ### Session 1 - 13 janvier 2025
 - Setup complet du projet
