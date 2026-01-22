@@ -32,9 +32,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Recette non trouvée' }
   }
 
+  const title = recipe.seo?.metaTitle || `${recipe.title} - Oum Soumayya`
+  const description = recipe.seo?.metaDescription || recipe.excerpt || ''
+  const imageUrl = recipe.mainImage
+    ? urlFor(recipe.mainImage).width(1200).height(630).url()
+    : undefined
+
   return {
-    title: recipe.seo?.metaTitle || `${recipe.title} - Oum Soumayya`,
-    description: recipe.seo?.metaDescription || recipe.excerpt,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      images: imageUrl ? [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: recipe.mainImage?.alt || recipe.title,
+        }
+      ] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
   }
 }
 
@@ -47,6 +72,18 @@ function getDifficultyLabel(difficulty: string): string {
   return labels[difficulty] || difficulty
 }
 
+// Helper to format duration to ISO 8601 format (PT30M for 30 minutes)
+function formatDuration(minutes: number): string {
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+  if (hours > 0 && mins > 0) {
+    return `PT${hours}H${mins}M`
+  } else if (hours > 0) {
+    return `PT${hours}H`
+  }
+  return `PT${mins}M`
+}
+
 export default async function RecipePage({ params }: PageProps) {
   const { slug } = await params
   const recipe = await getRecipe(slug)
@@ -57,8 +94,48 @@ export default async function RecipePage({ params }: PageProps) {
 
   const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0)
 
+  // JSON-LD Recipe Schema for rich results in Google
+  const recipeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: recipe.title,
+    description: recipe.excerpt || '',
+    image: recipe.mainImage
+      ? urlFor(recipe.mainImage).width(1200).height(630).url()
+      : undefined,
+    author: {
+      '@type': 'Person',
+      name: 'Oum Soumayya',
+    },
+    prepTime: recipe.prepTime ? formatDuration(recipe.prepTime) : undefined,
+    cookTime: recipe.cookTime ? formatDuration(recipe.cookTime) : undefined,
+    totalTime: totalTime > 0 ? formatDuration(totalTime) : undefined,
+    recipeYield: recipe.servings ? `${recipe.servings} personnes` : undefined,
+    recipeCategory: recipe.categories?.[0]?.title,
+    recipeIngredient: recipe.ingredients?.map(
+      (ing) => `${ing.quantity || ''} ${ing.unit || ''} ${ing.name}`.trim()
+    ),
+    recipeInstructions: recipe.steps?.map((step, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: step.title || `Étape ${index + 1}`,
+      text: step.description,
+      image: step.image ? urlFor(step.image).width(600).height(338).url() : undefined,
+    })),
+    nutrition: recipe.healthBenefits?.length
+      ? {
+          '@type': 'NutritionInformation',
+          description: recipe.healthBenefits.join(', '),
+        }
+      : undefined,
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeSchema) }}
+      />
       <Header />
       <main className="pt-20">
         {/* Hero */}

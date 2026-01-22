@@ -33,9 +33,36 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Article non trouvé' }
   }
 
+  const title = post.seo?.metaTitle || `${post.title} - Oum Soumayya`
+  const description = post.seo?.metaDescription || post.excerpt || ''
+  const imageUrl = post.mainImage
+    ? urlFor(post.mainImage).width(1200).height(630).url()
+    : undefined
+
   return {
-    title: post.seo?.metaTitle || `${post.title} - Oum Soumayya`,
-    description: post.seo?.metaDescription || post.excerpt,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: post.author?.name ? [post.author.name] : undefined,
+      images: imageUrl ? [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.mainImage?.alt || post.title,
+        }
+      ] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
   }
 }
 
@@ -120,8 +147,46 @@ export default async function PostPage({ params }: PageProps) {
     notFound()
   }
 
+  // JSON-LD Article Schema for SEO
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt || '',
+    image: post.mainImage
+      ? urlFor(post.mainImage).width(1200).height(630).url()
+      : undefined,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    author: post.author
+      ? {
+          '@type': 'Person',
+          name: post.author.name,
+          image: post.author.image
+            ? urlFor(post.author.image).width(200).height(200).url()
+            : undefined,
+        }
+      : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Mon Remède',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://monremede.com/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://monremede.com/blog/${slug}`,
+    },
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <Header />
       <main className="pt-20">
         {/* Hero */}
