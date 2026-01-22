@@ -225,6 +225,10 @@ export interface SanityImage {
   }
 }
 
+// Image layout options
+export type ImageLayout = 'full' | 'center' | 'left' | 'right'
+export type ImageSize = 'small' | 'medium' | 'large'
+
 // Block content type (for rich text)
 export interface BlockContent {
   _type: 'block' | 'image'
@@ -250,6 +254,8 @@ export interface BlockContent {
   }
   alt?: string
   caption?: string
+  layout?: ImageLayout
+  size?: ImageSize
 }
 
 // SEO type

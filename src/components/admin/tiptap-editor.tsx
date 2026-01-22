@@ -8,7 +8,7 @@ import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { cn } from '@/lib/utils'
-import type { BlockContent } from '@/types/admin'
+import type { BlockContent, ImageLayout } from '@/types/admin'
 
 const API_ADMIN_PATH = '/api/gestion-mon-remede-oum'
 
@@ -47,8 +47,10 @@ function portableTextToHtml(blocks: BlockContent[]): string {
 
       const ref = block.asset?._ref || ''
       const imageUrl = ref ? getSanityImageUrl(ref) : ''
+      const layout = block.layout || 'full'
+      const size = block.size || 'medium'
       if (imageUrl) {
-        html += `<img src="${imageUrl}" alt="${block.alt || ''}" data-sanity-ref="${ref}" />`
+        html += `<img src="${imageUrl}#ref=${ref}&layout=${layout}&size=${size}" alt="${block.alt || ''}" data-sanity-ref="${ref}" data-layout="${layout}" data-size="${size}" />`
       }
       return
     }
@@ -148,6 +150,8 @@ function htmlToPortableText(html: string): BlockContent[] {
       const src = node.getAttribute('src') || ''
       const alt = node.getAttribute('alt') || ''
       const ref = extractRefFromUrl(src)
+      const layout = node.getAttribute('data-layout') as ImageLayout || extractLayoutFromUrl(src)
+      const size = node.getAttribute('data-size') as 'small' | 'medium' | 'large' || extractSizeFromUrl(src)
 
       if (ref) {
         return {
@@ -158,6 +162,8 @@ function htmlToPortableText(html: string): BlockContent[] {
             _type: 'reference',
           },
           alt,
+          layout,
+          size,
         }
       }
       return null
@@ -298,6 +304,24 @@ function extractRefFromUrl(url: string): string {
   return ''
 }
 
+// Helper to extract layout from URL fragment
+function extractLayoutFromUrl(url: string): ImageLayout {
+  const layoutMatch = url.match(/layout=([^&]+)/)
+  if (layoutMatch && ['full', 'center', 'left', 'right'].includes(layoutMatch[1])) {
+    return layoutMatch[1] as ImageLayout
+  }
+  return 'full'
+}
+
+// Helper to extract size from URL fragment
+function extractSizeFromUrl(url: string): 'small' | 'medium' | 'large' {
+  const sizeMatch = url.match(/size=([^&]+)/)
+  if (sizeMatch && ['small', 'medium', 'large'].includes(sizeMatch[1])) {
+    return sizeMatch[1] as 'small' | 'medium' | 'large'
+  }
+  return 'medium'
+}
+
 // ============================================
 // Toolbar Button Component
 // ============================================
@@ -343,6 +367,56 @@ function ToolbarDivider() {
 // ============================================
 // Main Editor Component
 // ============================================
+// Layout option data
+const layoutOptions: Array<{ value: ImageLayout; label: string; icon: React.ReactNode }> = [
+  {
+    value: 'full',
+    label: 'Pleine largeur',
+    icon: (
+      <svg className="w-6 h-4" viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="1" y="4" width="22" height="8" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    value: 'center',
+    label: 'Centrée',
+    icon: (
+      <svg className="w-6 h-4" viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="5" y="4" width="14" height="8" rx="1" />
+      </svg>
+    ),
+  },
+  {
+    value: 'left',
+    label: 'À gauche',
+    icon: (
+      <svg className="w-6 h-4" viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="1" y="4" width="10" height="8" rx="1" />
+        <line x1="14" y1="6" x2="23" y2="6" strokeWidth="1" />
+        <line x1="14" y1="10" x2="23" y2="10" strokeWidth="1" />
+      </svg>
+    ),
+  },
+  {
+    value: 'right',
+    label: 'À droite',
+    icon: (
+      <svg className="w-6 h-4" viewBox="0 0 24 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="13" y="4" width="10" height="8" rx="1" />
+        <line x1="1" y1="6" x2="10" y2="6" strokeWidth="1" />
+        <line x1="1" y1="10" x2="10" y2="10" strokeWidth="1" />
+      </svg>
+    ),
+  },
+]
+
+interface PendingImage {
+  url: string
+  ref: string
+  alt: string
+}
+
 export function TiptapEditor({
   value,
   onChange,
@@ -355,6 +429,8 @@ export function TiptapEditor({
   const [isUploading, setIsUploading] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')
   const [showLinkInput, setShowLinkInput] = useState(false)
+  const [pendingImage, setPendingImage] = useState<PendingImage | null>(null)
+  const [selectedLayout, setSelectedLayout] = useState<ImageLayout>('full')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const linkInputRef = useRef<HTMLInputElement>(null)
 
@@ -437,11 +513,13 @@ export function TiptapEditor({
       const data = await response.json()
       const imageUrl = getSanityImageUrl(data.asset._ref)
 
-      // Insert image into editor with ref encoded in URL fragment
-      editor.chain().focus().setImage({
-        src: `${imageUrl}#ref=${data.asset._ref}`,
+      // Show layout selection popup instead of inserting immediately
+      setPendingImage({
+        url: imageUrl,
+        ref: data.asset._ref,
         alt: '',
-      }).run()
+      })
+      setSelectedLayout('full')
 
     } catch (error) {
       console.error('Upload error:', error)
@@ -450,6 +528,26 @@ export function TiptapEditor({
       setIsUploading(false)
     }
   }, [editor])
+
+  // Insert image with selected layout
+  const insertImageWithLayout = useCallback(() => {
+    if (!editor || !pendingImage) return
+
+    // Insert image into editor with ref and layout encoded in URL fragment
+    editor.chain().focus().setImage({
+      src: `${pendingImage.url}#ref=${pendingImage.ref}&layout=${selectedLayout}&size=medium`,
+      alt: pendingImage.alt,
+    }).run()
+
+    setPendingImage(null)
+    setSelectedLayout('full')
+  }, [editor, pendingImage, selectedLayout])
+
+  // Cancel image insertion
+  const cancelImageInsertion = useCallback(() => {
+    setPendingImage(null)
+    setSelectedLayout('full')
+  }, [])
 
   // Handle file input change
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -706,6 +804,59 @@ export function TiptapEditor({
                 Supprimer
               </button>
             )}
+          </div>
+        )}
+
+        {/* Image layout selection panel */}
+        {pendingImage && (
+          <div className="px-4 py-3 bg-cream-warm/80 border-b border-forest/10">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-forest/5 flex-shrink-0">
+                <img
+                  src={pendingImage.url}
+                  alt="Apercu"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-accent text-forest mb-1">Disposition de l&apos;image</p>
+                <p className="text-xs text-ink-soft/60">Choisissez comment l&apos;image s&apos;affichera dans l&apos;article</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {layoutOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setSelectedLayout(option.value)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm',
+                    selectedLayout === option.value
+                      ? 'border-gold bg-gold/10 text-gold'
+                      : 'border-forest/10 bg-white text-ink-soft hover:border-forest/30'
+                  )}
+                >
+                  {option.icon}
+                  <span>{option.label}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={insertImageWithLayout}
+                className="px-4 py-1.5 text-sm font-body text-white bg-gold rounded-lg hover:bg-gold/90 transition-colors"
+              >
+                Inserer l&apos;image
+              </button>
+              <button
+                type="button"
+                onClick={cancelImageInsertion}
+                className="px-4 py-1.5 text-sm font-body text-ink-soft/60 hover:text-forest transition-colors"
+              >
+                Annuler
+              </button>
+            </div>
           </div>
         )}
 

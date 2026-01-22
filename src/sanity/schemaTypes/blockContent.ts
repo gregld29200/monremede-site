@@ -55,6 +55,35 @@ export const blockContent = defineType({
           type: 'string',
           title: 'Légende',
         },
+        {
+          name: 'layout',
+          type: 'string',
+          title: 'Disposition',
+          description: 'Comment l\'image s\'affiche dans l\'article',
+          options: {
+            list: [
+              {title: 'Pleine largeur', value: 'full'},
+              {title: 'Centrée (moyenne)', value: 'center'},
+              {title: 'À gauche (texte à droite)', value: 'left'},
+              {title: 'À droite (texte à gauche)', value: 'right'},
+            ],
+          },
+          initialValue: 'full',
+        },
+        {
+          name: 'size',
+          type: 'string',
+          title: 'Taille',
+          description: 'Taille de l\'image (utilisé pour les dispositions centrée, gauche et droite)',
+          options: {
+            list: [
+              {title: 'Petite', value: 'small'},
+              {title: 'Moyenne', value: 'medium'},
+              {title: 'Grande', value: 'large'},
+            ],
+          },
+          initialValue: 'medium',
+        },
       ],
     }),
   ],

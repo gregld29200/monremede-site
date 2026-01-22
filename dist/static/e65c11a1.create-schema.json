@@ -1,0 +1,1748 @@
+[
+  {
+    "of": [
+      {
+        "marks": {
+          "annotations": [
+            {
+              "fields": [
+                {
+                  "validation": [
+                    {
+                      "rules": [
+                        {
+                          "flag": "uri",
+                          "constraint": {
+                            "options": {
+                              "scheme": [
+                                "/^http$/",
+                                "/^https$/"
+                              ],
+                              "allowRelative": false,
+                              "relativeOnly": false,
+                              "allowCredentials": false
+                            }
+                          }
+                        }
+                      ],
+                      "level": "error"
+                    }
+                  ],
+                  "name": "href",
+                  "type": "url",
+                  "title": "URL"
+                }
+              ],
+              "name": "link",
+              "type": "object",
+              "title": "Lien"
+            }
+          ],
+          "decorators": [
+            {
+              "value": "strong",
+              "title": "Gras"
+            },
+            {
+              "value": "em",
+              "title": "Italique"
+            },
+            {
+              "value": "underline",
+              "title": "Souligné"
+            }
+          ]
+        },
+        "lists": [
+          {
+            "value": "bullet",
+            "title": "Liste à puces"
+          },
+          {
+            "value": "number",
+            "title": "Liste numérotée"
+          }
+        ],
+        "styles": [
+          {
+            "value": "normal",
+            "title": "Normal"
+          },
+          {
+            "value": "h2",
+            "title": "Titre 2"
+          },
+          {
+            "value": "h3",
+            "title": "Titre 3"
+          },
+          {
+            "value": "h4",
+            "title": "Titre 4"
+          },
+          {
+            "value": "blockquote",
+            "title": "Citation"
+          }
+        ],
+        "of": [],
+        "type": "block"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texte alternatif"
+          },
+          {
+            "name": "caption",
+            "type": "string",
+            "title": "Légende"
+          },
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Pleine largeur",
+                  "value": "full"
+                },
+                {
+                  "title": "Centrée (moyenne)",
+                  "value": "center"
+                },
+                {
+                  "title": "À gauche (texte à droite)",
+                  "value": "left"
+                },
+                {
+                  "title": "À droite (texte à gauche)",
+                  "value": "right"
+                }
+              ]
+            },
+            "initialValue": "full",
+            "description": "Comment l'image s'affiche dans l'article",
+            "name": "layout",
+            "type": "string",
+            "title": "Disposition"
+          },
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Petite",
+                  "value": "small"
+                },
+                {
+                  "title": "Moyenne",
+                  "value": "medium"
+                },
+                {
+                  "title": "Grande",
+                  "value": "large"
+                }
+              ]
+            },
+            "initialValue": "medium",
+            "description": "Taille de l'image (utilisé pour les dispositions centrée, gauche et droite)",
+            "name": "size",
+            "type": "string",
+            "title": "Taille"
+          }
+        ],
+        "type": "image"
+      }
+    ],
+    "name": "blockContent",
+    "type": "array",
+    "title": "Contenu"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nom"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Photo"
+      },
+      {
+        "description": "Ex: Naturopathe certifiée",
+        "name": "role",
+        "type": "string",
+        "title": "Rôle / Titre"
+      },
+      {
+        "name": "bio",
+        "type": "blockContent",
+        "title": "Biographie"
+      },
+      {
+        "description": "Liste des certifications et diplômes",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "credentials",
+        "type": "array",
+        "title": "Certifications"
+      },
+      {
+        "fields": [
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "uri",
+                    "constraint": {
+                      "options": {
+                        "scheme": [
+                          "/^http$/",
+                          "/^https$/"
+                        ],
+                        "allowRelative": false,
+                        "relativeOnly": false,
+                        "allowCredentials": false
+                      }
+                    }
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "instagram",
+            "type": "url"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "uri",
+                    "constraint": {
+                      "options": {
+                        "scheme": [
+                          "/^http$/",
+                          "/^https$/"
+                        ],
+                        "allowRelative": false,
+                        "relativeOnly": false,
+                        "allowCredentials": false
+                      }
+                    }
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "facebook",
+            "type": "url"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "uri",
+                    "constraint": {
+                      "options": {
+                        "scheme": [
+                          "/^http$/",
+                          "/^https$/"
+                        ],
+                        "allowRelative": false,
+                        "relativeOnly": false,
+                        "allowCredentials": false
+                      }
+                    }
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "youtube",
+            "type": "url",
+            "title": "YouTube"
+          },
+          {
+            "validation": [
+              {
+                "rules": [
+                  {
+                    "flag": "uri",
+                    "constraint": {
+                      "options": {
+                        "scheme": [
+                          "/^http$/",
+                          "/^https$/"
+                        ],
+                        "allowRelative": false,
+                        "relativeOnly": false,
+                        "allowCredentials": false
+                      }
+                    }
+                  }
+                ],
+                "level": "error"
+              }
+            ],
+            "name": "website",
+            "type": "url",
+            "title": "Site web"
+          }
+        ],
+        "name": "socialLinks",
+        "type": "object",
+        "title": "Réseaux sociaux"
+      }
+    ],
+    "name": "author",
+    "type": "document",
+    "title": "Auteur"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Titre"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Vert forêt",
+              "value": "forest"
+            },
+            {
+              "title": "Sauge",
+              "value": "sage"
+            },
+            {
+              "title": "Or",
+              "value": "gold"
+            },
+            {
+              "title": "Rose",
+              "value": "blush"
+            }
+          ]
+        },
+        "description": "Couleur d'accent pour cette catégorie",
+        "name": "color",
+        "type": "string",
+        "title": "Couleur"
+      }
+    ],
+    "name": "category",
+    "type": "document",
+    "title": "Catégorie"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Titre"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "to": [
+          {
+            "type": "author"
+          }
+        ],
+        "name": "author",
+        "type": "reference",
+        "title": "Auteur"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texte alternatif"
+          }
+        ],
+        "name": "mainImage",
+        "type": "image",
+        "title": "Image principale"
+      },
+      {
+        "description": "Images supplémentaires pour l'article",
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Texte alternatif"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "gallery",
+        "type": "array",
+        "title": "Galerie d'images"
+      },
+      {
+        "of": [
+          {
+            "to": [
+              {
+                "type": "category"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to catégorie"
+          }
+        ],
+        "name": "categories",
+        "type": "array",
+        "title": "Catégories"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Date de publication"
+      },
+      {
+        "rows": 3,
+        "description": "Court résumé pour les aperçus",
+        "name": "excerpt",
+        "type": "text",
+        "title": "Extrait"
+      },
+      {
+        "name": "body",
+        "type": "blockContent",
+        "title": "Contenu"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Article mis en avant"
+      },
+      {
+        "fields": [
+          {
+            "name": "metaTitle",
+            "type": "string"
+          },
+          {
+            "rows": 2,
+            "name": "metaDescription",
+            "type": "text"
+          }
+        ],
+        "name": "seo",
+        "type": "object",
+        "title": "SEO"
+      }
+    ],
+    "name": "post",
+    "type": "document",
+    "title": "Article"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Titre"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "to": [
+          {
+            "type": "author"
+          }
+        ],
+        "name": "author",
+        "type": "reference",
+        "title": "Auteur"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texte alternatif"
+          }
+        ],
+        "name": "mainImage",
+        "type": "image",
+        "title": "Photo du plat"
+      },
+      {
+        "description": "Photos supplémentaires de la recette",
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Texte alternatif"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "gallery",
+        "type": "array",
+        "title": "Galerie d'images"
+      },
+      {
+        "of": [
+          {
+            "to": [
+              {
+                "type": "category"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to catégorie"
+          }
+        ],
+        "name": "categories",
+        "type": "array",
+        "title": "Catégories"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Date de publication"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "description": "En minutes",
+        "name": "prepTime",
+        "type": "number",
+        "title": "Temps de préparation"
+      },
+      {
+        "description": "En minutes",
+        "name": "cookTime",
+        "type": "number",
+        "title": "Temps de cuisson"
+      },
+      {
+        "name": "servings",
+        "type": "number",
+        "title": "Nombre de portions"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Facile",
+              "value": "easy"
+            },
+            {
+              "title": "Moyen",
+              "value": "medium"
+            },
+            {
+              "title": "Difficile",
+              "value": "hard"
+            }
+          ],
+          "layout": "radio"
+        },
+        "name": "difficulty",
+        "type": "string",
+        "title": "Difficulté"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "quantity",
+                "type": "string",
+                "title": "Quantité"
+              },
+              {
+                "name": "ingredient",
+                "type": "string",
+                "title": "Ingrédient"
+              },
+              {
+                "name": "notes",
+                "type": "string"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "ingredients",
+        "type": "array",
+        "title": "Ingrédients"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "rows": 3,
+                "name": "step",
+                "type": "text",
+                "title": "Étape"
+              },
+              {
+                "name": "image",
+                "type": "image",
+                "title": "Photo (optionnel)"
+              },
+              {
+                "name": "tip",
+                "type": "string",
+                "title": "Astuce (optionnel)"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "steps",
+        "type": "array",
+        "title": "Étapes"
+      },
+      {
+        "description": "Liste des bienfaits pour la santé",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "healthBenefits",
+        "type": "array",
+        "title": "Bienfaits santé"
+      },
+      {
+        "name": "tips",
+        "type": "blockContent",
+        "title": "Conseils et variantes"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Recette mise en avant"
+      }
+    ],
+    "name": "recipe",
+    "type": "document",
+    "title": "Recette"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nom"
+      },
+      {
+        "description": "Ex: Maman de 3 enfants, Lyon",
+        "name": "role",
+        "type": "string",
+        "title": "Rôle / Description"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "avatar",
+        "type": "image",
+        "title": "Photo"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "quote",
+        "type": "text",
+        "title": "Témoignage"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "5 étoiles",
+              "value": 5
+            },
+            {
+              "title": "4 étoiles",
+              "value": 4
+            },
+            {
+              "title": "3 étoiles",
+              "value": 3
+            }
+          ]
+        },
+        "initialValue": 5,
+        "name": "rating",
+        "type": "number",
+        "title": "Note"
+      },
+      {
+        "to": [
+          {
+            "type": "product"
+          }
+        ],
+        "name": "product",
+        "type": "reference",
+        "title": "Produit concerné"
+      },
+      {
+        "initialValue": false,
+        "description": "Afficher sur la page d'accueil",
+        "name": "featured",
+        "type": "boolean",
+        "title": "Témoignage mis en avant"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Date"
+      }
+    ],
+    "name": "testimonial",
+    "type": "document",
+    "title": "Témoignage"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Titre"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "description": "Ex: 30 jours pour se soigner naturellement",
+        "name": "subtitle",
+        "type": "string",
+        "title": "Sous-titre"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Livre / Ebook",
+              "value": "book"
+            },
+            {
+              "title": "Formation",
+              "value": "course"
+            },
+            {
+              "title": "Consultation",
+              "value": "consultation"
+            },
+            {
+              "title": "Autre",
+              "value": "other"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "book",
+                  "course",
+                  "consultation",
+                  "other"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "productType",
+        "type": "string",
+        "title": "Type de produit"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "mainImage",
+        "type": "image",
+        "title": "Image principale"
+      },
+      {
+        "of": [
+          {
+            "options": {
+              "hotspot": true
+            },
+            "fields": [
+              {
+                "name": "alt",
+                "type": "string",
+                "title": "Texte alternatif"
+              }
+            ],
+            "type": "image"
+          }
+        ],
+        "name": "gallery",
+        "type": "array",
+        "title": "Galerie d'images"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Description courte"
+      },
+      {
+        "name": "fullDescription",
+        "type": "blockContent",
+        "title": "Description complète"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Prix"
+      },
+      {
+        "description": "Laisser vide si pas de promotion",
+        "name": "comparePrice",
+        "type": "number",
+        "title": "Prix barré (ancien prix)"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Euro (€)",
+              "value": "EUR"
+            },
+            {
+              "title": "Dollar ($)",
+              "value": "USD"
+            }
+          ]
+        },
+        "initialValue": "EUR",
+        "name": "currency",
+        "type": "string",
+        "title": "Devise"
+      },
+      {
+        "description": "Liste des caractéristiques ou ce qui est inclus",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "features",
+        "type": "array",
+        "title": "Points clés"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "chapter",
+                "type": "string",
+                "title": "Chapitre"
+              },
+              {
+                "name": "description",
+                "type": "string"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "tableOfContents",
+        "type": "array",
+        "title": "Table des matières"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Lien externe vers la page d'achat (ex: Amazon)",
+        "name": "purchaseUrl",
+        "type": "url",
+        "title": "Lien d'achat"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Produit mis en avant"
+      },
+      {
+        "initialValue": true,
+        "name": "available",
+        "type": "boolean",
+        "title": "Disponible à la vente"
+      },
+      {
+        "fields": [
+          {
+            "name": "metaTitle",
+            "type": "string"
+          },
+          {
+            "rows": 2,
+            "name": "metaDescription",
+            "type": "text"
+          }
+        ],
+        "name": "seo",
+        "type": "object",
+        "title": "SEO"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Produit"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "firstName",
+        "type": "string",
+        "title": "Prénom"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "lastName",
+        "type": "string",
+        "title": "Nom"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 120
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "age",
+        "type": "number",
+        "title": "Âge"
+      },
+      {
+        "description": "Score total sur 50",
+        "name": "totalScore",
+        "type": "number",
+        "title": "Score Total"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "🌟 Équilibré (0-12)",
+              "value": "equilibre"
+            },
+            {
+              "title": "⚠️ En Alerte (13-25)",
+              "value": "alerte"
+            },
+            {
+              "title": "🔴 En Difficulté (26-37)",
+              "value": "difficulte"
+            },
+            {
+              "title": "🚨 Urgent (38-50)",
+              "value": "urgent"
+            }
+          ]
+        },
+        "name": "profile",
+        "type": "string",
+        "title": "Profil"
+      },
+      {
+        "fields": [
+          {
+            "name": "etatGeneral",
+            "type": "number",
+            "title": "État Général"
+          },
+          {
+            "name": "energieVitalite",
+            "type": "number",
+            "title": "Énergie & Vitalité"
+          },
+          {
+            "name": "digestionTransit",
+            "type": "number",
+            "title": "Digestion & Transit"
+          },
+          {
+            "name": "alimentationComportement",
+            "type": "number",
+            "title": "Alimentation & Comportement"
+          },
+          {
+            "name": "emotionsMental",
+            "type": "number",
+            "title": "Émotions & Mental"
+          },
+          {
+            "name": "sommeil",
+            "type": "number"
+          },
+          {
+            "name": "peauCheveux",
+            "type": "number",
+            "title": "Peau & Cheveux"
+          },
+          {
+            "name": "douleursInconforts",
+            "type": "number",
+            "title": "Douleurs & Inconforts"
+          },
+          {
+            "name": "modeVie",
+            "type": "number",
+            "title": "Mode de Vie"
+          }
+        ],
+        "name": "categoryScores",
+        "type": "object",
+        "title": "Scores par Catégorie"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "questionId",
+                "type": "string",
+                "title": "ID Question"
+              },
+              {
+                "name": "questionText",
+                "type": "string",
+                "title": "Question"
+              },
+              {
+                "name": "answerText",
+                "type": "string",
+                "title": "Réponse"
+              },
+              {
+                "name": "points",
+                "type": "number"
+              },
+              {
+                "name": "additionalInfo",
+                "type": "string",
+                "title": "Précisions"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "answers",
+        "type": "array",
+        "title": "Réponses"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "🆕 Nouveau",
+              "value": "nouveau"
+            },
+            {
+              "title": "📧 Contacté",
+              "value": "contacte"
+            },
+            {
+              "title": "📞 En discussion",
+              "value": "discussion"
+            },
+            {
+              "title": "✅ Converti",
+              "value": "converti"
+            },
+            {
+              "title": "❌ Non intéressé",
+              "value": "non_interesse"
+            }
+          ]
+        },
+        "initialValue": "nouveau",
+        "name": "status",
+        "type": "string",
+        "title": "Statut"
+      },
+      {
+        "rows": 4,
+        "description": "Notes privées sur ce contact",
+        "name": "notes",
+        "type": "text",
+        "title": "Notes internes"
+      },
+      {
+        "name": "submittedAt",
+        "type": "datetime",
+        "title": "Date de soumission"
+      }
+    ],
+    "name": "questionnaireSubmission",
+    "type": "document",
+    "title": "Soumission Questionnaire"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "firstName",
+        "type": "string",
+        "title": "Prenom"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "lastName",
+        "type": "string",
+        "title": "Nom"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "name": "phone",
+        "type": "string",
+        "title": "Telephone"
+      },
+      {
+        "name": "birthDate",
+        "type": "date",
+        "title": "Date de naissance"
+      },
+      {
+        "fields": [
+          {
+            "name": "street",
+            "type": "string",
+            "title": "Rue"
+          },
+          {
+            "name": "city",
+            "type": "string",
+            "title": "Ville"
+          },
+          {
+            "name": "postalCode",
+            "type": "string",
+            "title": "Code postal"
+          },
+          {
+            "initialValue": "France",
+            "name": "country",
+            "type": "string",
+            "title": "Pays"
+          }
+        ],
+        "name": "address",
+        "type": "object",
+        "title": "Adresse"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Actif",
+              "value": "actif"
+            },
+            {
+              "title": "En pause",
+              "value": "pause"
+            },
+            {
+              "title": "Archive",
+              "value": "archive"
+            }
+          ]
+        },
+        "initialValue": "actif",
+        "name": "status",
+        "type": "string",
+        "title": "Statut"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Questionnaire",
+              "value": "questionnaire"
+            },
+            {
+              "title": "Import CSV",
+              "value": "import"
+            },
+            {
+              "title": "Saisie manuelle",
+              "value": "manuel"
+            },
+            {
+              "title": "Recommandation",
+              "value": "recommandation"
+            }
+          ]
+        },
+        "initialValue": "manuel",
+        "name": "source",
+        "type": "string"
+      },
+      {
+        "description": "Si la cliente vient du questionnaire",
+        "to": [
+          {
+            "type": "questionnaireSubmission"
+          }
+        ],
+        "name": "linkedSubmission",
+        "type": "reference",
+        "title": "Questionnaire lie"
+      },
+      {
+        "fields": [
+          {
+            "options": {
+              "list": [
+                {
+                  "title": "Digestion",
+                  "value": "digestion"
+                },
+                {
+                  "title": "Fatigue",
+                  "value": "fatigue"
+                },
+                {
+                  "title": "Sommeil",
+                  "value": "sommeil"
+                },
+                {
+                  "title": "Stress",
+                  "value": "stress"
+                },
+                {
+                  "title": "Poids",
+                  "value": "poids"
+                },
+                {
+                  "title": "Peau",
+                  "value": "peau"
+                },
+                {
+                  "title": "Hormones",
+                  "value": "hormones"
+                },
+                {
+                  "title": "Douleurs",
+                  "value": "douleurs"
+                },
+                {
+                  "title": "Immunite",
+                  "value": "immunite"
+                },
+                {
+                  "title": "Autre",
+                  "value": "autre"
+                }
+              ]
+            },
+            "of": [
+              {
+                "type": "string"
+              }
+            ],
+            "name": "concerns",
+            "type": "array",
+            "title": "Preoccupations"
+          },
+          {
+            "rows": 2,
+            "name": "allergies",
+            "type": "text",
+            "title": "Allergies connues"
+          },
+          {
+            "rows": 2,
+            "name": "medications",
+            "type": "text",
+            "title": "Medicaments en cours"
+          }
+        ],
+        "name": "healthProfile",
+        "type": "object",
+        "title": "Profil sante"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Sante Generale",
+              "value": "sante-generale"
+            },
+            {
+              "title": "Troubles Digestifs",
+              "value": "troubles-digestifs"
+            },
+            {
+              "title": "Equilibre Hormonal",
+              "value": "equilibre-hormonal"
+            },
+            {
+              "title": "Suivi Complet",
+              "value": "suivi-complet"
+            }
+          ]
+        },
+        "name": "consultationType",
+        "type": "string",
+        "title": "Type de consultation"
+      },
+      {
+        "rows": 4,
+        "description": "Notes privees sur cette cliente",
+        "name": "internalNotes",
+        "type": "text",
+        "title": "Notes internes"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Date de creation"
+      },
+      {
+        "name": "lastContactAt",
+        "type": "datetime",
+        "title": "Dernier contact"
+      }
+    ],
+    "name": "client",
+    "type": "document",
+    "title": "Cliente"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "client"
+          }
+        ],
+        "name": "client",
+        "type": "reference",
+        "title": "Cliente"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "content",
+        "type": "text",
+        "title": "Contenu"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "📞 Appel",
+              "value": "appel"
+            },
+            {
+              "title": "📧 Email",
+              "value": "email"
+            },
+            {
+              "title": "🩺 Consultation",
+              "value": "consultation"
+            },
+            {
+              "title": "📝 Note generale",
+              "value": "general"
+            },
+            {
+              "title": "⚠️ Important",
+              "value": "important"
+            }
+          ]
+        },
+        "initialValue": "general",
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Date"
+      }
+    ],
+    "name": "clientNote",
+    "type": "document",
+    "title": "Note Cliente"
+  }
+]

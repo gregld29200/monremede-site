@@ -74,24 +74,62 @@ function formatDate(dateString: string): string {
   })
 }
 
+// Image layout types
+type ImageLayout = 'full' | 'center' | 'left' | 'right'
+type ImageSize = 'small' | 'medium' | 'large'
+
+// Layout classes for images
+const getImageLayoutClasses = (layout: ImageLayout, size: ImageSize): string => {
+  // Size classes - used for center, left, right layouts
+  const sizeClasses = {
+    small: 'max-w-xs',
+    medium: 'max-w-md',
+    large: 'max-w-2xl',
+  }
+
+  switch (layout) {
+    case 'full':
+      return 'w-full'
+    case 'center':
+      return `mx-auto ${sizeClasses[size]}`
+    case 'left':
+      return `float-left mr-6 mb-4 ${sizeClasses[size]}`
+    case 'right':
+      return `float-right ml-6 mb-4 ${sizeClasses[size]}`
+    default:
+      return 'w-full'
+  }
+}
+
+// Wrapper to clear floats
+const ClearFloat = () => <div className="clear-both" />
+
 const portableTextComponents = {
   types: {
-    image: ({ value }: { value: { asset: { _ref: string }; alt?: string } }) => {
+    image: ({ value }: { value: { asset: { _ref: string }; alt?: string; caption?: string; layout?: ImageLayout; size?: ImageSize } }) => {
+      const layout = value.layout || 'full'
+      const size = value.size || 'medium'
+      const layoutClasses = getImageLayoutClasses(layout, size)
+      const isFloating = layout === 'left' || layout === 'right'
+
       return (
-        <figure className="my-8">
-          <Image
-            src={urlFor(value).width(800).url()}
-            alt={value.alt || ''}
-            width={800}
-            height={500}
-            className="w-full"
-          />
-          {value.alt && (
-            <figcaption className="text-center text-sage text-sm mt-2 italic">
-              {value.alt}
-            </figcaption>
-          )}
-        </figure>
+        <>
+          <figure className={`my-8 ${layoutClasses}`}>
+            <Image
+              src={urlFor(value).width(layout === 'full' ? 800 : size === 'large' ? 600 : size === 'medium' ? 400 : 250).url()}
+              alt={value.alt || ''}
+              width={layout === 'full' ? 800 : size === 'large' ? 600 : size === 'medium' ? 400 : 250}
+              height={layout === 'full' ? 500 : size === 'large' ? 375 : size === 'medium' ? 250 : 156}
+              className={`rounded-lg ${layout === 'full' ? 'w-full' : 'w-full h-auto'}`}
+            />
+            {(value.caption || value.alt) && (
+              <figcaption className="text-center text-sage text-sm mt-2 italic">
+                {value.caption || value.alt}
+              </figcaption>
+            )}
+          </figure>
+          {/* Add clear for floating images - but not inline to avoid breaking text flow */}
+        </>
       )
     },
   },
