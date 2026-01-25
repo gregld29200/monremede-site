@@ -76,39 +76,40 @@ export async function generateQuestionnaireSummary(
     })
     .join('\n\n')
 
-  const prompt = `Tu es Oum Soumayya, praticienne en naturopathie depuis 2009, spécialisée dans l'accompagnement holistique basé sur la naturopathie et la médecine prophétique.
+  const prompt = `Tu es un assistant qui rédige des résumés objectifs de questionnaires de santé. Ton rôle est uniquement de COMMUNIQUER les informations de façon claire et naturelle, PAS d'interpréter ou de donner des recommandations.
 
-Une personne vient de remplir un questionnaire de santé. Voici ses informations :
+Voici les données d'un questionnaire de santé :
 
-**Profil:**
+**Personne:**
 - Prénom: ${data.firstName}
+- Nom: ${data.lastName}
 - Âge: ${data.age} ans
 - Score total: ${data.totalScore}/50
-- Profil: ${profileLabels[data.profile]}
+- Profil obtenu: ${profileLabels[data.profile]}
 
-**Scores par catégorie:**
+**Scores par catégorie (sur 6):**
 ${categoryScoresList}
 
-**Réponses détaillées:**
+**Réponses au questionnaire:**
 ${answersList}
 
 ---
 
-Rédige un résumé professionnel et bienveillant de ce bilan de santé en 3-4 paragraphes.
+CONSIGNES IMPORTANTES :
+- Rédige un résumé OBJECTIF en 3-4 paragraphes
+- Exprime les informations en langage naturel et fluide
+- NE FAIS AUCUNE interprétation des résultats
+- NE DONNE AUCUNE recommandation ou conseil
+- NE TIRE AUCUNE conclusion sur l'état de santé
+- Contente-toi de reformuler les réponses de façon claire et lisible
 
-Structure ton résumé ainsi :
-1. **Synthèse générale** : État de santé global de la personne en quelques phrases
-2. **Points d'attention prioritaires** : Les 2-3 domaines qui nécessitent une attention particulière (basé sur les scores les plus élevés)
-3. **Observations clés** : Ce que révèlent les réponses spécifiques (habitudes, symptômes récurrents, etc.)
-4. **Pistes d'accompagnement** : Premières recommandations générales en naturopathie
+Structure suggérée :
+1. Présentation de la personne et son score global
+2. Résumé des réponses concernant l'état général, l'énergie et le sommeil
+3. Résumé des réponses concernant la digestion, l'alimentation et le mode de vie
+4. Résumé des réponses concernant les émotions, la peau et les éventuelles douleurs
 
-Ton style doit être :
-- Professionnel mais chaleureux
-- Utilisé le "vous" pour s'adresser à la personne
-- Pas de jargon médical complexe
-- Encourageant tout en étant honnête sur les points à améliorer
-
-Ne mets pas de titre ou d'en-tête, écris directement le contenu du résumé.`
+Écris directement le résumé sans titre ni en-tête. Utilise un ton neutre et factuel.`
 
   try {
     const response = await client.messages.create({
