@@ -8,15 +8,19 @@ const COOKIE_CONSENT_KEY = 'cookie-consent'
 type ConsentStatus = 'pending' | 'accepted' | 'refused'
 
 export function CookieConsent() {
-  const [status, setStatus] = useState<ConsentStatus>('pending')
+  const [status, setStatus] = useState<ConsentStatus | null>(null)
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    // Check for existing consent
+    // Read consent from localStorage on mount
     const savedConsent = localStorage.getItem(COOKIE_CONSENT_KEY)
+
     if (savedConsent === 'accepted' || savedConsent === 'refused') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setStatus(savedConsent as ConsentStatus)
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setStatus('pending')
       // Show banner after a short delay for better UX
       const timer = setTimeout(() => setIsVisible(true), 1000)
       return () => clearTimeout(timer)
@@ -37,8 +41,8 @@ export function CookieConsent() {
     setIsVisible(false)
   }
 
-  // Don't render if consent already given
-  if (status !== 'pending' || !isVisible) {
+  // Don't render during SSR or if consent already given
+  if (status === null || status !== 'pending' || !isVisible) {
     return null
   }
 
@@ -83,14 +87,8 @@ export function CookieConsent() {
   )
 }
 
-// Hook to check if analytics consent is given
-export function useAnalyticsConsent(): boolean {
-  const [hasConsent, setHasConsent] = useState(false)
-
-  useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT_KEY)
-    setHasConsent(consent === 'accepted')
-  }, [])
-
-  return hasConsent
+// Helper function to check consent (can be used outside React)
+export function getAnalyticsConsent(): boolean {
+  if (typeof window === 'undefined') return false
+  return localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted'
 }

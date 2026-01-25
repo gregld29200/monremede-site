@@ -7,16 +7,17 @@ const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const COOKIE_CONSENT_KEY = 'cookie-consent'
 
 export function GoogleAnalytics() {
-  const [hasConsent, setHasConsent] = useState(false)
+  const [hasConsent, setHasConsent] = useState<boolean | null>(null)
 
   useEffect(() => {
     // Check if user has accepted cookies
-    const consent = localStorage.getItem(COOKIE_CONSENT_KEY)
-    setHasConsent(consent === 'accepted')
+    const consent = localStorage.getItem(COOKIE_CONSENT_KEY) === 'accepted'
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHasConsent(consent)
   }, [])
 
-  // Don't load GA if no measurement ID or no consent
-  if (!GA_MEASUREMENT_ID || !hasConsent) {
+  // Don't render during SSR, if no measurement ID, or no consent
+  if (hasConsent === null || !GA_MEASUREMENT_ID || !hasConsent) {
     return null
   }
 
