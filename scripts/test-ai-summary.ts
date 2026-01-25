@@ -1,8 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk'
-import * as dotenv from 'dotenv'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
-// Charger les variables d'environnement
-dotenv.config({ path: '.env.local' })
+// Charger les variables d'environnement depuis .env.local
+const envPath = resolve(process.cwd(), '.env.local')
+const envContent = readFileSync(envPath, 'utf-8')
+envContent.split('\n').forEach((line) => {
+  const [key, ...valueParts] = line.split('=')
+  if (key && valueParts.length > 0) {
+    process.env[key.trim()] = valueParts.join('=').trim()
+  }
+})
 
 const categoryNames: Record<string, string> = {
   etatGeneral: 'État Général',
