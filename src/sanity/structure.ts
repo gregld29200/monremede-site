@@ -33,6 +33,21 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // CRM / Prospects
+      S.listItem()
+        .title('CRM')
+        .child(
+          S.list()
+            .title('CRM')
+            .items([
+              S.documentTypeListItem('questionnaireSubmission').title('Questionnaires'),
+              S.documentTypeListItem('client').title('Clients'),
+              S.documentTypeListItem('leadMagnetSubscriber').title('Abonnés Lead Magnet'),
+            ])
+        ),
+
+      S.divider(),
+
       // Paramètres
       S.listItem()
         .title('Paramètres')
