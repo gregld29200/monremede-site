@@ -8,13 +8,22 @@ import { Button } from '@/components/ui'
 
 export default function CadeauxRamadanPage() {
   const router = useRouter()
+  const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
+  const [acquisitionSource, setAcquisitionSource] = useState('')
+  const [hasConsultedNaturopath, setHasConsultedNaturopath] = useState('')
+  const [wantsConsultation, setWantsConsultation] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (!firstName.trim()) {
+      setError('Veuillez entrer votre prénom')
+      return
+    }
 
     if (!email) {
       setError('Veuillez entrer votre email')
@@ -33,7 +42,14 @@ export default function CadeauxRamadanPage() {
       const response = await fetch('/api/lead-magnet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'cadeaux-ramadan' }),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          email,
+          source: 'cadeaux-ramadan',
+          acquisitionSource: acquisitionSource || undefined,
+          hasConsultedNaturopath: hasConsultedNaturopath || undefined,
+          wantsConsultation: wantsConsultation || undefined,
+        }),
       })
 
       const data = await response.json()
@@ -105,13 +121,57 @@ export default function CadeauxRamadanPage() {
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-3">
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Entrez votre adresse email"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Votre prénom"
                   className="w-full px-5 py-4 rounded-lg border border-sage/30 bg-cream-warm text-forest placeholder:text-ink-soft/50 focus:outline-none focus:ring-2 focus:ring-gold"
                   disabled={isLoading}
                 />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Votre adresse email"
+                  className="w-full px-5 py-4 rounded-lg border border-sage/30 bg-cream-warm text-forest placeholder:text-ink-soft/50 focus:outline-none focus:ring-2 focus:ring-gold"
+                  disabled={isLoading}
+                />
+                <select
+                  value={acquisitionSource}
+                  onChange={(e) => setAcquisitionSource(e.target.value)}
+                  className="w-full px-5 py-4 rounded-lg border border-sage/30 bg-cream-warm text-forest focus:outline-none focus:ring-2 focus:ring-gold appearance-none cursor-pointer"
+                  disabled={isLoading}
+                >
+                  <option value="">Où avez-vous vu l&apos;annonce ?</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="bouche-a-oreille">Bouche à oreille</option>
+                  <option value="google">Recherche Google</option>
+                  <option value="autre">Autre</option>
+                </select>
+                <select
+                  value={hasConsultedNaturopath}
+                  onChange={(e) => setHasConsultedNaturopath(e.target.value)}
+                  className="w-full px-5 py-4 rounded-lg border border-sage/30 bg-cream-warm text-forest focus:outline-none focus:ring-2 focus:ring-gold appearance-none cursor-pointer"
+                  disabled={isLoading}
+                >
+                  <option value="">Avez-vous déjà consulté une naturopathe ?</option>
+                  <option value="oui">Oui</option>
+                  <option value="non">Non</option>
+                </select>
+                <select
+                  value={wantsConsultation}
+                  onChange={(e) => setWantsConsultation(e.target.value)}
+                  className="w-full px-5 py-4 rounded-lg border border-sage/30 bg-cream-warm text-forest focus:outline-none focus:ring-2 focus:ring-gold appearance-none cursor-pointer"
+                  disabled={isLoading}
+                >
+                  <option value="">Souhaitez-vous consulter une naturopathe ?</option>
+                  <option value="oui">Oui</option>
+                  <option value="non">Non</option>
+                  <option value="peut-etre">Peut-être</option>
+                </select>
                 <Button
                   type="submit"
                   variant="primary"
@@ -267,32 +327,74 @@ export default function CadeauxRamadanPage() {
               Prêt(e) à recevoir vos guides ?
             </h2>
             <p className="text-cream/70 mb-8">
-              Entrez votre email et accédez immédiatement aux téléchargements.
+              Entrez vos informations pour recevoir vos guides dans les 24h.
             </p>
 
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Votre adresse email"
-                  className="flex-1 px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream placeholder:text-cream/40 focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all"
-                  disabled={isLoading}
-                />
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="lg"
-                  disabled={isLoading}
-                  className="whitespace-nowrap"
-                >
-                  {isLoading ? 'Envoi...' : 'Recevoir'}
-                  {!isLoading && <span className="ml-2">→</span>}
-                </Button>
-              </div>
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-3">
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Votre prénom"
+                className="w-full px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream placeholder:text-cream/40 focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all"
+                disabled={isLoading}
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Votre adresse email"
+                className="w-full px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream placeholder:text-cream/40 focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all"
+                disabled={isLoading}
+              />
+              <select
+                value={acquisitionSource}
+                onChange={(e) => setAcquisitionSource(e.target.value)}
+                className="w-full px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all appearance-none cursor-pointer"
+                disabled={isLoading}
+              >
+                <option value="" className="bg-forest-deep">Où avez-vous vu l&apos;annonce ?</option>
+                <option value="instagram" className="bg-forest-deep">Instagram</option>
+                <option value="facebook" className="bg-forest-deep">Facebook</option>
+                <option value="tiktok" className="bg-forest-deep">TikTok</option>
+                <option value="youtube" className="bg-forest-deep">YouTube</option>
+                <option value="bouche-a-oreille" className="bg-forest-deep">Bouche à oreille</option>
+                <option value="google" className="bg-forest-deep">Recherche Google</option>
+                <option value="autre" className="bg-forest-deep">Autre</option>
+              </select>
+              <select
+                value={hasConsultedNaturopath}
+                onChange={(e) => setHasConsultedNaturopath(e.target.value)}
+                className="w-full px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all appearance-none cursor-pointer"
+                disabled={isLoading}
+              >
+                <option value="" className="bg-forest-deep">Avez-vous déjà consulté une naturopathe ?</option>
+                <option value="oui" className="bg-forest-deep">Oui</option>
+                <option value="non" className="bg-forest-deep">Non</option>
+              </select>
+              <select
+                value={wantsConsultation}
+                onChange={(e) => setWantsConsultation(e.target.value)}
+                className="w-full px-5 py-4 rounded-lg border border-cream/20 bg-cream/5 text-cream focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all appearance-none cursor-pointer"
+                disabled={isLoading}
+              >
+                <option value="" className="bg-forest-deep">Souhaitez-vous consulter une naturopathe ?</option>
+                <option value="oui" className="bg-forest-deep">Oui</option>
+                <option value="non" className="bg-forest-deep">Non</option>
+                <option value="peut-etre" className="bg-forest-deep">Peut-être</option>
+              </select>
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                disabled={isLoading}
+                className="w-full"
+              >
+                {isLoading ? 'Envoi...' : 'Recevoir mes guides'}
+                {!isLoading && <span className="ml-2">→</span>}
+              </Button>
               {error && (
-                <p className="mt-3 text-blush-deep text-sm">{error}</p>
+                <p className="text-blush-deep text-sm">{error}</p>
               )}
               <p className="mt-6 text-cream/50 text-sm">
                 Gratuit · Pas de spam · Désinscription en un clic

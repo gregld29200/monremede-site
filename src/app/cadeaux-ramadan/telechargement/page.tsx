@@ -4,98 +4,97 @@ import { Header, Footer } from '@/components/layout'
 import { Button } from '@/components/ui'
 
 export const metadata: Metadata = {
-  title: 'Merci - Inscription confirmée | Mon Remède',
-  description: 'Votre inscription est confirmée. Vous recevrez vos guides Ramadan dans les 24 heures.',
+  title: 'Téléchargement - Vos guides Ramadan | Mon Remède',
+  description: 'Téléchargez vos guides gratuits pour préparer le Ramadan.',
   robots: {
     index: false,
     follow: false,
   },
 }
 
-export default function MerciPage() {
+const downloads = [
+  {
+    number: '01',
+    title: 'Préparer son corps au Ramadan',
+    description: 'Conseils naturopathiques pour optimiser votre énergie pendant le mois béni.',
+    filename: 'MonRemede.com - 7 etapes pour un jeune qui soigne .pdf',
+  },
+  {
+    number: '02',
+    title: 'Recettes saines pour le Ramadan',
+    description: 'Idées de repas équilibrés pour le ftour et le shour.',
+    filename: 'Monremede.com-Recettes Anti-Inflammatoires.pdf',
+  },
+]
+
+export default function TelechargementPage() {
   return (
     <>
       <Header />
       <main id="main-content">
         {/* Hero Section */}
-        <section className="relative min-h-[60vh] bg-forest-deep flex items-center py-32 px-6">
+        <section className="relative min-h-[50vh] bg-forest-deep flex items-center py-32 px-6">
           {/* Decorative Elements */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-20 right-10 w-64 h-64 bg-sage/10 rounded-full blur-3xl" />
             <div className="absolute bottom-20 left-10 w-48 h-48 bg-gold/10 rounded-full blur-3xl" />
           </div>
 
-          <div className="relative max-w-3xl mx-auto text-center">
-            {/* Success icon */}
-            <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-gold/20 flex items-center justify-center">
-              <span className="text-4xl">🌙</span>
-            </div>
-
+          <div className="relative max-w-4xl mx-auto text-center">
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold" />
               <span className="text-xs tracking-[0.3em] uppercase text-gold font-medium">
-                Inscription confirmée
+                Vos guides sont prêts
               </span>
               <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold" />
             </div>
 
             <h1 className="display-large text-cream mb-6">
-              Merci !
+              Téléchargez vos guides
             </h1>
 
-            <p className="body-large text-cream/70 max-w-xl mx-auto mb-8">
-              Votre inscription est bien enregistrée.
-            </p>
-
-            {/* Info box */}
-            <div className="bg-cream/10 backdrop-blur-sm rounded-xl p-8 max-w-lg mx-auto mb-8">
-              <p className="text-gold text-sm uppercase tracking-wider mb-3 font-medium">
-                Prochaine étape
-              </p>
-              <p className="text-cream text-xl leading-relaxed">
-                Vous recevrez le lien de téléchargement de vos guides
-                <strong className="text-gold"> dans les 24 heures</strong>, incha&apos;Allah.
-              </p>
-            </div>
-
-            <p className="text-cream/50 text-sm">
-              Un email de confirmation vous a été envoyé.
-              <br />
-              Pensez à vérifier vos spams.
+            <p className="body-large text-cream/70 max-w-2xl mx-auto">
+              Cliquez sur les boutons ci-dessous pour télécharger vos guides PDF gratuits.
             </p>
           </div>
         </section>
 
-        {/* What's coming Section */}
+        {/* Downloads Section */}
         <section className="py-20 lg:py-28 px-6 bg-cream">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <p className="label text-sage mb-4">Ce que vous allez recevoir</p>
-              <h2 className="display-medium text-forest">
-                Vos 2 guides gratuits
-              </h2>
-            </div>
+          <div className="max-w-3xl mx-auto">
+            <div className="space-y-6">
+              {downloads.map((download) => (
+                <div
+                  key={download.number}
+                  className="bg-cream-warm rounded-lg p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6"
+                >
+                  <div className="flex-shrink-0">
+                    <span className="block font-display text-5xl text-sage/30">
+                      {download.number}
+                    </span>
+                  </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-cream-warm rounded-xl p-8">
-                <span className="block font-display text-5xl text-sage/20 mb-4">01</span>
-                <h3 className="heading text-forest mb-3">
-                  Préparer son corps au Ramadan
-                </h3>
-                <p className="text-ink-soft text-sm">
-                  Conseils naturopathiques pour optimiser votre énergie et votre bien-être pendant le mois béni.
-                </p>
-              </div>
+                  <div className="flex-1 text-center sm:text-left">
+                    <h3 className="heading text-forest mb-1">
+                      {download.title}
+                    </h3>
+                    <p className="text-ink-soft text-sm">
+                      {download.description}
+                    </p>
+                  </div>
 
-              <div className="bg-cream-warm rounded-xl p-8">
-                <span className="block font-display text-5xl text-sage/20 mb-4">02</span>
-                <h3 className="heading text-forest mb-3">
-                  Recettes saines pour le Ramadan
-                </h3>
-                <p className="text-ink-soft text-sm">
-                  Des idées de repas équilibrés pour le ftour et le shour, simples et nourrissants.
-                </p>
-              </div>
+                  <Button variant="primary" size="md" asChild>
+                    <a
+                      href={`/downloads/${download.filename}`}
+                      download
+                      className="flex-shrink-0"
+                    >
+                      Télécharger
+                      <span className="ml-2">↓</span>
+                    </a>
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -104,7 +103,7 @@ export default function MerciPage() {
         <section className="py-20 lg:py-28 px-6 bg-cream-warm">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <p className="label text-sage mb-4">En attendant</p>
+              <p className="label text-sage mb-4">Et maintenant ?</p>
               <h2 className="display-medium text-forest">
                 Continuez votre parcours santé
               </h2>
@@ -148,13 +147,16 @@ export default function MerciPage() {
           </div>
         </section>
 
-        {/* Final */}
+        {/* Final CTA */}
         <section className="py-20 lg:py-28 px-6 bg-forest-deep">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="display-medium text-cream mb-6">
               Que ce Ramadan soit une source<br />
               <span className="text-sage-light italic">de bien-être et de sérénité</span>
             </h2>
+            <p className="text-cream/70 mb-8">
+              N&apos;hésitez pas à me contacter si vous avez des questions.
+            </p>
             <Button variant="primary" size="lg" asChild>
               <Link href="/">
                 Retour à l&apos;accueil

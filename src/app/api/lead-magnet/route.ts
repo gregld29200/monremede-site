@@ -20,8 +20,12 @@ function getWriteClient() {
 }
 
 interface SubscriptionData {
+  firstName: string
   email: string
   source: string
+  acquisitionSource?: string
+  hasConsultedNaturopath?: string
+  wantsConsultation?: string
 }
 
 export async function POST(request: NextRequest) {
@@ -29,9 +33,9 @@ export async function POST(request: NextRequest) {
     const data: SubscriptionData = await request.json()
 
     // Basic validation
-    if (!data.email || !data.source) {
+    if (!data.firstName || !data.email || !data.source) {
       return NextResponse.json(
-        { error: 'Email et source requis' },
+        { error: 'Prénom, email et source requis' },
         { status: 400 }
       )
     }
@@ -65,10 +69,14 @@ export async function POST(request: NextRequest) {
     // Create the document in Sanity
     const result = await writeClient.create({
       _type: 'leadMagnetSubscriber',
+      firstName: data.firstName.trim(),
       email: data.email.toLowerCase(),
       source: data.source,
-      downloadedAt: new Date().toISOString(),
-      emailSent: false,
+      acquisitionSource: data.acquisitionSource || undefined,
+      hasConsultedNaturopath: data.hasConsultedNaturopath || undefined,
+      wantsConsultation: data.wantsConsultation || undefined,
+      subscribedAt: new Date().toISOString(),
+      linkSent: false,
     })
 
     // Send confirmation email
@@ -77,15 +85,7 @@ export async function POST(request: NextRequest) {
 
     if (resend) {
       try {
-        // Determine download page URL based on source
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
-        let downloadPageUrl = baseUrl
-
-        if (data.source === 'cadeaux-ramadan') {
-          downloadPageUrl = `${baseUrl}/cadeaux-ramadan/merci`
-        }
-
-        const emailHtml = generateRamadanGiftsEmail({ downloadPageUrl })
+        const emailHtml = generateRamadanGiftsEmail({ firstName: data.firstName.trim() })
 
         await resend.emails.send({
           from: FROM_EMAIL,
@@ -97,9 +97,6 @@ export async function POST(request: NextRequest) {
 
         emailSent = true
         console.log(`Email de confirmation envoyé à ${data.email}`)
-
-        // Update the document to mark email as sent
-        await writeClient.patch(result._id).set({ emailSent: true }).commit()
       } catch (emailError) {
         console.error('Erreur lors de l\'envoi de l\'email:', emailError)
       }

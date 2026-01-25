@@ -6,6 +6,12 @@ export const leadMagnetSubscriber = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'firstName',
+      title: 'Prénom',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
@@ -24,15 +30,56 @@ export const leadMagnetSubscriber = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'downloadedAt',
+      name: 'acquisitionSource',
+      title: 'Canal d\'acquisition',
+      type: 'string',
+      description: 'Où la personne a vu l\'annonce',
+      options: {
+        list: [
+          {title: 'Instagram', value: 'instagram'},
+          {title: 'Facebook', value: 'facebook'},
+          {title: 'TikTok', value: 'tiktok'},
+          {title: 'YouTube', value: 'youtube'},
+          {title: 'Bouche à oreille', value: 'bouche-a-oreille'},
+          {title: 'Recherche Google', value: 'google'},
+          {title: 'Autre', value: 'autre'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'hasConsultedNaturopath',
+      title: 'A déjà consulté une naturopathe',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Oui', value: 'oui'},
+          {title: 'Non', value: 'non'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'wantsConsultation',
+      title: 'Souhaite consulter une naturopathe',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Oui', value: 'oui'},
+          {title: 'Non', value: 'non'},
+          {title: 'Peut-être', value: 'peut-etre'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'subscribedAt',
       title: 'Date d\'inscription',
       type: 'datetime',
     }),
     defineField({
-      name: 'emailSent',
-      title: 'Email envoyé',
+      name: 'linkSent',
+      title: 'Lien envoyé',
       type: 'boolean',
       initialValue: false,
+      description: 'Cocher quand le lien de téléchargement a été envoyé manuellement',
     }),
     defineField({
       name: 'notes',
@@ -45,19 +92,20 @@ export const leadMagnetSubscriber = defineType({
 
   preview: {
     select: {
+      firstName: 'firstName',
       email: 'email',
       source: 'source',
-      downloadedAt: 'downloadedAt',
-      emailSent: 'emailSent',
+      subscribedAt: 'subscribedAt',
+      linkSent: 'linkSent',
     },
     prepare(selection) {
-      const {email, source, downloadedAt, emailSent} = selection
-      const date = downloadedAt ? new Date(downloadedAt).toLocaleDateString('fr-FR') : ''
-      const emailIcon = emailSent ? '✅' : '⏳'
+      const {firstName, email, source, subscribedAt, linkSent} = selection
+      const date = subscribedAt ? new Date(subscribedAt).toLocaleDateString('fr-FR') : ''
+      const linkIcon = linkSent ? '✅' : '⏳'
 
       return {
-        title: email,
-        subtitle: `${emailIcon} ${source} • ${date}`,
+        title: `${firstName} - ${email}`,
+        subtitle: `${linkIcon} ${source} • ${date}`,
       }
     },
   },
@@ -65,8 +113,8 @@ export const leadMagnetSubscriber = defineType({
   orderings: [
     {
       title: 'Date (récent)',
-      name: 'downloadedAtDesc',
-      by: [{field: 'downloadedAt', direction: 'desc'}],
+      name: 'subscribedAtDesc',
+      by: [{field: 'subscribedAt', direction: 'desc'}],
     },
     {
       title: 'Source',
