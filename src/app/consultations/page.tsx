@@ -130,6 +130,15 @@ export default function ConsultationsPage() {
                 </div>
               ))}
             </div>
+
+            <div className="text-center mt-12">
+              <Button variant="primary" size="lg" asChild>
+                <Link href="/consultations/demande">
+                  Remplir le questionnaire
+                  <span className="ml-2">→</span>
+                </Link>
+              </Button>
+            </div>
           </div>
         </section>
 
