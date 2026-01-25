@@ -17,13 +17,13 @@ const downloads = [
     number: '01',
     title: 'Préparer son corps au Ramadan',
     description: 'Conseils naturopathiques pour optimiser votre énergie pendant le mois béni.',
-    filename: 'guide-preparation-ramadan.pdf',
+    filename: 'MonRemede.com - 7 etapes pour un jeune qui soigne .pdf',
   },
   {
     number: '02',
     title: 'Recettes saines pour le Ramadan',
     description: 'Idées de repas équilibrés pour le ftour et le shour.',
-    filename: 'guide-recettes-ramadan.pdf',
+    filename: 'Monremede.com-Recettes Anti-Inflammatoires.pdf',
   },
 ]
 
