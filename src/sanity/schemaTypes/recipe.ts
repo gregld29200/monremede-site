@@ -68,9 +68,17 @@ export const recipe = defineType({
       of: [{type: 'reference', to: [{type: 'category'}]}],
     }),
     defineField({
+      name: 'isDraft',
+      title: 'Brouillon',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Décochez pour publier la recette sur le site',
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Date de publication',
       type: 'datetime',
+      description: 'Date affichée sur la recette (remplie automatiquement à la première publication)',
     }),
     defineField({
       name: 'description',
@@ -179,13 +187,16 @@ export const recipe = defineType({
       media: 'mainImage',
       prepTime: 'prepTime',
       cookTime: 'cookTime',
+      isDraft: 'isDraft',
     },
     prepare(selection) {
-      const {prepTime, cookTime} = selection
+      const {prepTime, cookTime, isDraft, title} = selection
       const totalTime = (prepTime || 0) + (cookTime || 0)
+      const draftPrefix = isDraft ? '📝 ' : ''
       return {
         ...selection,
-        subtitle: totalTime ? `${totalTime} min` : '',
+        title: `${draftPrefix}${title}`,
+        subtitle: `${isDraft ? '[BROUILLON] ' : ''}${totalTime ? `${totalTime} min` : ''}`,
       }
     },
   },

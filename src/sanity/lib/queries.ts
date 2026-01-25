@@ -2,7 +2,7 @@ import { groq } from 'next-sanity'
 
 // Posts queries
 export const postsQuery = groq`
-  *[_type == "post" && defined(publishedAt)] | order(publishedAt desc) {
+  *[_type == "post" && isDraft != true] | order(publishedAt desc) {
     _id,
     title,
     slug,
@@ -15,7 +15,7 @@ export const postsQuery = groq`
 `
 
 export const postBySlugQuery = groq`
-  *[_type == "post" && slug.current == $slug && defined(publishedAt)][0] {
+  *[_type == "post" && slug.current == $slug && isDraft != true][0] {
     _id,
     title,
     slug,
@@ -30,12 +30,12 @@ export const postBySlugQuery = groq`
 `
 
 export const postSlugsQuery = groq`
-  *[_type == "post" && defined(slug.current) && defined(publishedAt)][].slug.current
+  *[_type == "post" && defined(slug.current) && isDraft != true][].slug.current
 `
 
 // Recipes queries
 export const recipesQuery = groq`
-  *[_type == "recipe" && defined(publishedAt)] | order(publishedAt desc) {
+  *[_type == "recipe" && isDraft != true] | order(publishedAt desc) {
     _id,
     title,
     slug,
@@ -51,7 +51,7 @@ export const recipesQuery = groq`
 `
 
 export const recipeBySlugQuery = groq`
-  *[_type == "recipe" && slug.current == $slug && defined(publishedAt)][0] {
+  *[_type == "recipe" && slug.current == $slug && isDraft != true][0] {
     _id,
     title,
     slug,
@@ -72,7 +72,7 @@ export const recipeBySlugQuery = groq`
 `
 
 export const recipeSlugsQuery = groq`
-  *[_type == "recipe" && defined(slug.current) && defined(publishedAt)][].slug.current
+  *[_type == "recipe" && defined(slug.current) && isDraft != true][].slug.current
 `
 
 // Categories query

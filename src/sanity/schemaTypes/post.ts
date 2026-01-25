@@ -68,9 +68,17 @@ export const post = defineType({
       of: [{type: 'reference', to: [{type: 'category'}]}],
     }),
     defineField({
+      name: 'isDraft',
+      title: 'Brouillon',
+      type: 'boolean',
+      initialValue: true,
+      description: 'Décochez pour publier l\'article sur le site',
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Date de publication',
       type: 'datetime',
+      description: 'Date affichée sur l\'article (remplie automatiquement à la première publication)',
     }),
     defineField({
       name: 'excerpt',
@@ -106,13 +114,16 @@ export const post = defineType({
       author: 'author.name',
       media: 'mainImage',
       date: 'publishedAt',
+      isDraft: 'isDraft',
     },
     prepare(selection) {
-      const {author, date} = selection
+      const {author, date, isDraft, title} = selection
       const dateStr = date ? new Date(date).toLocaleDateString('fr-FR') : ''
+      const draftPrefix = isDraft ? '📝 ' : ''
       return {
         ...selection,
-        subtitle: `${author ? author : 'Sans auteur'} • ${dateStr}`,
+        title: `${draftPrefix}${title}`,
+        subtitle: `${isDraft ? '[BROUILLON] ' : ''}${author ? author : 'Sans auteur'} • ${dateStr}`,
       }
     },
   },
