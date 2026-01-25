@@ -58,10 +58,14 @@ export function QuestionnaireResults() {
             Merci {state.personalInfo?.firstName} !
           </h1>
 
+          <p className="text-ink-soft text-lg max-w-lg mx-auto leading-relaxed mb-2">
+            Merci pour l&apos;intérêt que vous portez à votre santé naturelle.
+          </p>
+
           <p className="text-ink-soft text-lg max-w-lg mx-auto leading-relaxed mb-4">
-            Nous analysons vos réponses. Vous recevrez votre{' '}
-            <span className="text-forest font-medium">pré-bilan de santé personnalisé</span>{' '}
-            par email dans quelques minutes.
+            Vous recevrez votre{' '}
+            <span className="text-forest font-medium">bilan de santé personnalisé</span>{' '}
+            analysé par <span className="text-forest font-medium">Oum Soumayya</span>, votre praticienne en naturopathie depuis 2009, sous <span className="text-forest font-medium">24 heures</span>.
           </p>
 
           {/* Email Info */}
@@ -83,7 +87,7 @@ export function QuestionnaireResults() {
               <span className="text-forest font-medium">{state.personalInfo?.email}</span>
             </div>
             <p className="text-sm text-ink-soft">
-              Pensez à vérifier vos <span className="text-sage font-medium">spams</span> si vous ne recevez pas l&apos;email.
+              Pensez à vérifier vos <span className="text-sage font-medium">spams</span> si vous ne recevez pas l&apos;email d&apos;ici là.
             </p>
           </div>
         </section>

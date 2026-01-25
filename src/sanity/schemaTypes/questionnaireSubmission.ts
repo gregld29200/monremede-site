@@ -25,6 +25,12 @@ export const questionnaireSubmission = defineType({
       validation: (Rule) => Rule.required().email(),
     }),
     defineField({
+      name: 'phone',
+      title: 'Téléphone',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'age',
       title: 'Âge',
       type: 'number',
@@ -129,12 +135,13 @@ export const questionnaireSubmission = defineType({
       firstName: 'firstName',
       lastName: 'lastName',
       email: 'email',
+      phone: 'phone',
       profile: 'profile',
       status: 'status',
       submittedAt: 'submittedAt',
     },
     prepare(selection) {
-      const {firstName, lastName, email, profile, status, submittedAt} = selection
+      const {firstName, lastName, email, phone, profile, status, submittedAt} = selection
       const date = submittedAt ? new Date(submittedAt).toLocaleDateString('fr-FR') : ''
       const statusEmoji = status === 'nouveau' ? '🆕' :
                           status === 'contacte' ? '📧' :
@@ -142,7 +149,7 @@ export const questionnaireSubmission = defineType({
 
       return {
         title: `${firstName} ${lastName}`,
-        subtitle: `${statusEmoji} ${email} • ${profile} • ${date}`,
+        subtitle: `${statusEmoji} ${phone || ''} • ${email} • ${profile} • ${date}`,
       }
     },
   },

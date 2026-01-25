@@ -115,7 +115,7 @@ export function getAnswerText(questionId: string, optionId: string): string {
  * Formate les données pour l'envoi à l'API
  */
 export function formatSubmissionData(
-  personalInfo: { firstName: string; lastName: string; email: string; age: number },
+  personalInfo: { firstName: string; lastName: string; email: string; phone: string; age: number },
   answers: Answer[]
 ) {
   const totalScore = calculateTotalScore(answers)

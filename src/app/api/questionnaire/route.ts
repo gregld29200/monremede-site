@@ -51,6 +51,7 @@ interface SubmissionData {
   firstName: string
   lastName: string
   email: string
+  phone: string
   age: number
   totalScore: number
   profile: 'equilibre' | 'alerte' | 'difficulte' | 'urgent'
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
     const data: SubmissionData = await request.json()
 
     // Validation basique
-    if (!data.firstName || !data.lastName || !data.email || !data.age) {
+    if (!data.firstName || !data.lastName || !data.email || !data.phone || !data.age) {
       return NextResponse.json(
         { error: 'Informations personnelles manquantes' },
         { status: 400 }
@@ -86,6 +87,7 @@ export async function POST(request: NextRequest) {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
+      phone: data.phone,
       age: data.age,
       totalScore: data.totalScore,
       profile: data.profile,

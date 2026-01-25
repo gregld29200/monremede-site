@@ -10,6 +10,7 @@ export function QuestionnaireIntro() {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     age: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -37,6 +38,11 @@ export function QuestionnaireIntro() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email invalide'
     }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Téléphone requis'
+    } else if (!/^[\d\s+\-().]{8,}$/.test(formData.phone.trim())) {
+      newErrors.phone = 'Numéro invalide'
+    }
     if (!formData.age) {
       newErrors.age = 'Âge requis'
     } else if (parseInt(formData.age) < 1 || parseInt(formData.age) > 120) {
@@ -54,6 +60,7 @@ export function QuestionnaireIntro() {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         email: formData.email.trim(),
+        phone: formData.phone.trim(),
         age: parseInt(formData.age),
       })
     }
@@ -129,29 +136,50 @@ export function QuestionnaireIntro() {
                 </div>
               </div>
 
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-sm text-ink-soft mb-2">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 bg-cream border rounded-lg text-ink
+                    focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
+                    transition-all duration-200
+                    ${errors.email ? 'border-blush-deep' : 'border-sage/20'}`}
+                  placeholder="votre@email.com"
+                />
+                {errors.email && (
+                  <p className="text-blush-deep text-xs mt-1">{errors.email}</p>
+                )}
+                <p className="text-xs text-sage mt-1.5">
+                  C&apos;est à cette adresse que vous recevrez votre bilan de santé personnalisé.
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm text-ink-soft mb-2">
-                    Email *
+                  <label htmlFor="phone" className="block text-sm text-ink-soft mb-2">
+                    Téléphone *
                   </label>
                   <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
                     onChange={handleChange}
                     className={`w-full px-4 py-3 bg-cream border rounded-lg text-ink
                       focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
                       transition-all duration-200
-                      ${errors.email ? 'border-blush-deep' : 'border-sage/20'}`}
-                    placeholder="votre@email.com"
+                      ${errors.phone ? 'border-blush-deep' : 'border-sage/20'}`}
+                    placeholder="06 12 34 56 78"
                   />
-                  {errors.email && (
-                    <p className="text-blush-deep text-xs mt-1">{errors.email}</p>
+                  {errors.phone && (
+                    <p className="text-blush-deep text-xs mt-1">{errors.phone}</p>
                   )}
-                  <p className="text-xs text-sage mt-1.5">
-                    C&apos;est à cette adresse que vous recevrez votre pré-bilan de santé personnalisé.
-                  </p>
                 </div>
 
                 <div>
