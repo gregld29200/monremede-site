@@ -137,7 +137,7 @@ export default function CadeauxRamadanPage() {
           <div className="relative bg-forest-deep order-1 lg:order-2 min-h-[50vh] lg:min-h-full">
             {/* Image des guides */}
             <Image
-              src="/images/lead-magnet/guides-ramadan.png"
+              src="/images/lead-magnet/leadmagnet.webp"
               alt="Guides Ramadan - Préparation et Recettes"
               fill
               className="object-cover object-center"
