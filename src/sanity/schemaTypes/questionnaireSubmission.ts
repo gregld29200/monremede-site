@@ -76,6 +76,15 @@ export const questionnaireSubmission = defineType({
       ],
     }),
 
+    // Résumé IA
+    defineField({
+      name: 'aiSummary',
+      title: 'Résumé IA',
+      type: 'text',
+      rows: 8,
+      description: 'Résumé généré automatiquement par IA à partir des réponses. Vous pouvez le modifier avant envoi.',
+    }),
+
     // Réponses détaillées
     defineField({
       name: 'answers',

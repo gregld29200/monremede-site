@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
 import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
 import { generateQuestionnaireResultsEmail, getEmailSubject } from '@/lib/email-templates/questionnaire-results'
+import { generateQuestionnaireSummary } from '@/lib/ai-summary'
 
 // Create write client at request time to ensure env vars are available
 function getWriteClient() {
@@ -81,6 +82,24 @@ export async function POST(request: NextRequest) {
     // Get client at request time (ensures env vars are loaded)
     const writeClient = getWriteClient()
 
+    // Générer le résumé IA (en parallèle avec la création si possible)
+    let aiSummary = ''
+    try {
+      aiSummary = await generateQuestionnaireSummary({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        age: data.age,
+        totalScore: data.totalScore,
+        profile: data.profile,
+        categoryScores: data.categoryScores,
+        answers: data.answers,
+      })
+      console.log('[AI Summary] Generated successfully')
+    } catch (summaryError) {
+      console.error('[AI Summary] Error:', summaryError)
+      // Continue without summary - not blocking
+    }
+
     // Créer le document dans Sanity
     const result = await writeClient.create({
       _type: 'questionnaireSubmission',
@@ -92,6 +111,7 @@ export async function POST(request: NextRequest) {
       totalScore: data.totalScore,
       profile: data.profile,
       categoryScores: data.categoryScores,
+      aiSummary: aiSummary || undefined,
       answers: data.answers.map((answer) => ({
         _key: answer.questionId,
         questionId: answer.questionId,
