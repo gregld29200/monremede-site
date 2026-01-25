@@ -58,6 +58,10 @@ export function QuestionnaireResults() {
             Merci {state.personalInfo?.firstName} !
           </h1>
 
+          <p className="text-sage text-lg max-w-lg mx-auto leading-relaxed mb-2 italic">
+            Assalamu alaykum,
+          </p>
+
           <p className="text-ink-soft text-lg max-w-lg mx-auto leading-relaxed mb-2">
             Merci pour l&apos;intérêt que vous portez à votre santé naturelle.
           </p>
@@ -66,6 +70,10 @@ export function QuestionnaireResults() {
             Vous recevrez votre{' '}
             <span className="text-forest font-medium">bilan de santé personnalisé</span>{' '}
             analysé par <span className="text-forest font-medium">Oum Soumayya</span>, votre praticienne en naturopathie depuis 2009, sous <span className="text-forest font-medium">24 heures</span>.
+          </p>
+
+          <p className="text-sage text-base max-w-lg mx-auto leading-relaxed mb-4 italic">
+            Qu&apos;Allah vous guérisse et fasse que notre collaboration soit un bien pour nous.
           </p>
 
           {/* Email Info */}

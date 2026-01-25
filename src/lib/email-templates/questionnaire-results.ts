@@ -63,10 +63,16 @@ export function generateQuestionnaireResultsEmail(data: QuestionnaireEmailData):
                 <tr>
                   <td style="text-align: center; padding-bottom: 30px;">
                     <p style="font-size: 16px; color: #3d3d38; line-height: 1.7; margin: 0 0 16px 0;">
+                      <em style="color: #8b9e7e;">Assalamu alaykum,</em>
+                    </p>
+                    <p style="font-size: 16px; color: #3d3d38; line-height: 1.7; margin: 0 0 16px 0;">
                       Merci pour l'intérêt que vous portez à votre santé naturelle.
                     </p>
-                    <p style="font-size: 16px; color: #3d3d38; line-height: 1.7; margin: 0;">
+                    <p style="font-size: 16px; color: #3d3d38; line-height: 1.7; margin: 0 0 16px 0;">
                       Vous recevrez votre <strong style="color: #2D4A3E;">bilan de santé personnalisé</strong> analysé par <strong style="color: #2D4A3E;">Oum Soumayya</strong>, votre praticienne en naturopathie depuis 2009, sous <strong style="color: #2D4A3E;">24 heures</strong>.
+                    </p>
+                    <p style="font-size: 15px; color: #8b9e7e; line-height: 1.7; margin: 0; font-style: italic;">
+                      Qu'Allah vous guérisse et fasse que notre collaboration soit un bien pour nous.
                     </p>
                   </td>
                 </tr>
