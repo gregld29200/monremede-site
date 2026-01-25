@@ -4,16 +4,17 @@
 
 interface RamadanGiftsEmailProps {
   firstName: string
+  downloadUrl: string
 }
 
-export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps): string {
+export function generateRamadanGiftsEmail({ firstName, downloadUrl }: RamadanGiftsEmailProps): string {
   return `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Votre inscription est confirmée !</title>
+  <title>Vos guides Ramadan sont prêts !</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: Georgia, 'Times New Roman', serif; background-color: #f7f4ed; color: #1a2e23;">
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f7f4ed;">
@@ -43,7 +44,7 @@ export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps)
               </div>
 
               <h2 style="margin: 0 0 16px; color: #1a2e23; font-size: 28px; font-weight: normal; text-align: center;">
-                Inscription confirmée !
+                Vos guides sont prêts !
               </h2>
 
               <p style="margin: 0 0 24px; color: #3d3d38; font-size: 16px; line-height: 1.7;">
@@ -51,20 +52,16 @@ export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps)
               </p>
 
               <p style="margin: 0 0 24px; color: #3d3d38; font-size: 16px; line-height: 1.7;">
-                Merci pour votre confiance ! Votre inscription pour recevoir les guides Ramadan est bien enregistrée.
+                Merci pour votre confiance ! Vos guides Ramadan sont maintenant disponibles au téléchargement.
               </p>
 
-              <!-- Info box -->
+              <!-- CTA Button -->
               <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 32px 0;">
                 <tr>
-                  <td style="padding: 24px; background-color: #efe9dc; border-radius: 8px; text-align: center;">
-                    <p style="margin: 0 0 8px; color: #c4a35a; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">
-                      Prochaine étape
-                    </p>
-                    <p style="margin: 0; color: #1a2e23; font-size: 18px; line-height: 1.6;">
-                      Vous recevrez le lien de téléchargement de vos guides<br>
-                      <strong>dans les 24 heures</strong>, incha'Allah.
-                    </p>
+                  <td align="center">
+                    <a href="${downloadUrl}" style="display: inline-block; padding: 16px 32px; background-color: #c4a35a; color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 6px; letter-spacing: 0.5px;">
+                      Télécharger mes guides →
+                    </a>
                   </td>
                 </tr>
               </table>
@@ -84,7 +81,10 @@ export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps)
                             01
                           </p>
                           <p style="margin: 4px 0 0; color: #1a2e23; font-size: 16px;">
-                            Préparer son corps au Ramadan
+                            7 étapes pour un jeûne qui soigne
+                          </p>
+                          <p style="margin: 4px 0 0; color: #8b9e7e; font-size: 13px;">
+                            Disponible immédiatement
                           </p>
                         </td>
                       </tr>
@@ -94,11 +94,29 @@ export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps)
                             02
                           </p>
                           <p style="margin: 4px 0 0; color: #1a2e23; font-size: 16px;">
-                            Recettes saines pour le Ramadan
+                            Recettes Anti-Inflammatoires
+                          </p>
+                          <p style="margin: 4px 0 0; color: #8b9e7e; font-size: 13px;">
+                            Débloqué après votre avis
                           </p>
                         </td>
                       </tr>
                     </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Info box -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 32px 0;">
+                <tr>
+                  <td style="padding: 24px; background-color: #efe9dc; border-radius: 8px; text-align: center;">
+                    <p style="margin: 0 0 8px; color: #c4a35a; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">
+                      Bon à savoir
+                    </p>
+                    <p style="margin: 0; color: #1a2e23; font-size: 15px; line-height: 1.6;">
+                      Votre lien de téléchargement est <strong>personnel et unique</strong>.<br>
+                      Conservez cet email pour y accéder à tout moment.
+                    </p>
                   </td>
                 </tr>
               </table>
@@ -142,5 +160,5 @@ export function generateRamadanGiftsEmail({ firstName }: RamadanGiftsEmailProps)
 }
 
 export function getRamadanGiftsEmailSubject(): string {
-  return '🌙 Votre inscription est confirmée - Guides Ramadan'
+  return '🌙 Vos guides Ramadan sont prêts - Téléchargez maintenant !'
 }

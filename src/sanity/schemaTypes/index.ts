@@ -11,6 +11,7 @@ import {questionnaireSubmission} from './questionnaireSubmission'
 import {client} from './client'
 import {clientNote} from './clientNote'
 import {leadMagnetSubscriber} from './leadMagnetSubscriber'
+import {guideReview} from './guideReview'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -32,5 +33,6 @@ export const schema: {types: SchemaTypeDefinition[]} = {
 
     // Lead Magnets
     leadMagnetSubscriber,
+    guideReview,
   ],
 }

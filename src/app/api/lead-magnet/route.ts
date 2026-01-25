@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
+import { randomUUID } from 'crypto'
 import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
 import { generateRamadanGiftsEmail, getRamadanGiftsEmailSubject } from '@/lib/email-templates/ramadan-gifts-confirmation'
 
@@ -66,6 +67,9 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Generate unique download token
+    const downloadToken = randomUUID()
+
     // Create the document in Sanity
     const result = await writeClient.create({
       _type: 'leadMagnetSubscriber',
@@ -76,8 +80,13 @@ export async function POST(request: NextRequest) {
       hasConsultedNaturopath: data.hasConsultedNaturopath || undefined,
       wantsConsultation: data.wantsConsultation || undefined,
       subscribedAt: new Date().toISOString(),
-      linkSent: false,
+      downloadToken,
+      linkSent: true,
     })
+
+    // Build download URL
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
+    const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${downloadToken}`
 
     // Send confirmation email
     const resend = getResendClient()
@@ -85,7 +94,10 @@ export async function POST(request: NextRequest) {
 
     if (resend) {
       try {
-        const emailHtml = generateRamadanGiftsEmail({ firstName: data.firstName.trim() })
+        const emailHtml = generateRamadanGiftsEmail({
+          firstName: data.firstName.trim(),
+          downloadUrl,
+        })
 
         await resend.emails.send({
           from: FROM_EMAIL,

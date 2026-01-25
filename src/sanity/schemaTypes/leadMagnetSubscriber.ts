@@ -75,6 +75,13 @@ export const leadMagnetSubscriber = defineType({
       type: 'datetime',
     }),
     defineField({
+      name: 'downloadToken',
+      title: 'Token de téléchargement',
+      type: 'string',
+      readOnly: true,
+      description: 'Token unique généré automatiquement pour l\'accès aux téléchargements',
+    }),
+    defineField({
       name: 'linkSent',
       title: 'Lien envoyé',
       type: 'boolean',

@@ -43,6 +43,7 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem('questionnaireSubmission').title('Questionnaires'),
               S.documentTypeListItem('client').title('Clients'),
               S.documentTypeListItem('leadMagnetSubscriber').title('Abonnés Lead Magnet'),
+              S.documentTypeListItem('guideReview').title('Avis Guides'),
             ])
         ),
 
