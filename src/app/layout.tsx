@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Cormorant_Garamond, Lora, Inter } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { CookieConsent } from "@/components/cookie-consent";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-display",
@@ -82,6 +83,7 @@ export default function RootLayout({
         </a>
         <GoogleAnalytics />
         {children}
+        <CookieConsent />
       </body>
     </html>
   );
