@@ -54,16 +54,49 @@ export async function POST(request: NextRequest) {
 
     // Check for duplicate (same email + source)
     const existingSubscriber = await writeClient.fetch(
-      `*[_type == "leadMagnetSubscriber" && email == $email && source == $source][0]`,
+      `*[_type == "leadMagnetSubscriber" && email == $email && source == $source][0]{
+        _id,
+        firstName,
+        downloadToken
+      }`,
       { email: data.email.toLowerCase(), source: data.source }
     )
 
     if (existingSubscriber) {
-      // Already subscribed - just return success without creating duplicate
+      // Already subscribed - resend email with existing token
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
+      const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${existingSubscriber.downloadToken}`
+
+      const resend = getResendClient()
+      let emailSent = false
+
+      if (resend && existingSubscriber.downloadToken) {
+        try {
+          const emailHtml = generateRamadanGiftsEmail({
+            firstName: existingSubscriber.firstName || data.firstName.trim(),
+            downloadUrl,
+          })
+
+          await resend.emails.send({
+            from: FROM_EMAIL,
+            to: data.email,
+            replyTo: REPLY_TO_EMAIL,
+            subject: getRamadanGiftsEmailSubject(),
+            html: emailHtml,
+          })
+
+          emailSent = true
+          console.log(`Email renvoyé à ${data.email} (abonné existant)`)
+        } catch (emailError) {
+          console.error('Erreur lors du renvoi de l\'email:', emailError)
+        }
+      }
+
       return NextResponse.json({
         success: true,
         alreadySubscribed: true,
-        message: 'Vous êtes déjà inscrit(e) !',
+        emailSent,
+        message: 'Vous êtes déjà inscrit(e) ! L\'email a été renvoyé.',
       })
     }
 
