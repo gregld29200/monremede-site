@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const writeClient = getWriteClient()
 
     // Check for duplicate (same email + source)
-    const existingSubscriber = await writeClient.fetch(
+    const existingSubscriber = await writeClient.fetch<{ _id: string; firstName: string; downloadToken: string } | null>(
       `*[_type == "leadMagnetSubscriber" && email == $email && source == $source][0]{
         _id,
         firstName,
