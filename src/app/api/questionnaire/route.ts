@@ -124,27 +124,23 @@ export async function POST(request: NextRequest) {
       submittedAt: new Date().toISOString(),
     })
 
-    // Envoyer l'email avec les résultats
+    // Envoyer l'email de confirmation
     const resend = getResendClient()
     if (resend) {
       try {
         const emailHtml = generateQuestionnaireResultsEmail({
           firstName: data.firstName,
-          lastName: data.lastName,
-          totalScore: data.totalScore,
-          profile: data.profile,
-          categoryScores: data.categoryScores,
         })
 
         await resend.emails.send({
           from: FROM_EMAIL,
           to: data.email,
           replyTo: REPLY_TO_EMAIL,
-          subject: getEmailSubject(data.profile),
+          subject: getEmailSubject(),
           html: emailHtml,
         })
 
-        console.log(`Email envoyé à ${data.email}`)
+        console.log(`Email de confirmation envoyé à ${data.email}`)
       } catch (emailError) {
         // Log l'erreur mais ne bloque pas la réponse
         console.error('Erreur lors de l\'envoi de l\'email:', emailError)
