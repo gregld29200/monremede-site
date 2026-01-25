@@ -210,12 +210,12 @@ export default async function PostPage({ params }: PageProps) {
       name: 'Mon Remède',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://monremede.com/logo.png',
+        url: 'https://www.monremede.com/logo.png',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://monremede.com/blog/${slug}`,
+      '@id': `https://www.monremede.com/blog/${slug}`,
     },
   }
 
@@ -226,7 +226,7 @@ export default async function PostPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
       <Header />
-      <main className="pt-20">
+      <main id="main-content" className="pt-20">
         {/* Hero */}
         <Section background="forest-deep" spacing="lg">
           <Container size="md">

@@ -8,8 +8,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata = {
-  title: 'Recettes Santé - Oum Soumayya',
-  description: 'Recettes saines et naturelles pour une alimentation équilibrée. Découvrez des plats nutritifs et délicieux.',
+  title: 'Recettes Santé Naturelles - Cuisine Bien-être | Oum Soumayya',
+  description: 'Découvrez nos recettes saines et naturelles pour une alimentation équilibrée. Plats nutritifs, délicieux et faciles à préparer pour toute la famille.',
 }
 
 
@@ -41,7 +41,7 @@ export default async function RecettesPage() {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main id="main-content" className="pt-20">
         {/* Hero */}
         <Section background="forest-deep" spacing="lg">
           <Container>

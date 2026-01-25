@@ -10,8 +10,8 @@ import Image from 'next/image'
 export const revalidate = 60
 
 export const metadata = {
-  title: 'Blog - Oum Soumayya',
-  description: 'Articles sur la naturopathie, la santé naturelle et le bien-être. Conseils pratiques pour une vie saine.',
+  title: 'Blog Naturopathie - Conseils Santé Naturelle | Oum Soumayya',
+  description: 'Découvrez nos articles sur la naturopathie, la santé naturelle et le bien-être. Conseils pratiques sur l\'alimentation, les remèdes naturels et la prévention.',
 }
 
 
@@ -33,7 +33,7 @@ export default async function BlogPage() {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main id="main-content" className="pt-20">
         {/* Hero */}
         <Section background="forest-deep" spacing="lg">
           <Container>
@@ -79,6 +79,7 @@ export default async function BlogPage() {
                             alt={post.mainImage.alt || post.title}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            priority={index < 2}
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center">

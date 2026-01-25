@@ -3,8 +3,8 @@ import { Button } from '@/components/ui'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Consultations – Mon Remède',
-  description: 'Consultations en naturopathie personnalisées avec Oum Soumayya. Troubles digestifs, équilibre hormonal, santé générale et suivi complet.',
+  title: 'Consultations Naturopathie en Ligne | Oum Soumayya - Mon Remède',
+  description: 'Consultations personnalisées en naturopathie avec Oum Soumayya. Accompagnement pour troubles digestifs, équilibre hormonal, fatigue chronique et suivi complet.',
 }
 
 const consultations = [
@@ -71,7 +71,7 @@ export default function ConsultationsPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="main-content">
         {/* Hero Section */}
         <section className="relative min-h-[60vh] bg-forest-deep flex items-center py-32 px-6">
           {/* Decorative Elements */}

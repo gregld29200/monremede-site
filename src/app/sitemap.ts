@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 
-const baseUrl = 'https://monremede.com'
+const baseUrl = 'https://www.monremede.com'
 
 type SanityDocument = {
   slug: { current: string }
@@ -11,7 +11,7 @@ type SanityDocument = {
 
 async function getPostsForSitemap(): Promise<SanityDocument[]> {
   return client.fetch(groq`
-    *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
+    *[_type == "post" && defined(slug.current) && defined(publishedAt)] | order(publishedAt desc) {
       slug,
       _updatedAt
     }
@@ -20,7 +20,7 @@ async function getPostsForSitemap(): Promise<SanityDocument[]> {
 
 async function getRecipesForSitemap(): Promise<SanityDocument[]> {
   return client.fetch(groq`
-    *[_type == "recipe" && defined(slug.current)] | order(publishedAt desc) {
+    *[_type == "recipe" && defined(slug.current) && defined(publishedAt)] | order(publishedAt desc) {
       slug,
       _updatedAt
     }
@@ -49,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/questionnaire`,
+      url: `${baseUrl}/consultations/demande`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

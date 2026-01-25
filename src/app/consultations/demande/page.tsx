@@ -32,7 +32,7 @@ export default function QuestionnairePage() {
   return (
     <QuestionnaireProvider>
       <Header />
-      <main className="bg-cream min-h-screen">
+      <main id="main-content" className="bg-cream min-h-screen">
         <QuestionnaireContent />
       </main>
       <Footer />

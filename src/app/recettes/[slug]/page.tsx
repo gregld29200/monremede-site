@@ -95,14 +95,16 @@ export default async function RecipePage({ params }: PageProps) {
   const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0)
 
   // JSON-LD Recipe Schema for rich results in Google
+  const recipeImageUrl = recipe.mainImage
+    ? urlFor(recipe.mainImage).width(1200).height(630).url()
+    : 'https://www.monremede.com/images/Hero.png'
+
   const recipeSchema = {
     '@context': 'https://schema.org',
     '@type': 'Recipe',
     name: recipe.title,
     description: recipe.excerpt || '',
-    image: recipe.mainImage
-      ? urlFor(recipe.mainImage).width(1200).height(630).url()
-      : undefined,
+    image: recipeImageUrl,
     author: {
       '@type': 'Person',
       name: 'Oum Soumayya',
@@ -137,7 +139,7 @@ export default async function RecipePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeSchema) }}
       />
       <Header />
-      <main className="pt-20">
+      <main id="main-content" className="pt-20">
         {/* Hero */}
         <Section background="forest-deep" spacing="lg">
           <Container size="md">

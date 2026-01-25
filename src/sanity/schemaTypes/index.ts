@@ -10,6 +10,7 @@ import {product} from './product'
 import {questionnaireSubmission} from './questionnaireSubmission'
 import {client} from './client'
 import {clientNote} from './clientNote'
+import {leadMagnetSubscriber} from './leadMagnetSubscriber'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -28,5 +29,8 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     // CRM
     client,
     clientNote,
+
+    // Lead Magnets
+    leadMagnetSubscriber,
   ],
 }

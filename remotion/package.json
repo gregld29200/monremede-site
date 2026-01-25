@@ -1,0 +1,26 @@
+{
+  "name": "monremede-videos",
+  "version": "1.0.0",
+  "description": "Premium Instagram promo videos for Mon Remède",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "render:all": "npm run render:video1 && npm run render:video2 && npm run render:video3",
+    "render:video1": "remotion render BrandStory out/video1-brand-story.mp4",
+    "render:video2": "remotion render BookPromo out/video2-book-promo.mp4",
+    "render:video3": "remotion render ConsultationsPromo out/video3-consultations.mp4",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "@remotion/transitions": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "typescript": "^5.4.0"
+  }
+}
