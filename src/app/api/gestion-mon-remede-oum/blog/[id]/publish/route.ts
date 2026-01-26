@@ -27,35 +27,24 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     if (action === 'publish') {
       // Publish the post
-      if (existing.publishedAt) {
-        return NextResponse.json(
-          { error: 'L\'article est déjà publié' },
-          { status: 400 }
-        )
-      }
-
       await writeClient
         .patch(id)
-        .set({ publishedAt: new Date().toISOString() })
+        .set({
+          publishedAt: existing.publishedAt || new Date().toISOString(),
+          isDraft: false
+        })
         .commit()
 
       return NextResponse.json({
         success: true,
         message: 'Article publié avec succès',
-        publishedAt: new Date().toISOString()
+        publishedAt: existing.publishedAt || new Date().toISOString()
       })
     } else if (action === 'unpublish') {
-      // Unpublish the post
-      if (!existing.publishedAt) {
-        return NextResponse.json(
-          { error: 'L\'article n\'est pas publié' },
-          { status: 400 }
-        )
-      }
-
+      // Unpublish the post (set as draft, keep publishedAt for reference)
       await writeClient
         .patch(id)
-        .unset(['publishedAt'])
+        .set({ isDraft: true })
         .commit()
 
       return NextResponse.json({
