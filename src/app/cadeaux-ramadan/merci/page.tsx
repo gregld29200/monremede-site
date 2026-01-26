@@ -58,11 +58,17 @@ export default function MerciPage() {
               </p>
             </div>
 
-            <p className="text-cream/50 text-sm">
-              Un email de confirmation vous a été envoyé.
-              <br />
-              Pensez à vérifier vos spams.
-            </p>
+            <div className="text-cream/50 text-sm space-y-2">
+              <p>Un email de confirmation vous a été envoyé.</p>
+              <p className="text-cream/70">
+                <span className="text-gold">💡</span> Si vous ne le trouvez pas, pensez à vérifier :
+              </p>
+              <p className="text-cream/60">
+                • L&apos;onglet <strong className="text-cream/80">Promotions</strong> (Gmail)
+                <br />
+                • Vos <strong className="text-cream/80">courriers indésirables</strong> (spams)
+              </p>
+            </div>
           </div>
         </section>
 

@@ -96,6 +96,21 @@ export const leadMagnetSubscriber = defineType({
       description: 'Message d\'erreur si l\'envoi a échoué',
     }),
     defineField({
+      name: 'status',
+      title: 'Statut',
+      type: 'string',
+      initialValue: 'nouveau',
+      options: {
+        list: [
+          {title: 'Nouveau', value: 'nouveau'},
+          {title: 'Contacté', value: 'contacte'},
+          {title: 'En discussion', value: 'discussion'},
+          {title: 'Converti', value: 'converti'},
+          {title: 'Non intéressé', value: 'non_interesse'},
+        ],
+      },
+    }),
+    defineField({
       name: 'notes',
       title: 'Notes internes',
       type: 'text',
@@ -112,15 +127,24 @@ export const leadMagnetSubscriber = defineType({
       subscribedAt: 'subscribedAt',
       linkSent: 'linkSent',
       emailError: 'emailError',
+      status: 'status',
     },
     prepare(selection) {
-      const {firstName, email, source, subscribedAt, linkSent, emailError} = selection
+      const {firstName, email, source, subscribedAt, linkSent, emailError, status} = selection
       const date = subscribedAt ? new Date(subscribedAt).toLocaleDateString('fr-FR') : ''
       const linkIcon = emailError ? '❌' : linkSent ? '✅' : '⏳'
+      const statusLabels: Record<string, string> = {
+        nouveau: '🆕',
+        contacte: '📞',
+        discussion: '💬',
+        converti: '✨',
+        non_interesse: '❌',
+      }
+      const statusIcon = statusLabels[status] || '🆕'
 
       return {
         title: `${firstName} - ${email}`,
-        subtitle: `${linkIcon} ${source} • ${date}${emailError ? ` • ${emailError}` : ''}`,
+        subtitle: `${statusIcon} ${linkIcon} ${source} • ${date}${emailError ? ` • ${emailError}` : ''}`,
       }
     },
   },

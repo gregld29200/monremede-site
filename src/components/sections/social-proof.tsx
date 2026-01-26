@@ -15,7 +15,12 @@ interface Stats {
   averageRating: number
 }
 
-export function SocialProof() {
+interface SocialProofProps {
+  showTitle?: boolean
+  wrapInSection?: boolean
+}
+
+export function SocialProof({ showTitle = true, wrapInSection = false }: SocialProofProps) {
   const [stats, setStats] = useState<Stats | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
@@ -44,8 +49,18 @@ export function SocialProof() {
     return null
   }
 
-  return (
+  const content = (
     <div className="space-y-8">
+      {/* Optional Title */}
+      {showTitle && (
+        <div className="text-center mb-10">
+          <p className="label text-sage mb-4">Ce qu&apos;ils en pensent</p>
+          <h2 className="display-medium text-forest">
+            Les avis de nos lecteurs
+          </h2>
+        </div>
+      )}
+
       {/* Stats */}
       <div className="text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 bg-cream-warm rounded-full">
@@ -99,4 +114,16 @@ export function SocialProof() {
       )}
     </div>
   )
+
+  if (wrapInSection) {
+    return (
+      <section className="py-16 lg:py-20 px-6 bg-cream">
+        <div className="max-w-4xl mx-auto">
+          {content}
+        </div>
+      </section>
+    )
+  }
+
+  return content
 }

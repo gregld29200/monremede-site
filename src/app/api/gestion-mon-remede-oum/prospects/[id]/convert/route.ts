@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
 import { writeClient } from '@/sanity/lib/writeClient'
-import type { Prospect } from '@/types/admin'
+import type { UnifiedProspect } from '@/types/admin'
+
+interface ConvertRequestBody {
+  consultationType?: string
+  internalNotes?: string
+  lastName?: string // Required for leadMagnetSubscriber
+}
 
 export async function POST(
   request: NextRequest,
@@ -9,20 +15,25 @@ export async function POST(
 ) {
   try {
     const { id } = await params
-    const body = await request.json()
-    const { consultationType, internalNotes } = body
+    const body: ConvertRequestBody = await request.json()
+    const { consultationType, internalNotes, lastName: providedLastName } = body
 
-    // Fetch the prospect
-    const prospect = await client.fetch<Prospect>(
-      `*[_type == "questionnaireSubmission" && _id == $id][0]{
+    // Fetch the prospect (both types)
+    const prospect = await client.fetch<UnifiedProspect | null>(
+      `*[_id == $id && _type in ["questionnaireSubmission", "leadMagnetSubscriber"]][0]{
         _id,
+        _type,
         firstName,
         lastName,
         email,
+        phone,
         age,
         totalScore,
         profile,
-        categoryScores
+        categoryScores,
+        acquisitionSource,
+        wantsConsultation,
+        hasConsultedNaturopath
       }`,
       { id }
     )
@@ -34,9 +45,18 @@ export async function POST(
       )
     }
 
-    // Determine health concerns from category scores
+    // For leadMagnetSubscriber, lastName is required in the request
+    const finalLastName = prospect.lastName || providedLastName
+    if (!finalLastName) {
+      return NextResponse.json(
+        { error: 'Le nom de famille est requis pour la conversion' },
+        { status: 400 }
+      )
+    }
+
+    // Determine health concerns from category scores (only for questionnaire)
     const concerns: string[] = []
-    if (prospect.categoryScores) {
+    if (prospect._type === 'questionnaireSubmission' && prospect.categoryScores) {
       const scores = prospect.categoryScores
       if (scores.digestionTransit && scores.digestionTransit > 3) concerns.push('digestion')
       if (scores.energieVitalite && scores.energieVitalite > 3) concerns.push('fatigue')
@@ -46,14 +66,30 @@ export async function POST(
       if (scores.douleursInconforts && scores.douleursInconforts > 3) concerns.push('douleurs')
     }
 
+    // Determine source based on document type
+    const clientSource = prospect._type === 'questionnaireSubmission' ? 'questionnaire' : 'lead-magnet'
+
+    // Build internal notes with acquisition info for lead magnet
+    let notes = internalNotes || ''
+    if (prospect._type === 'leadMagnetSubscriber') {
+      const acquisitionInfo: string[] = []
+      if (prospect.acquisitionSource) acquisitionInfo.push(`Canal: ${prospect.acquisitionSource}`)
+      if (prospect.wantsConsultation) acquisitionInfo.push(`Souhaite consultation: ${prospect.wantsConsultation}`)
+      if (prospect.hasConsultedNaturopath) acquisitionInfo.push(`A consulté naturopathe: ${prospect.hasConsultedNaturopath}`)
+      if (acquisitionInfo.length > 0) {
+        notes = notes ? `${notes}\n\n[Infos lead magnet]\n${acquisitionInfo.join('\n')}` : `[Infos lead magnet]\n${acquisitionInfo.join('\n')}`
+      }
+    }
+
     // Create the client document
     const newClient = await writeClient.create({
       _type: 'client',
       firstName: prospect.firstName,
-      lastName: prospect.lastName,
+      lastName: finalLastName,
       email: prospect.email,
+      phone: prospect.phone || undefined,
       status: 'actif',
-      source: 'questionnaire',
+      source: clientSource,
       linkedSubmission: {
         _type: 'reference',
         _ref: prospect._id,
@@ -62,7 +98,7 @@ export async function POST(
         concerns: concerns.length > 0 ? concerns : undefined,
       },
       consultationType: consultationType || undefined,
-      internalNotes: internalNotes || undefined,
+      internalNotes: notes || undefined,
       createdAt: new Date().toISOString(),
     })
 

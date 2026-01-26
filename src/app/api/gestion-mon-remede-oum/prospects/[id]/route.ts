@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
-import type { Prospect } from '@/types/admin'
+import type { UnifiedProspect } from '@/types/admin'
 
 // Create read client at request time (no CDN for admin routes)
 function getReadClient() {
@@ -38,20 +38,32 @@ export async function GET(
     const { id } = await params
     const client = getReadClient()
 
-    const prospect = await client.fetch<Prospect>(
-      `*[_type == "questionnaireSubmission" && _id == $id][0]{
+    // Query both document types
+    const prospect = await client.fetch<UnifiedProspect | null>(
+      `*[_id == $id && _type in ["questionnaireSubmission", "leadMagnetSubscriber"]][0]{
         _id,
+        _type,
+        "sourceTag": select(
+          _type == "questionnaireSubmission" => "questionnaire-sante",
+          _type == "leadMagnetSubscriber" => "cadeau-ramadan",
+          "autre"
+        ),
         firstName,
         lastName,
         email,
+        phone,
         age,
+        "status": coalesce(status, "nouveau"),
+        "submittedAt": coalesce(submittedAt, subscribedAt),
+        notes,
         totalScore,
         profile,
         categoryScores,
         answers,
-        status,
-        notes,
-        submittedAt
+        acquisitionSource,
+        wantsConsultation,
+        hasConsultedNaturopath,
+        source
       }`,
       { id }
     )
@@ -113,9 +125,9 @@ export async function DELETE(
 
     console.log('[Prospect Delete] Attempting to delete:', id)
 
-    // Verify the document exists and is a questionnaireSubmission
+    // Verify the document exists and is one of the allowed types
     const existing = await client.fetch(
-      `*[_type == "questionnaireSubmission" && _id == $id][0]{ _id }`,
+      `*[_id == $id && _type in ["questionnaireSubmission", "leadMagnetSubscriber"]][0]{ _id, _type }`,
       { id }
     )
 
@@ -128,7 +140,7 @@ export async function DELETE(
     }
 
     // Delete the document
-    console.log('[Prospect Delete] Deleting document:', id)
+    console.log('[Prospect Delete] Deleting document:', id, 'type:', existing._type)
     await writeClient.delete(id)
     console.log('[Prospect Delete] Successfully deleted:', id)
 

@@ -4,7 +4,16 @@ import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { StatusBadge } from '@/components/admin/status-badge'
-import type { Prospect, ProspectStatus } from '@/types/admin'
+import type { UnifiedProspect, ProspectStatus, ProspectSourceTag } from '@/types/admin'
+
+const sourceLabels: Record<ProspectSourceTag, { label: string; color: string; bg: string }> = {
+  'questionnaire-sante': { label: 'Questionnaire Santé', color: 'text-[#1d4ed8]', bg: 'bg-[#dbeafe]' },
+  'cadeau-ramadan': { label: 'Cadeau Ramadan', color: 'text-[#7c3aed]', bg: 'bg-[#ede9fe]' },
+  'newsletter': { label: 'Newsletter', color: 'text-[#059669]', bg: 'bg-[#d1fae5]' },
+  'lead-magnet': { label: 'Lead Magnet', color: 'text-[#d97706]', bg: 'bg-[#fef3c7]' },
+  'recommandation': { label: 'Recommandation', color: 'text-[#db2777]', bg: 'bg-[#fce7f3]' },
+  'autre': { label: 'Autre', color: 'text-[#6b7280]', bg: 'bg-[#f3f4f6]' },
+}
 
 const statusOptions: { value: ProspectStatus; label: string; color: string }[] = [
   { value: 'nouveau', label: 'Nouveau', color: 'gold' },
@@ -24,7 +33,7 @@ const consultationTypes = [
 export default function ProspectDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const router = useRouter()
-  const [prospect, setProspect] = useState<Prospect | null>(null)
+  const [prospect, setProspect] = useState<UnifiedProspect | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [isConverting, setIsConverting] = useState(false)
@@ -36,6 +45,7 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
   const [convertData, setConvertData] = useState({
     consultationType: '',
     internalNotes: '',
+    lastName: '',
   })
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
@@ -74,6 +84,11 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
   }
 
   const handleConvert = async () => {
+    // Validate lastName for leadMagnetSubscriber
+    if (prospect?._type === 'leadMagnetSubscriber' && !prospect.lastName && !convertData.lastName) {
+      return
+    }
+
     setIsConverting(true)
     try {
       const response = await fetch(`/api/gestion-mon-remede-oum/prospects/${id}/convert`, {
@@ -93,6 +108,10 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
       setShowConvertModal(false)
     }
   }
+
+  // Check if lastName is required for conversion
+  const needsLastName = prospect?._type === 'leadMagnetSubscriber' && !prospect.lastName
+  const canConvert = convertData.consultationType && (!needsLastName || convertData.lastName)
 
   const handleDelete = async () => {
     setIsDeleting(true)
@@ -189,13 +208,20 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-forest/15 to-forest/5 border border-forest/15 flex items-center justify-center">
               <span className="font-display text-lg text-forest">
-                {prospect.firstName?.[0]}{prospect.lastName?.[0]}
+                {prospect.firstName?.[0]}{prospect.lastName?.[0] || ''}
               </span>
             </div>
             <div>
-              <h1 className="font-display text-2xl text-forest">
-                {prospect.firstName} {prospect.lastName}
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="font-display text-2xl text-forest">
+                  {prospect.firstName} {prospect.lastName || ''}
+                </h1>
+                {prospect.sourceTag && (
+                  <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${sourceLabels[prospect.sourceTag]?.bg || 'bg-[#f3f4f6]'} ${sourceLabels[prospect.sourceTag]?.color || 'text-[#6b7280]'}`}>
+                    {sourceLabels[prospect.sourceTag]?.label || 'Autre'}
+                  </span>
+                )}
+              </div>
               <p className="font-body text-sm text-ink-soft/70 mt-0.5">
                 Soumis le {formatDate(prospect.submittedAt)}
               </p>
@@ -266,85 +292,136 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
                 <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Email</p>
                 <p className="font-body text-forest">{prospect.email}</p>
               </div>
-              <div className="space-y-1">
-                <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Âge</p>
-                <p className="font-body text-forest">{prospect.age} ans</p>
-              </div>
+              {prospect._type === 'questionnaireSubmission' && prospect.age && (
+                <div className="space-y-1">
+                  <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Âge</p>
+                  <p className="font-body text-forest">{prospect.age} ans</p>
+                </div>
+              )}
+              {prospect._type === 'leadMagnetSubscriber' && prospect.acquisitionSource && (
+                <div className="space-y-1">
+                  <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Canal d&apos;acquisition</p>
+                  <p className="font-body text-forest capitalize">{prospect.acquisitionSource.replace('-', ' ')}</p>
+                </div>
+              )}
+              {prospect._type === 'leadMagnetSubscriber' && prospect.wantsConsultation && (
+                <div className="space-y-1">
+                  <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Souhaite consultation</p>
+                  <p className="font-body text-forest capitalize">{prospect.wantsConsultation}</p>
+                </div>
+              )}
+              {prospect._type === 'leadMagnetSubscriber' && prospect.hasConsultedNaturopath && (
+                <div className="space-y-1">
+                  <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">A consulté naturopathe</p>
+                  <p className="font-body text-forest capitalize">{prospect.hasConsultedNaturopath}</p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Results card */}
-          <div className="admin-card p-6">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/20 flex items-center justify-center">
-                <svg className="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+          {/* Results card - Only for questionnaireSubmission */}
+          {prospect._type === 'questionnaireSubmission' && (
+            <div className="admin-card p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <h2 className="font-display text-lg text-forest">Résultats du questionnaire</h2>
               </div>
-              <h2 className="font-display text-lg text-forest">Résultats du questionnaire</h2>
+
+              {/* Score overview */}
+              <div className="flex items-center gap-6 p-5 rounded-xl bg-gradient-to-r from-cream to-cream-warm border border-forest/5 mb-6">
+                <div className="relative w-20 h-20">
+                  <svg className="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="rgba(45, 74, 62, 0.1)"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke={`var(--${scoreLevel.color})`}
+                      strokeWidth="3"
+                      strokeDasharray={`${((prospect.totalScore || 0) / 50) * 100}, 100`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="font-display text-2xl text-forest">{prospect.totalScore || 0}</span>
+                    <span className="font-accent text-[10px] text-ink-soft/50">/50</span>
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <StatusBadge status={prospect.profile || ''} type="profile" />
+                  </div>
+                  <p className="font-body text-sm text-ink-soft/70 mt-2">
+                    Niveau de déséquilibre : <span className={`font-accent text-${scoreLevel.color}`}>{scoreLevel.label}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Category scores */}
+              {prospect.categoryScores && (
+                <div className="space-y-4">
+                  <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Scores par catégorie</p>
+                  <div className="grid gap-3">
+                    {Object.entries(prospect.categoryScores).map(([key, value]) => (
+                      <div key={key} className="flex items-center gap-4">
+                        <span className="font-body text-sm text-ink-soft/80 w-36 truncate">{getCategoryLabel(key)}</span>
+                        <div className="flex-1 h-2 rounded-full bg-forest/10 overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all ${
+                              (value || 0) >= 4 ? 'bg-blush-deep' : (value || 0) >= 2 ? 'bg-gold' : 'bg-sage'
+                            }`}
+                            style={{ width: `${((value || 0) / 6) * 100}%` }}
+                          />
+                        </div>
+                        <span className="font-accent text-xs text-ink-soft/60 w-10 text-right tabular-nums">{value || 0}/6</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          )}
 
-            {/* Score overview */}
-            <div className="flex items-center gap-6 p-5 rounded-xl bg-gradient-to-r from-cream to-cream-warm border border-forest/5 mb-6">
-              <div className="relative w-20 h-20">
-                <svg className="w-20 h-20 -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="rgba(45, 74, 62, 0.1)"
-                    strokeWidth="3"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke={`var(--${scoreLevel.color})`}
-                    strokeWidth="3"
-                    strokeDasharray={`${((prospect.totalScore || 0) / 50) * 100}, 100`}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="font-display text-2xl text-forest">{prospect.totalScore || 0}</span>
-                  <span className="font-accent text-[10px] text-ink-soft/50">/50</span>
+          {/* Lead Magnet info card - Only for leadMagnetSubscriber */}
+          {prospect._type === 'leadMagnetSubscriber' && (
+            <div className="admin-card p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7c3aed]/20 to-[#7c3aed]/5 border border-[#7c3aed]/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-[#7c3aed]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
                 </div>
+                <h2 className="font-display text-lg text-forest">Informations Lead Magnet</h2>
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <StatusBadge status={prospect.profile || ''} type="profile" />
+              <div className="p-5 rounded-xl bg-gradient-to-r from-cream to-cream-warm border border-forest/5">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#ede9fe] flex items-center justify-center">
+                    <span className="text-2xl">🌙</span>
+                  </div>
+                  <div>
+                    <p className="font-display text-lg text-forest">Cadeaux Ramadan</p>
+                    <p className="font-body text-sm text-ink-soft/70">Guide téléchargé</p>
+                  </div>
                 </div>
-                <p className="font-body text-sm text-ink-soft/70 mt-2">
-                  Niveau de déséquilibre : <span className={`font-accent text-${scoreLevel.color}`}>{scoreLevel.label}</span>
+                <p className="font-body text-sm text-ink-soft/70">
+                  Cette personne s&apos;est inscrite pour recevoir les cadeaux Ramadan. Elle a manifesté un intérêt pour la naturopathie et pourrait être intéressée par une consultation.
                 </p>
               </div>
             </div>
+          )}
 
-            {/* Category scores */}
-            {prospect.categoryScores && (
-              <div className="space-y-4">
-                <p className="font-accent text-xs text-ink-soft/60 uppercase tracking-[0.1em]">Scores par catégorie</p>
-                <div className="grid gap-3">
-                  {Object.entries(prospect.categoryScores).map(([key, value]) => (
-                    <div key={key} className="flex items-center gap-4">
-                      <span className="font-body text-sm text-ink-soft/80 w-36 truncate">{getCategoryLabel(key)}</span>
-                      <div className="flex-1 h-2 rounded-full bg-forest/10 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all ${
-                            (value || 0) >= 4 ? 'bg-blush-deep' : (value || 0) >= 2 ? 'bg-gold' : 'bg-sage'
-                          }`}
-                          style={{ width: `${((value || 0) / 6) * 100}%` }}
-                        />
-                      </div>
-                      <span className="font-accent text-xs text-ink-soft/60 w-10 text-right tabular-nums">{value || 0}/6</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Answers card */}
-          {prospect.answers && prospect.answers.length > 0 && (
+          {/* Answers card - Only for questionnaireSubmission */}
+          {prospect._type === 'questionnaireSubmission' && prospect.answers && prospect.answers.length > 0 && (
             <div className="admin-card p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blush/30 to-blush/10 border border-blush-deep/20 flex items-center justify-center">
@@ -477,6 +554,25 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 <div className="space-y-5">
+                  {/* Last name field for leadMagnetSubscriber without lastName */}
+                  {needsLastName && (
+                    <div>
+                      <label className="block font-accent text-xs text-ink-soft/70 uppercase tracking-[0.1em] mb-3">
+                        Nom de famille <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={convertData.lastName}
+                        onChange={(e) => setConvertData({ ...convertData, lastName: e.target.value })}
+                        className="admin-input"
+                        placeholder="Nom de famille de la cliente..."
+                      />
+                      <p className="font-body text-xs text-ink-soft/50 mt-1">
+                        Requis pour créer le dossier cliente
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <label className="block font-accent text-xs text-ink-soft/70 uppercase tracking-[0.1em] mb-3">
                       Type de consultation
@@ -524,7 +620,7 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
                   </button>
                   <button
                     onClick={handleConvert}
-                    disabled={isConverting || !convertData.consultationType}
+                    disabled={isConverting || !canConvert}
                     className="flex-1 py-3 rounded-xl font-display text-sm tracking-wide bg-gradient-to-r from-gold to-gold-light text-forest-deep hover:shadow-lg transition-all disabled:opacity-50"
                   >
                     {isConverting ? (

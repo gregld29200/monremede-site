@@ -284,19 +284,8 @@ function TelechargementContent() {
           </section>
         )}
 
-        {/* Social Proof Section */}
-        <section className="py-16 lg:py-20 px-6 bg-cream">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-10">
-              <p className="label text-sage mb-4">Ce qu&apos;ils en pensent</p>
-              <h2 className="display-medium text-forest">
-                Les avis de nos lecteurs
-              </h2>
-            </div>
-
-            <SocialProof />
-          </div>
-        </section>
+        {/* Social Proof Section - Only renders if there are reviews */}
+        <SocialProof showTitle={true} wrapInSection={true} />
 
         {/* Next Steps Section */}
         <section className="py-16 lg:py-20 px-6 bg-cream-warm">

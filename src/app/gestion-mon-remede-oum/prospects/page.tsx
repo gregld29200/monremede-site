@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { StatusBadge } from '@/components/admin/status-badge'
-import type { Prospect } from '@/types/admin'
+import type { UnifiedProspect, ProspectSourceTag } from '@/types/admin'
 
 const statusFilters = [
   { value: 'all', label: 'Tous' },
@@ -14,12 +14,28 @@ const statusFilters = [
   { value: 'non_interesse', label: 'Non interesse' },
 ]
 
+const sourceFilters = [
+  { value: 'all', label: 'Toutes sources' },
+  { value: 'questionnaire-sante', label: 'Questionnaire Santé' },
+  { value: 'cadeau-ramadan', label: 'Cadeau Ramadan' },
+]
+
+const sourceLabels: Record<ProspectSourceTag, { label: string; color: string; bg: string }> = {
+  'questionnaire-sante': { label: 'Questionnaire', color: 'text-[#1d4ed8]', bg: 'bg-[#dbeafe]' },
+  'cadeau-ramadan': { label: 'Ramadan', color: 'text-[#7c3aed]', bg: 'bg-[#ede9fe]' },
+  'newsletter': { label: 'Newsletter', color: 'text-[#059669]', bg: 'bg-[#d1fae5]' },
+  'lead-magnet': { label: 'Lead Magnet', color: 'text-[#d97706]', bg: 'bg-[#fef3c7]' },
+  'recommandation': { label: 'Recommandation', color: 'text-[#db2777]', bg: 'bg-[#fce7f3]' },
+  'autre': { label: 'Autre', color: 'text-[#6b7280]', bg: 'bg-[#f3f4f6]' },
+}
+
 export default function ProspectsPage() {
-  const [prospects, setProspects] = useState<Prospect[]>([])
+  const [prospects, setProspects] = useState<UnifiedProspect[]>([])
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [sourceFilter, setSourceFilter] = useState('all')
 
   const fetchProspects = useCallback(async () => {
     setIsLoading(true)
@@ -27,6 +43,7 @@ export default function ProspectsPage() {
       const params = new URLSearchParams()
       if (search) params.set('search', search)
       if (statusFilter !== 'all') params.set('status', statusFilter)
+      if (sourceFilter !== 'all') params.set('source', sourceFilter)
 
       const response = await fetch(`/api/gestion-mon-remede-oum/prospects?${params}`)
       const data = await response.json()
@@ -37,7 +54,7 @@ export default function ProspectsPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [search, statusFilter])
+  }, [search, statusFilter, sourceFilter])
 
   useEffect(() => {
     fetchProspects()
@@ -87,7 +104,7 @@ export default function ProspectsPage() {
           </div>
           <div>
             <p className="text-sm text-[#6b7280]">
-              Soumissions questionnaire
+              Prospects unifiés
             </p>
             <div className="flex items-baseline gap-2 mt-0.5">
               <span className="text-3xl font-semibold text-[#111827] tabular-nums">{total}</span>
@@ -113,21 +130,37 @@ export default function ProspectsPage() {
 
       {/* Filters card */}
       <div className="admin-card p-5">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* Search */}
-          <div className="relative flex-1">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        <div className="flex flex-col gap-4">
+          {/* Search and source filter row */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="relative flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af]">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Rechercher par nom ou email..."
+                className="admin-input pl-10"
+              />
             </div>
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher par nom ou email..."
-              className="admin-input pl-10"
-            />
+
+            {/* Source filter dropdown */}
+            <select
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+              className="admin-input w-full lg:w-48"
+            >
+              {sourceFilters.map((filter) => (
+                <option key={filter.value} value={filter.value}>
+                  {filter.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Status filter chips */}
@@ -181,6 +214,7 @@ export default function ProspectsPage() {
               <thead>
                 <tr>
                   <th>Prospect</th>
+                  <th>Source</th>
                   <th>Profil sante</th>
                   <th>Score</th>
                   <th>Statut</th>
@@ -189,18 +223,20 @@ export default function ProspectsPage() {
                 </tr>
               </thead>
               <tbody className="stagger-fade">
-                {prospects.map((prospect) => (
+                {prospects.map((prospect) => {
+                  const sourceInfo = sourceLabels[prospect.sourceTag] || sourceLabels.autre
+                  return (
                   <tr key={prospect._id} className="group">
                     <td>
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-[#e0e7ff] flex items-center justify-center flex-shrink-0">
                           <span className="text-sm font-medium text-[#4f46e5]">
-                            {prospect.firstName?.[0]}{prospect.lastName?.[0]}
+                            {prospect.firstName?.[0]}{prospect.lastName?.[0] || ''}
                           </span>
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-[#111827] truncate">
-                            {prospect.firstName} {prospect.lastName}
+                            {prospect.firstName} {prospect.lastName || ''}
                           </p>
                           <p className="text-sm text-[#6b7280] truncate">
                             {prospect.email}
@@ -209,23 +245,36 @@ export default function ProspectsPage() {
                       </div>
                     </td>
                     <td>
-                      <StatusBadge
-                        status={prospect.profile || ''}
-                        type="profile"
-                      />
+                      <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${sourceInfo.bg} ${sourceInfo.color}`}>
+                        {sourceInfo.label}
+                      </span>
                     </td>
                     <td>
-                      <div className="flex items-center gap-3">
-                        <div className="w-16 h-1.5 rounded-full bg-[#e5e7eb] overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all ${getScoreBarColor(prospect.totalScore)}`}
-                            style={{ width: `${((prospect.totalScore || 0) / 50) * 100}%` }}
-                          />
+                      {prospect._type === 'questionnaireSubmission' ? (
+                        <StatusBadge
+                          status={prospect.profile || ''}
+                          type="profile"
+                        />
+                      ) : (
+                        <span className="text-sm text-[#9ca3af]">-</span>
+                      )}
+                    </td>
+                    <td>
+                      {prospect._type === 'questionnaireSubmission' ? (
+                        <div className="flex items-center gap-3">
+                          <div className="w-16 h-1.5 rounded-full bg-[#e5e7eb] overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${getScoreBarColor(prospect.totalScore)}`}
+                              style={{ width: `${((prospect.totalScore || 0) / 50) * 100}%` }}
+                            />
+                          </div>
+                          <span className={`text-sm font-medium tabular-nums ${getScoreColor(prospect.totalScore)}`}>
+                            {prospect.totalScore !== undefined ? `${prospect.totalScore}/50` : '-'}
+                          </span>
                         </div>
-                        <span className={`text-sm font-medium tabular-nums ${getScoreColor(prospect.totalScore)}`}>
-                          {prospect.totalScore !== undefined ? `${prospect.totalScore}/50` : '-'}
-                        </span>
-                      </div>
+                      ) : (
+                        <span className="text-sm text-[#9ca3af]">-</span>
+                      )}
                     </td>
                     <td>
                       <StatusBadge
@@ -250,7 +299,7 @@ export default function ProspectsPage() {
                       </Link>
                     </td>
                   </tr>
-                ))}
+                )})}
               </tbody>
             </table>
           </div>

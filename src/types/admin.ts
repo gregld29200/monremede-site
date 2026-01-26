@@ -13,7 +13,7 @@ export interface ClientHealthProfile {
 }
 
 export type ClientStatus = 'actif' | 'pause' | 'archive'
-export type ClientSource = 'questionnaire' | 'import' | 'manuel' | 'recommandation'
+export type ClientSource = 'questionnaire' | 'import' | 'manuel' | 'recommandation' | 'lead-magnet'
 export type ConsultationType = 'sante-generale' | 'troubles-digestifs' | 'equilibre-hormonal' | 'suivi-complet'
 
 export interface Client {
@@ -64,6 +64,13 @@ export interface ClientNoteWithClient extends Omit<ClientNote, 'client'> {
 // Prospect types (questionnaire submission)
 export type ProspectProfile = 'equilibre' | 'alerte' | 'difficulte' | 'urgent'
 export type ProspectStatus = 'nouveau' | 'contacte' | 'discussion' | 'converti' | 'non_interesse'
+export type ProspectSourceTag =
+  | 'questionnaire-sante'
+  | 'cadeau-ramadan'
+  | 'newsletter'
+  | 'lead-magnet'
+  | 'recommandation'
+  | 'autre'
 
 export interface ProspectCategoryScores {
   etatGeneral?: number
@@ -99,6 +106,31 @@ export interface Prospect {
   status: ProspectStatus
   notes?: string
   submittedAt?: string
+}
+
+// Unified prospect type (combines questionnaireSubmission and leadMagnetSubscriber)
+export interface UnifiedProspect {
+  _id: string
+  _type: 'questionnaireSubmission' | 'leadMagnetSubscriber'
+  sourceTag: ProspectSourceTag
+  firstName: string
+  lastName?: string // Optional for leadMagnet
+  email: string
+  phone?: string // Optional for leadMagnet
+  age?: number // Only for questionnaire
+  status: ProspectStatus
+  submittedAt?: string
+  notes?: string
+  // Questionnaire-specific fields
+  totalScore?: number
+  profile?: ProspectProfile
+  categoryScores?: ProspectCategoryScores
+  answers?: ProspectAnswer[]
+  // LeadMagnet-specific fields
+  acquisitionSource?: string
+  wantsConsultation?: string
+  hasConsultedNaturopath?: string
+  source?: string // e.g., 'cadeaux-ramadan'
 }
 
 // Dashboard Stats

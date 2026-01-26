@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
-import type { Prospect } from '@/types/admin'
+import type { UnifiedProspect } from '@/types/admin'
 
 // Create read client at request time (no CDN for admin routes)
 function getReadClient() {
@@ -18,36 +18,62 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const search = searchParams.get('search')
+    const sourceTag = searchParams.get('source') // 'questionnaire-sante' | 'cadeau-ramadan' | 'all'
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    let filter = '_type == "questionnaireSubmission"'
+    // Build filter for both document types
+    let typeFilter = '_type in ["questionnaireSubmission", "leadMagnetSubscriber"]'
 
-    if (status && status !== 'all') {
-      filter += ` && status == "${status}"`
+    // Filter by source tag
+    if (sourceTag && sourceTag !== 'all') {
+      if (sourceTag === 'questionnaire-sante') {
+        typeFilter = '_type == "questionnaireSubmission"'
+      } else if (sourceTag === 'cadeau-ramadan') {
+        typeFilter = '_type == "leadMagnetSubscriber"'
+      }
     }
 
+    let filter = typeFilter
+
+    // Filter by status (use coalesce for documents without status)
+    if (status && status !== 'all') {
+      filter += ` && coalesce(status, "nouveau") == "${status}"`
+    }
+
+    // Filter by search (handle both document types)
     if (search) {
       filter += ` && (firstName match "*${search}*" || lastName match "*${search}*" || email match "*${search}*")`
     }
 
     const query = `{
-      "prospects": *[${filter}] | order(submittedAt desc) [${offset}...${offset + limit}] {
+      "prospects": *[${filter}] | order(coalesce(submittedAt, subscribedAt) desc) [${offset}...${offset + limit}] {
         _id,
+        _type,
+        "sourceTag": select(
+          _type == "questionnaireSubmission" => "questionnaire-sante",
+          _type == "leadMagnetSubscriber" => "cadeau-ramadan",
+          "autre"
+        ),
         firstName,
         lastName,
         email,
+        phone,
         age,
+        "status": coalesce(status, "nouveau"),
+        "submittedAt": coalesce(submittedAt, subscribedAt),
+        notes,
         totalScore,
         profile,
-        status,
-        notes,
-        submittedAt
+        acquisitionSource,
+        wantsConsultation,
+        hasConsultedNaturopath,
+        source
       },
       "total": count(*[${filter}])
     }`
 
-    const result = await client.fetch<{ prospects: Prospect[]; total: number }>(query)
+    const result = await client.fetch<{ prospects: UnifiedProspect[]; total: number }>(query)
 
     return NextResponse.json(result)
   } catch (error) {
