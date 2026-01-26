@@ -36,6 +36,21 @@ export default function CadeauxRamadanPage() {
       return
     }
 
+    if (!acquisitionSource) {
+      setError('Veuillez indiquer où vous avez vu l\'annonce')
+      return
+    }
+
+    if (!hasConsultedNaturopath) {
+      setError('Veuillez indiquer si vous avez déjà consulté une naturopathe')
+      return
+    }
+
+    if (!wantsConsultation) {
+      setError('Veuillez indiquer si vous souhaitez consulter une naturopathe')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -46,9 +61,9 @@ export default function CadeauxRamadanPage() {
           firstName: firstName.trim(),
           email,
           source: 'cadeaux-ramadan',
-          acquisitionSource: acquisitionSource || undefined,
-          hasConsultedNaturopath: hasConsultedNaturopath || undefined,
-          wantsConsultation: wantsConsultation || undefined,
+          acquisitionSource,
+          hasConsultedNaturopath,
+          wantsConsultation,
         }),
       })
 
