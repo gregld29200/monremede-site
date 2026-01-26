@@ -286,6 +286,7 @@ export interface Post {
     _type: 'reference'
   }>
   publishedAt?: string
+  isDraft?: boolean
   excerpt?: string
   body?: BlockContent[]
   featured?: boolean
@@ -333,6 +334,7 @@ export interface Recipe {
     _type: 'reference'
   }>
   publishedAt?: string
+  isDraft?: boolean
   description?: string
   prepTime?: number
   cookTime?: number

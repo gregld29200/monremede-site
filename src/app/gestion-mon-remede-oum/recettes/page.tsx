@@ -59,7 +59,7 @@ export default function RecipesAdminPage() {
   }, [fetchRecipes])
 
   const handlePublishToggle = async (recipe: RecipeExpanded) => {
-    const action = recipe.publishedAt ? 'unpublish' : 'publish'
+    const action = recipe.isDraft === true ? 'publish' : 'unpublish'
     try {
       const response = await fetch(`${API_ADMIN_PATH}/recettes/${recipe._id}/publish`, {
         method: 'POST',
@@ -76,7 +76,7 @@ export default function RecipesAdminPage() {
   }
 
   const handleDelete = async (recipe: RecipeExpanded) => {
-    if (recipe.publishedAt) {
+    if (!recipe.isDraft) {
       alert('Dépubliez la recette avant de la supprimer.')
       return
     }
@@ -277,7 +277,7 @@ export default function RecipesAdminPage() {
                       <span
                         className={cn(
                           'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-body',
-                          recipe.publishedAt
+                          !recipe.isDraft
                             ? 'bg-emerald-50 text-emerald-700'
                             : 'bg-amber-50 text-amber-700'
                         )}
@@ -285,10 +285,10 @@ export default function RecipesAdminPage() {
                         <span
                           className={cn(
                             'w-1.5 h-1.5 rounded-full',
-                            recipe.publishedAt ? 'bg-emerald-500' : 'bg-amber-500'
+                            !recipe.isDraft ? 'bg-emerald-500' : 'bg-amber-500'
                           )}
                         />
-                        {recipe.publishedAt ? 'Publiée' : 'Brouillon'}
+                        {!recipe.isDraft ? 'Publiée' : 'Brouillon'}
                       </span>
                     </td>
                     <td className="px-4 py-4">
@@ -323,13 +323,13 @@ export default function RecipesAdminPage() {
                           onClick={() => handlePublishToggle(recipe)}
                           className={cn(
                             'p-2 rounded-lg transition-colors',
-                            recipe.publishedAt
+                            !recipe.isDraft
                               ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-50'
                               : 'text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50'
                           )}
-                          title={recipe.publishedAt ? 'Dépublier' : 'Publier'}
+                          title={!recipe.isDraft ? 'Dépublier' : 'Publier'}
                         >
-                          {recipe.publishedAt ? (
+                          {!recipe.isDraft ? (
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                             </svg>

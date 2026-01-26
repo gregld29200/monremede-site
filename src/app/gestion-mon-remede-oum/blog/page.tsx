@@ -68,7 +68,7 @@ export default function BlogAdminPage() {
   }, [fetchPosts])
 
   const handlePublishToggle = async (post: PostExpanded) => {
-    const action = post.publishedAt ? 'unpublish' : 'publish'
+    const action = post.isDraft === true ? 'publish' : 'unpublish'
     try {
       const response = await fetch(`${API_ADMIN_PATH}/blog/${post._id}/publish`, {
         method: 'POST',
@@ -85,7 +85,7 @@ export default function BlogAdminPage() {
   }
 
   const handleDelete = async (post: PostExpanded) => {
-    if (post.publishedAt) {
+    if (!post.isDraft) {
       alert('Dépubliez l\'article avant de le supprimer.')
       return
     }
@@ -278,7 +278,7 @@ export default function BlogAdminPage() {
                       <span
                         className={cn(
                           'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-body',
-                          post.publishedAt
+                          !post.isDraft
                             ? 'bg-emerald-50 text-emerald-700'
                             : 'bg-amber-50 text-amber-700'
                         )}
@@ -286,10 +286,10 @@ export default function BlogAdminPage() {
                         <span
                           className={cn(
                             'w-1.5 h-1.5 rounded-full',
-                            post.publishedAt ? 'bg-emerald-500' : 'bg-amber-500'
+                            !post.isDraft ? 'bg-emerald-500' : 'bg-amber-500'
                           )}
                         />
-                        {post.publishedAt ? 'Publié' : 'Brouillon'}
+                        {!post.isDraft ? 'Publié' : 'Brouillon'}
                       </span>
                     </td>
                     <td className="px-4 py-4">
@@ -324,13 +324,13 @@ export default function BlogAdminPage() {
                           onClick={() => handlePublishToggle(post)}
                           className={cn(
                             'p-2 rounded-lg transition-colors',
-                            post.publishedAt
+                            !post.isDraft
                               ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-50'
                               : 'text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50'
                           )}
-                          title={post.publishedAt ? 'Dépublier' : 'Publier'}
+                          title={!post.isDraft ? 'Dépublier' : 'Publier'}
                         >
-                          {post.publishedAt ? (
+                          {!post.isDraft ? (
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                             </svg>

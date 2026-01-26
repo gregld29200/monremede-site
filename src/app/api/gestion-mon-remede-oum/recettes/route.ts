@@ -24,11 +24,11 @@ export async function GET(request: NextRequest) {
 
     let filter = '_type == "recipe"'
 
-    // Filter by publish status
+    // Filter by publish status (using isDraft field)
     if (status === 'published') {
-      filter += ' && defined(publishedAt)'
+      filter += ' && isDraft != true'
     } else if (status === 'draft') {
-      filter += ' && !defined(publishedAt)'
+      filter += ' && isDraft == true'
     }
 
     // Filter by search
@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
           "slug": slug.current
         },
         publishedAt,
+        isDraft,
         description,
         prepTime,
         cookTime,
