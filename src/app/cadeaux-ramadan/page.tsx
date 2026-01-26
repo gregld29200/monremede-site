@@ -146,6 +146,7 @@ export default function CadeauxRamadanPage() {
                   <option value="instagram">Instagram</option>
                   <option value="facebook">Facebook</option>
                   <option value="tiktok">TikTok</option>
+                  <option value="telegram">Telegram</option>
                   <option value="youtube">YouTube</option>
                   <option value="bouche-a-oreille">Bouche à oreille</option>
                   <option value="google">Recherche Google</option>
@@ -357,6 +358,7 @@ export default function CadeauxRamadanPage() {
                 <option value="instagram" className="bg-forest-deep">Instagram</option>
                 <option value="facebook" className="bg-forest-deep">Facebook</option>
                 <option value="tiktok" className="bg-forest-deep">TikTok</option>
+                <option value="telegram" className="bg-forest-deep">Telegram</option>
                 <option value="youtube" className="bg-forest-deep">YouTube</option>
                 <option value="bouche-a-oreille" className="bg-forest-deep">Bouche à oreille</option>
                 <option value="google" className="bg-forest-deep">Recherche Google</option>
