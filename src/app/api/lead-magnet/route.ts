@@ -103,7 +103,47 @@ export async function POST(request: NextRequest) {
     // Generate unique download token
     const downloadToken = randomUUID()
 
-    // Create the document in Sanity
+    // Build download URL first (needed for email)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
+    const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${downloadToken}`
+
+    // Send confirmation email BEFORE creating the document
+    const resend = getResendClient()
+    let emailSent = false
+    let emailError: string | undefined
+
+    if (resend) {
+      try {
+        const emailHtml = generateRamadanGiftsEmail({
+          firstName: data.firstName.trim(),
+          downloadUrl,
+        })
+
+        const emailResult = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: data.email,
+          replyTo: REPLY_TO_EMAIL,
+          subject: getRamadanGiftsEmailSubject(),
+          html: emailHtml,
+        })
+
+        if (emailResult.error) {
+          emailError = emailResult.error.message
+          console.error('Erreur Resend:', emailResult.error)
+        } else {
+          emailSent = true
+          console.log(`Email de confirmation envoyé à ${data.email}, ID: ${emailResult.data?.id}`)
+        }
+      } catch (err) {
+        emailError = err instanceof Error ? err.message : 'Erreur inconnue'
+        console.error('Erreur lors de l\'envoi de l\'email:', err)
+      }
+    } else {
+      emailError = 'RESEND_API_KEY non configuré'
+      console.error('Resend client non disponible - RESEND_API_KEY manquant')
+    }
+
+    // Create the document in Sanity with accurate linkSent status
     const result = await writeClient.create({
       _type: 'leadMagnetSubscriber',
       firstName: data.firstName.trim(),
@@ -114,38 +154,9 @@ export async function POST(request: NextRequest) {
       wantsConsultation: data.wantsConsultation || undefined,
       subscribedAt: new Date().toISOString(),
       downloadToken,
-      linkSent: true,
+      linkSent: emailSent,
+      emailError: emailError || undefined,
     })
-
-    // Build download URL
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
-    const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${downloadToken}`
-
-    // Send confirmation email
-    const resend = getResendClient()
-    let emailSent = false
-
-    if (resend) {
-      try {
-        const emailHtml = generateRamadanGiftsEmail({
-          firstName: data.firstName.trim(),
-          downloadUrl,
-        })
-
-        await resend.emails.send({
-          from: FROM_EMAIL,
-          to: data.email,
-          replyTo: REPLY_TO_EMAIL,
-          subject: getRamadanGiftsEmailSubject(),
-          html: emailHtml,
-        })
-
-        emailSent = true
-        console.log(`Email de confirmation envoyé à ${data.email}`)
-      } catch (emailError) {
-        console.error('Erreur lors de l\'envoi de l\'email:', emailError)
-      }
-    }
 
     return NextResponse.json({
       success: true,

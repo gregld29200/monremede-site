@@ -86,7 +86,14 @@ export const leadMagnetSubscriber = defineType({
       title: 'Lien envoyé',
       type: 'boolean',
       initialValue: false,
-      description: 'Cocher quand le lien de téléchargement a été envoyé manuellement',
+      description: 'Indique si l\'email a été envoyé avec succès',
+    }),
+    defineField({
+      name: 'emailError',
+      title: 'Erreur d\'envoi',
+      type: 'string',
+      readOnly: true,
+      description: 'Message d\'erreur si l\'envoi a échoué',
     }),
     defineField({
       name: 'notes',
@@ -104,15 +111,16 @@ export const leadMagnetSubscriber = defineType({
       source: 'source',
       subscribedAt: 'subscribedAt',
       linkSent: 'linkSent',
+      emailError: 'emailError',
     },
     prepare(selection) {
-      const {firstName, email, source, subscribedAt, linkSent} = selection
+      const {firstName, email, source, subscribedAt, linkSent, emailError} = selection
       const date = subscribedAt ? new Date(subscribedAt).toLocaleDateString('fr-FR') : ''
-      const linkIcon = linkSent ? '✅' : '⏳'
+      const linkIcon = emailError ? '❌' : linkSent ? '✅' : '⏳'
 
       return {
         title: `${firstName} - ${email}`,
-        subtitle: `${linkIcon} ${source} • ${date}`,
+        subtitle: `${linkIcon} ${source} • ${date}${emailError ? ` • ${emailError}` : ''}`,
       }
     },
   },
