@@ -126,6 +126,7 @@ export interface UnifiedProspect {
   profile?: ProspectProfile
   categoryScores?: ProspectCategoryScores
   answers?: ProspectAnswer[]
+  aiSummary?: string
   // LeadMagnet-specific fields
   acquisitionSource?: string
   wantsConsultation?: string

@@ -420,6 +420,29 @@ export default function ProspectDetailPage({ params }: { params: Promise<{ id: s
             </div>
           )}
 
+          {/* AI Summary card - Only for questionnaireSubmission with summary */}
+          {prospect._type === 'questionnaireSubmission' && prospect.aiSummary && (
+            <div className="admin-card p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8b5cf6]/20 to-[#8b5cf6]/5 border border-[#8b5cf6]/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-[#8b5cf6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <h2 className="font-display text-lg text-forest">Résumé IA</h2>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#8b5cf6]/10 text-[#8b5cf6] uppercase tracking-wider">
+                  Auto-généré
+                </span>
+              </div>
+
+              <div className="p-5 rounded-xl bg-gradient-to-r from-[#8b5cf6]/5 to-[#8b5cf6]/10 border border-[#8b5cf6]/10">
+                <p className="font-body text-forest/90 text-sm leading-relaxed whitespace-pre-line">
+                  {prospect.aiSummary}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Answers card - Only for questionnaireSubmission */}
           {prospect._type === 'questionnaireSubmission' && prospect.answers && prospect.answers.length > 0 && (
             <div className="admin-card p-6">

@@ -60,6 +60,7 @@ export async function GET(
         profile,
         categoryScores,
         answers,
+        aiSummary,
         acquisitionSource,
         wantsConsultation,
         hasConsultedNaturopath,
