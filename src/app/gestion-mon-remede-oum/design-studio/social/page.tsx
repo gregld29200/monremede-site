@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense, useRef } from 'react'
+import { useState, Suspense, useRef, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -13,7 +13,12 @@ import { SOCIAL_TEMPLATES, BRAND_KIT } from '@/types/design-studio'
 
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 
-type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'none'
+type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
+interface GeneratedImageData {
+  url: string
+  id: string
+}
 
 function SocialPageContent() {
   const searchParams = useSearchParams()
@@ -28,14 +33,17 @@ function SocialPageContent() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [taskId, setTaskId] = useState<string | null>(null)
   const [documentId, setDocumentId] = useState<string | null>(null)
-  const [generatedImages, setGeneratedImages] = useState<string[]>([])
+  const [generatedImages, setGeneratedImages] = useState<GeneratedImageData[]>([])
   const [error, setError] = useState<string | null>(null)
 
-  // New features state
+  // Background upload state
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
   const [backgroundFile, setBackgroundFile] = useState<File | null>(null)
+
+  // Logo editor state
+  const [editingImage, setEditingImage] = useState<GeneratedImageData | null>(null)
   const [logoPosition, setLogoPosition] = useState<LogoPosition>('bottom-right')
-  const [logoSize, setLogoSize] = useState(60) // Logo size in pixels
+  const [logoSize, setLogoSize] = useState(80)
 
   const handleBackgroundUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -121,124 +129,129 @@ function SocialPageContent() {
     }
   }
 
-  const handleGenerationComplete = (resultUrl: string) => {
-    setGeneratedImages(prev => [resultUrl, ...prev])
+  // Use useCallback to prevent recreation on each render
+  const handleGenerationComplete = useCallback((resultUrl: string) => {
+    const newImage: GeneratedImageData = {
+      url: resultUrl,
+      id: `img-${Date.now()}`,
+    }
+    setGeneratedImages(prev => {
+      // Prevent duplicates by checking if URL already exists
+      if (prev.some(img => img.url === resultUrl)) {
+        return prev
+      }
+      return [newImage, ...prev]
+    })
     setIsGenerating(false)
     setTaskId(null)
     setDocumentId(null)
-  }
+  }, [])
 
-  const handleGenerationError = (errorMsg: string) => {
+  const handleGenerationError = useCallback((errorMsg: string) => {
     setError(errorMsg)
     setIsGenerating(false)
     setTaskId(null)
+  }, [])
+
+  const openLogoEditor = (image: GeneratedImageData) => {
+    setEditingImage(image)
+    setLogoPosition('bottom-right')
+    setLogoSize(80)
   }
 
-  const addLogoToImage = async (imageUrl: string): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      if (!ctx) {
-        reject(new Error('Canvas not supported'))
+  const closeLogoEditor = () => {
+    setEditingImage(null)
+  }
+
+  const downloadImage = async (imageUrl: string, withLogo: boolean) => {
+    if (!imageUrl) return
+
+    try {
+      if (!withLogo) {
+        // Download without logo
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${template.id}-monremede-${Date.now()}.png`
+        link.click()
+        URL.revokeObjectURL(url)
         return
       }
+
+      // Download with logo using canvas
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error('Canvas not supported')
 
       const img = new window.Image()
       img.crossOrigin = 'anonymous'
 
-      img.onload = () => {
-        canvas.width = img.width
-        canvas.height = img.height
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => {
+          canvas.width = img.width
+          canvas.height = img.height
+          ctx.drawImage(img, 0, 0)
 
-        // Draw the main image
-        ctx.drawImage(img, 0, 0)
+          // Load and draw logo
+          const logo = new window.Image()
+          logo.crossOrigin = 'anonymous'
 
-        // If logo position is 'none', just return the image
-        if (logoPosition === 'none') {
-          canvas.toBlob((blob) => {
-            if (blob) resolve(blob)
-            else reject(new Error('Failed to create blob'))
-          }, 'image/png')
-          return
-        }
+          logo.onload = () => {
+            const padding = 30
+            const logoWidth = logoSize * (img.width / 500) // Scale logo based on image size
+            const logoHeight = (logo.height / logo.width) * logoWidth
 
-        // Load and draw the logo
-        const logo = new window.Image()
-        logo.crossOrigin = 'anonymous'
+            let x = padding
+            let y = padding
 
-        logo.onload = () => {
-          const padding = 20
-          const logoWidth = logoSize
-          const logoHeight = (logo.height / logo.width) * logoWidth
+            switch (logoPosition) {
+              case 'top-left':
+                x = padding
+                y = padding
+                break
+              case 'top-right':
+                x = canvas.width - logoWidth - padding
+                y = padding
+                break
+              case 'bottom-left':
+                x = padding
+                y = canvas.height - logoHeight - padding
+                break
+              case 'bottom-right':
+                x = canvas.width - logoWidth - padding
+                y = canvas.height - logoHeight - padding
+                break
+            }
 
-          let x = padding
-          let y = padding
+            ctx.drawImage(logo, x, y, logoWidth, logoHeight)
 
-          switch (logoPosition) {
-            case 'top-left':
-              x = padding
-              y = padding
-              break
-            case 'top-right':
-              x = canvas.width - logoWidth - padding
-              y = padding
-              break
-            case 'bottom-left':
-              x = padding
-              y = canvas.height - logoHeight - padding
-              break
-            case 'bottom-right':
-              x = canvas.width - logoWidth - padding
-              y = canvas.height - logoHeight - padding
-              break
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const url = URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = `${template.id}-monremede-logo-${Date.now()}.png`
+                link.click()
+                URL.revokeObjectURL(url)
+              }
+              resolve()
+            }, 'image/png')
           }
 
-          ctx.drawImage(logo, x, y, logoWidth, logoHeight)
-
-          canvas.toBlob((blob) => {
-            if (blob) resolve(blob)
-            else reject(new Error('Failed to create blob'))
-          }, 'image/png')
+          logo.onerror = () => reject(new Error('Failed to load logo'))
+          logo.src = '/logo.png'
         }
 
-        logo.onerror = () => {
-          // If logo fails to load, return image without logo
-          canvas.toBlob((blob) => {
-            if (blob) resolve(blob)
-            else reject(new Error('Failed to create blob'))
-          }, 'image/png')
-        }
+        img.onerror = () => reject(new Error('Failed to load image'))
+        img.src = imageUrl
+      })
 
-        logo.src = '/logo.png'
-      }
-
-      img.onerror = () => reject(new Error('Failed to load image'))
-      img.src = imageUrl
-    })
-  }
-
-  const handleDownload = async (imageUrl: string) => {
-    if (!imageUrl) return
-
-    try {
-      const blob = await addLogoToImage(imageUrl)
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${template.id}-monremede-${Date.now()}.png`
-      link.click()
-      URL.revokeObjectURL(url)
+      closeLogoEditor()
     } catch (err) {
       console.error('Download error:', err)
-      // Fallback: download without logo
-      const response = await fetch(imageUrl)
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${template.id}-monremede-${Date.now()}.png`
-      link.click()
-      URL.revokeObjectURL(url)
+      setError('Erreur lors du téléchargement')
     }
   }
 
@@ -311,6 +324,7 @@ function SocialPageContent() {
 
               {backgroundImage ? (
                 <div className="relative inline-block">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={backgroundImage}
                     alt="Background preview"
@@ -338,57 +352,6 @@ function SocialPageContent() {
                   />
                 </label>
               )}
-            </div>
-
-            {/* Logo Options */}
-            <div className="mt-6 pt-6 border-t border-forest/10">
-              <h3 className="font-body text-sm font-medium text-forest mb-3">
-                🏷️ Logo Mon Remède
-              </h3>
-
-              <div className="space-y-4">
-                {/* Position selector */}
-                <div>
-                  <p className="font-body text-xs text-forest/50 mb-2">Position :</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: 'top-left', label: '↖ Haut gauche' },
-                      { value: 'top-right', label: '↗ Haut droit' },
-                      { value: 'bottom-left', label: '↙ Bas gauche' },
-                      { value: 'bottom-right', label: '↘ Bas droit' },
-                      { value: 'none', label: '✕ Sans logo' },
-                    ].map((pos) => (
-                      <button
-                        key={pos.value}
-                        onClick={() => setLogoPosition(pos.value as LogoPosition)}
-                        className={cn(
-                          'px-3 py-1.5 rounded-lg text-xs font-body transition-all',
-                          logoPosition === pos.value
-                            ? 'bg-forest text-cream'
-                            : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
-                        )}
-                      >
-                        {pos.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Size slider */}
-                {logoPosition !== 'none' && (
-                  <div>
-                    <p className="font-body text-xs text-forest/50 mb-2">Taille : {logoSize}px</p>
-                    <input
-                      type="range"
-                      min="30"
-                      max="150"
-                      value={logoSize}
-                      onChange={(e) => setLogoSize(Number(e.target.value))}
-                      className="w-full h-2 bg-forest/10 rounded-lg appearance-none cursor-pointer accent-forest"
-                    />
-                  </div>
-                )}
-              </div>
             </div>
 
             <div className="mt-6 flex items-center gap-3">
@@ -451,6 +414,7 @@ function SocialPageContent() {
                 }}
               >
                 {backgroundImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={backgroundImage}
                     alt="Background preview"
@@ -462,27 +426,6 @@ function SocialPageContent() {
                     <p className="font-body text-xs text-forest/50 mt-2">{template.aspectRatio}</p>
                   </div>
                 )}
-
-                {/* Logo preview */}
-                {logoPosition !== 'none' && (
-                  <div
-                    className={cn(
-                      'absolute p-2',
-                      logoPosition === 'top-left' && 'top-0 left-0',
-                      logoPosition === 'top-right' && 'top-0 right-0',
-                      logoPosition === 'bottom-left' && 'bottom-0 left-0',
-                      logoPosition === 'bottom-right' && 'bottom-0 right-0'
-                    )}
-                  >
-                    <Image
-                      src="/logo.png"
-                      alt="Logo"
-                      width={logoSize / 4}
-                      height={logoSize / 4}
-                      className="opacity-80"
-                    />
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -492,28 +435,29 @@ function SocialPageContent() {
             <div className="bg-white rounded-2xl border border-forest/8 p-6">
               <h3 className="font-display text-lg text-forest mb-4">Images générées</h3>
               <p className="font-body text-xs text-forest/50 mb-4">
-                Le logo sera ajouté au téléchargement ({logoPosition === 'none' ? 'sans logo' : logoPosition})
+                Cliquez sur une image pour ajouter le logo
               </p>
               <div className="grid grid-cols-2 gap-4">
-                {generatedImages.map((imageUrl, index) => (
-                  <div key={`${imageUrl}-${index}`} className="relative group">
+                {generatedImages.map((image) => (
+                  <div key={image.id} className="relative group">
                     <div
-                      className="relative rounded-xl overflow-hidden border border-forest/10"
+                      className="relative rounded-xl overflow-hidden border border-forest/10 cursor-pointer"
                       style={{ aspectRatio: template.aspectRatio.replace(':', '/') }}
+                      onClick={() => openLogoEditor(image)}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={imageUrl}
-                        alt={`Generated image ${index + 1}`}
+                        src={image.url}
+                        alt="Generated image"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
-                    <div className="absolute inset-0 bg-forest/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
+                    <div className="absolute inset-0 bg-forest/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
                       <button
-                        onClick={() => handleDownload(imageUrl)}
+                        onClick={() => openLogoEditor(image)}
                         className="px-4 py-2 bg-white text-forest rounded-lg font-body text-sm hover:bg-cream transition-colors"
                       >
-                        {logoPosition !== 'none' ? '📥 + Logo' : '📥 Télécharger'}
+                        🏷️ Ajouter logo
                       </button>
                     </div>
                   </div>
@@ -523,6 +467,132 @@ function SocialPageContent() {
           )}
         </div>
       </div>
+
+      {/* Logo Editor Modal */}
+      {editingImage && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closeLogoEditor}>
+          <div
+            className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-display text-xl text-forest">Ajouter le logo</h3>
+                <button
+                  onClick={closeLogoEditor}
+                  className="p-2 text-forest/50 hover:text-forest hover:bg-forest/5 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Image Preview with Logo */}
+              <div className="flex justify-center mb-6">
+                <div
+                  className="relative rounded-xl overflow-hidden border border-forest/20 shadow-lg"
+                  style={{
+                    aspectRatio: template.aspectRatio.replace(':', '/'),
+                    maxWidth: '100%',
+                    width: template.aspectRatio === '9:16' || template.aspectRatio === '2:3' ? '280px' : '400px',
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={editingImage.url}
+                    alt="Preview"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+
+                  {/* Logo overlay preview */}
+                  <div
+                    className={cn(
+                      'absolute p-3',
+                      logoPosition === 'top-left' && 'top-0 left-0',
+                      logoPosition === 'top-right' && 'top-0 right-0',
+                      logoPosition === 'bottom-left' && 'bottom-0 left-0',
+                      logoPosition === 'bottom-right' && 'bottom-0 right-0'
+                    )}
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="Logo"
+                      width={logoSize}
+                      height={logoSize}
+                      className="drop-shadow-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Logo Controls */}
+              <div className="space-y-4 mb-6">
+                {/* Position */}
+                <div>
+                  <p className="font-body text-sm text-forest mb-2">Position du logo :</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { value: 'top-left', label: '↖ Haut gauche' },
+                      { value: 'top-right', label: '↗ Haut droit' },
+                      { value: 'bottom-left', label: '↙ Bas gauche' },
+                      { value: 'bottom-right', label: '↘ Bas droit' },
+                    ].map((pos) => (
+                      <button
+                        key={pos.value}
+                        onClick={() => setLogoPosition(pos.value as LogoPosition)}
+                        className={cn(
+                          'px-3 py-2 rounded-lg text-xs font-body transition-all',
+                          logoPosition === pos.value
+                            ? 'bg-forest text-cream'
+                            : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                        )}
+                      >
+                        {pos.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Size */}
+                <div>
+                  <p className="font-body text-sm text-forest mb-2">Taille du logo : {logoSize}px</p>
+                  <input
+                    type="range"
+                    min="40"
+                    max="150"
+                    value={logoSize}
+                    onChange={(e) => setLogoSize(Number(e.target.value))}
+                    className="w-full h-2 bg-forest/10 rounded-lg appearance-none cursor-pointer accent-forest"
+                  />
+                </div>
+              </div>
+
+              {/* Download Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => downloadImage(editingImage.url, false)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-forest/10 text-forest rounded-xl font-body text-sm hover:bg-forest/20 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  Sans logo
+                </button>
+                <button
+                  onClick={() => downloadImage(editingImage.url, true)}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-forest text-cream rounded-xl font-body text-sm hover:bg-forest-deep transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  Avec logo
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
