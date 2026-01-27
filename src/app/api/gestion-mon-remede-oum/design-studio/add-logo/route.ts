@@ -40,10 +40,20 @@ export async function POST(request: NextRequest) {
 
     // If size is 0, just return the image without logo (proxy mode)
     if (size === 0) {
-      return new NextResponse(new Uint8Array(imageBuffer), {
+      // Convert to requested format
+      let outputBuffer: Buffer
+      if (format === 'webp') {
+        outputBuffer = await sharp(imageBuffer).webp({ quality: 90 }).toBuffer()
+      } else if (format === 'jpeg') {
+        outputBuffer = await sharp(imageBuffer).jpeg({ quality: 90 }).toBuffer()
+      } else {
+        outputBuffer = await sharp(imageBuffer).png().toBuffer()
+      }
+
+      return new NextResponse(new Uint8Array(outputBuffer), {
         headers: {
-          'Content-Type': 'image/png',
-          'Content-Disposition': `attachment; filename="monremede-${Date.now()}.png"`,
+          'Content-Type': mimeTypes[format],
+          'Content-Disposition': `attachment; filename="monremede-${Date.now()}.${format}"`,
         },
       })
     }
@@ -97,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Composite the logo onto the image
-    const resultBuffer = await sharp(imageBuffer)
+    const compositeSharp = sharp(imageBuffer)
       .composite([
         {
           input: resizedLogoBuffer,
@@ -105,14 +115,22 @@ export async function POST(request: NextRequest) {
           top: y,
         },
       ])
-      .png()
-      .toBuffer()
+
+    // Convert to requested format
+    let resultBuffer: Buffer
+    if (format === 'webp') {
+      resultBuffer = await compositeSharp.webp({ quality: 90 }).toBuffer()
+    } else if (format === 'jpeg') {
+      resultBuffer = await compositeSharp.jpeg({ quality: 90 }).toBuffer()
+    } else {
+      resultBuffer = await compositeSharp.png().toBuffer()
+    }
 
     // Return the image as a response
     return new NextResponse(new Uint8Array(resultBuffer), {
       headers: {
-        'Content-Type': 'image/png',
-        'Content-Disposition': `attachment; filename="monremede-${Date.now()}.png"`,
+        'Content-Type': mimeTypes[format],
+        'Content-Disposition': `attachment; filename="monremede-${Date.now()}.${format}"`,
       },
     })
   } catch (error) {

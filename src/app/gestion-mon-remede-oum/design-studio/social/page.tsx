@@ -15,6 +15,7 @@ const ADMIN_PATH = '/gestion-mon-remede-oum'
 
 type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 type LogoColor = 'dark' | 'light'
+type OutputFormat = 'png' | 'webp' | 'jpeg'
 
 interface GeneratedImageData {
   url: string
@@ -46,6 +47,7 @@ function SocialPageContent() {
   const [logoPosition, setLogoPosition] = useState<LogoPosition>('bottom-right')
   const [logoSize, setLogoSize] = useState(80)
   const [logoColor, setLogoColor] = useState<LogoColor>('dark')
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('png')
   const [isDownloading, setIsDownloading] = useState(false)
 
   const handleBackgroundUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,6 +163,7 @@ function SocialPageContent() {
     setLogoPosition('bottom-right')
     setLogoSize(80)
     setLogoColor('dark')
+    setOutputFormat('png')
   }
 
   const closeLogoEditor = () => {
@@ -179,6 +182,7 @@ function SocialPageContent() {
           position: logoPosition,
           size: 0, // Size 0 means no logo
           logoColor: 'dark',
+          format: outputFormat,
         }),
       })
 
@@ -186,7 +190,7 @@ function SocialPageContent() {
         // Fallback: try direct download (might work in some cases)
         const link = document.createElement('a')
         link.href = imageUrl
-        link.download = `${template.id}-monremede-${Date.now()}.png`
+        link.download = `${template.id}-monremede-${Date.now()}.${outputFormat}`
         link.target = '_blank'
         link.click()
         return
@@ -196,7 +200,7 @@ function SocialPageContent() {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `${template.id}-monremede-${Date.now()}.png`
+      link.download = `${template.id}-monremede-${Date.now()}.${outputFormat}`
       link.click()
       URL.revokeObjectURL(url)
       closeLogoEditor()
@@ -219,6 +223,7 @@ function SocialPageContent() {
           position: logoPosition,
           size: logoSize,
           logoColor,
+          format: outputFormat,
         }),
       })
 
@@ -231,7 +236,7 @@ function SocialPageContent() {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `${template.id}-monremede-logo-${Date.now()}.png`
+      link.download = `${template.id}-monremede-logo-${Date.now()}.${outputFormat}`
       link.click()
       URL.revokeObjectURL(url)
       closeLogoEditor()
@@ -587,6 +592,37 @@ function SocialPageContent() {
                     onChange={(e) => setLogoSize(Number(e.target.value))}
                     className="w-full h-2 bg-forest/10 rounded-lg appearance-none cursor-pointer accent-forest"
                   />
+                </div>
+
+                {/* Format */}
+                <div>
+                  <p className="font-body text-sm text-forest mb-2">Format de sortie :</p>
+                  <div className="flex gap-2">
+                    {[
+                      { value: 'png', label: 'PNG', desc: 'Qualité maximale' },
+                      { value: 'webp', label: 'WebP', desc: 'Léger, web' },
+                      { value: 'jpeg', label: 'JPEG', desc: 'Compatible' },
+                    ].map((fmt) => (
+                      <button
+                        key={fmt.value}
+                        onClick={() => setOutputFormat(fmt.value as OutputFormat)}
+                        className={cn(
+                          'flex-1 px-3 py-2 rounded-lg text-xs font-body transition-all text-center',
+                          outputFormat === fmt.value
+                            ? 'bg-forest text-cream'
+                            : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                        )}
+                      >
+                        <div className="font-medium">{fmt.label}</div>
+                        <div className={cn(
+                          'text-[10px] mt-0.5',
+                          outputFormat === fmt.value ? 'text-cream/70' : 'text-forest/50'
+                        )}>
+                          {fmt.desc}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
