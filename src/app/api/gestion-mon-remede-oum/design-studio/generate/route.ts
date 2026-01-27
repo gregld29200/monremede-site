@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
     const taskId = kieResponse.data.taskId
 
     // Create generatedImage document in Sanity
-    const doc = {
-      _type: 'generatedImage' as const,
+    const doc: Record<string, unknown> = {
+      _type: 'generatedImage',
       prompt: body.prompt, // Store original prompt without suffix
       kieTaskId: taskId,
       status: 'pending',
@@ -44,13 +44,19 @@ export async function POST(request: NextRequest) {
       resolution: body.resolution || '2K',
       purpose: body.purpose || 'mainImage',
       cost: getEstimatedCost(body.resolution || '2K'),
-      linkedPost: body.articleId ? {
-        _type: 'reference' as const,
-        _ref: body.articleId,
-      } : undefined,
     }
 
+    // Only add linkedPost if articleId is provided
+    if (body.articleId) {
+      doc.linkedPost = {
+        _type: 'reference',
+        _ref: body.articleId,
+      }
+    }
+
+    console.log('Creating Sanity document:', JSON.stringify(doc, null, 2))
     const newDoc = await writeClient.create(doc)
+    console.log('Created document:', newDoc._id)
 
     return NextResponse.json({
       taskId,
@@ -58,8 +64,10 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Generate image error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error details:', errorMessage)
     return NextResponse.json(
-      { error: 'Erreur lors de la génération de l\'image' },
+      { error: `Erreur: ${errorMessage}` },
       { status: 500 }
     )
   }
