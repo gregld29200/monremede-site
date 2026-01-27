@@ -9,7 +9,7 @@ import {
   PromptEditor,
   GenerationStatus,
 } from '@/components/admin/design-studio'
-import { SOCIAL_TEMPLATES, BRAND_KIT, type GeneratedImage } from '@/types/design-studio'
+import { SOCIAL_TEMPLATES, BRAND_KIT } from '@/types/design-studio'
 
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 
@@ -24,7 +24,8 @@ function SocialPageContent() {
   const [prompt, setPrompt] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [taskId, setTaskId] = useState<string | null>(null)
-  const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([])
+  const [documentId, setDocumentId] = useState<string | null>(null)
+  const [generatedImages, setGeneratedImages] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const handleGenerate = async () => {
@@ -51,16 +52,18 @@ function SocialPageContent() {
 
       const data = await response.json()
       setTaskId(data.taskId)
+      setDocumentId(data.documentId)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de la génération')
       setIsGenerating(false)
     }
   }
 
-  const handleGenerationComplete = (image: GeneratedImage) => {
-    setGeneratedImages(prev => [image, ...prev])
+  const handleGenerationComplete = (resultUrl: string) => {
+    setGeneratedImages(prev => [resultUrl, ...prev])
     setIsGenerating(false)
     setTaskId(null)
+    setDocumentId(null)
   }
 
   const handleGenerationError = (errorMsg: string) => {
@@ -69,10 +72,10 @@ function SocialPageContent() {
     setTaskId(null)
   }
 
-  const handleDownload = async (image: GeneratedImage) => {
-    if (!image.resultUrl) return
+  const handleDownload = async (imageUrl: string) => {
+    if (!imageUrl) return
 
-    const response = await fetch(image.resultUrl)
+    const response = await fetch(imageUrl)
     const blob = await response.blob()
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -178,6 +181,7 @@ function SocialPageContent() {
           {taskId && (
             <GenerationStatus
               taskId={taskId}
+              documentId={documentId}
               onComplete={handleGenerationComplete}
               onError={handleGenerationError}
             />
@@ -219,24 +223,22 @@ function SocialPageContent() {
             <div className="bg-white rounded-2xl border border-forest/8 p-6">
               <h3 className="font-display text-lg text-forest mb-4">Images générées</h3>
               <div className="grid grid-cols-2 gap-4">
-                {generatedImages.map((img) => (
-                  <div key={img._id} className="relative group">
+                {generatedImages.map((imageUrl, index) => (
+                  <div key={`${imageUrl}-${index}`} className="relative group">
                     <div
                       className="relative rounded-xl overflow-hidden border border-forest/10"
                       style={{ aspectRatio: template.aspectRatio.replace(':', '/') }}
                     >
-                      {img.resultUrl && (
-                        <Image
-                          src={img.resultUrl}
-                          alt={img.prompt.slice(0, 50)}
-                          fill
-                          className="object-cover"
-                        />
-                      )}
+                      <Image
+                        src={imageUrl}
+                        alt={`Generated image ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                     <div className="absolute inset-0 bg-forest/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
                       <button
-                        onClick={() => handleDownload(img)}
+                        onClick={() => handleDownload(imageUrl)}
                         className="px-4 py-2 bg-white text-forest rounded-lg font-body text-sm hover:bg-cream transition-colors"
                       >
                         Télécharger
