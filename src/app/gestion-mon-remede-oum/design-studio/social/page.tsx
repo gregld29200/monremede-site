@@ -6,16 +6,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import {
-  PromptEditor,
   GenerationStatus,
 } from '@/components/admin/design-studio'
-import { SOCIAL_TEMPLATES, BRAND_KIT } from '@/types/design-studio'
+import { SOCIAL_TEMPLATES, BRAND_KIT, type PromptSuggestion } from '@/types/design-studio'
 
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 
 type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 type LogoColor = 'dark' | 'light'
 type OutputFormat = 'png' | 'webp' | 'jpeg'
+type WorkflowStep = 'describe' | 'select-prompt' | 'generate'
 
 interface GeneratedImageData {
   url: string
@@ -30,8 +30,15 @@ function SocialPageContent() {
   // Find the template
   const template = SOCIAL_TEMPLATES.find(t => t.id === templateId) || SOCIAL_TEMPLATES[0]
 
-  // State
-  const [prompt, setPrompt] = useState('')
+  // Workflow state
+  const [workflowStep, setWorkflowStep] = useState<WorkflowStep>('describe')
+  const [userDescription, setUserDescription] = useState('')
+  const [isGeneratingPrompts, setIsGeneratingPrompts] = useState(false)
+  const [promptSuggestions, setPromptSuggestions] = useState<PromptSuggestion[]>([])
+  const [selectedPrompt, setSelectedPrompt] = useState<string>('')
+  const [editedPrompt, setEditedPrompt] = useState<string>('')
+
+  // Generation state
   const [isGenerating, setIsGenerating] = useState(false)
   const [taskId, setTaskId] = useState<string | null>(null)
   const [documentId, setDocumentId] = useState<string | null>(null)
@@ -92,11 +99,77 @@ function SocialPageContent() {
     }
   }
 
+  // Step 1: Generate prompt suggestions from user description
+  const handleGeneratePrompts = async () => {
+    if (!userDescription.trim()) return
+
+    setIsGeneratingPrompts(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/gestion-mon-remede-oum/design-studio/prompts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customPrompt: `L'utilisateur veut créer une image pour ${template.name} (format ${template.aspectRatio}).
+
+Sa demande : "${userDescription}"
+
+Génère exactement 3 prompts d'images détaillés et créatifs pour répondre à cette demande. Chaque prompt doit :
+1. Être en français
+2. Décrire une scène ou composition visuelle spécifique et détaillée
+3. Être adapté au style de la marque (naturel, organique, apaisant, féminin)
+4. Avoir environ 60-100 mots avec des détails sur la composition, les couleurs, l'ambiance, les éléments visuels
+5. Être optimisé pour le format ${template.aspectRatio}
+
+Réponds UNIQUEMENT au format JSON suivant, sans texte avant ou après :
+{
+  "prompts": [
+    { "text": "prompt détaillé en français...", "suggestedRatio": "${template.aspectRatio}" },
+    { "text": "prompt détaillé en français...", "suggestedRatio": "${template.aspectRatio}" },
+    { "text": "prompt détaillé en français...", "suggestedRatio": "${template.aspectRatio}" }
+  ]
+}`,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la génération des prompts')
+      }
+
+      const data = await response.json()
+      setPromptSuggestions(data.prompts || [])
+      setWorkflowStep('select-prompt')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur lors de la génération des prompts')
+    } finally {
+      setIsGeneratingPrompts(false)
+    }
+  }
+
+  // Select a prompt suggestion
+  const handleSelectPrompt = (promptText: string) => {
+    setSelectedPrompt(promptText)
+    setEditedPrompt(promptText)
+  }
+
+  // Go back to description step
+  const handleBackToDescription = () => {
+    setWorkflowStep('describe')
+    setPromptSuggestions([])
+    setSelectedPrompt('')
+    setEditedPrompt('')
+  }
+
+  // Step 2: Generate image with the selected/edited prompt
   const handleGenerate = async () => {
-    if (!prompt.trim()) return
+    const promptToUse = editedPrompt.trim()
+    if (!promptToUse) return
 
     setIsGenerating(true)
     setError(null)
+    setWorkflowStep('generate')
 
     try {
       // Upload background if provided
@@ -112,7 +185,7 @@ function SocialPageContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: `${prompt}\n\n${BRAND_KIT.promptSuffix}`,
+          prompt: `${promptToUse}\n\n${BRAND_KIT.promptSuffix}`,
           aspectRatio: template.aspectRatio,
           resolution: template.resolution,
           purpose: 'social',
@@ -131,7 +204,18 @@ function SocialPageContent() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors de la génération')
       setIsGenerating(false)
+      setWorkflowStep('select-prompt')
     }
+  }
+
+  // Reset to start new generation
+  const handleNewGeneration = () => {
+    setWorkflowStep('describe')
+    setUserDescription('')
+    setPromptSuggestions([])
+    setSelectedPrompt('')
+    setEditedPrompt('')
+    setError(null)
   }
 
   // Use useCallback to prevent recreation on each render
@@ -150,12 +234,20 @@ function SocialPageContent() {
     setIsGenerating(false)
     setTaskId(null)
     setDocumentId(null)
+    // Reset workflow to allow new generation
+    setWorkflowStep('describe')
+    setUserDescription('')
+    setPromptSuggestions([])
+    setSelectedPrompt('')
+    setEditedPrompt('')
   }, [])
 
   const handleGenerationError = useCallback((errorMsg: string) => {
     setError(errorMsg)
     setIsGenerating(false)
     setTaskId(null)
+    // Go back to prompt selection on error
+    setWorkflowStep('select-prompt')
   }, [])
 
   const openLogoEditor = (image: GeneratedImageData) => {
@@ -295,100 +387,260 @@ function SocialPageContent() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Left: Prompt & Generation */}
+        {/* Left: Workflow Steps */}
         <div className="space-y-6">
-          {/* Prompt Input */}
-          <div className="bg-white rounded-2xl border border-forest/8 p-6">
-            <h2 className="font-display text-lg text-forest mb-4">Décrivez votre image</h2>
-            <PromptEditor
-              value={prompt}
-              onChange={setPrompt}
-              disabled={isGenerating}
-            />
+          {/* Step Indicator */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-full font-body text-sm font-medium transition-colors',
+              workflowStep === 'describe' ? 'bg-forest text-cream' : 'bg-forest/20 text-forest'
+            )}>
+              1
+            </div>
+            <div className={cn('h-0.5 flex-1 transition-colors', workflowStep !== 'describe' ? 'bg-forest' : 'bg-forest/20')} />
+            <div className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-full font-body text-sm font-medium transition-colors',
+              workflowStep === 'select-prompt' ? 'bg-forest text-cream' : workflowStep === 'generate' ? 'bg-forest/20 text-forest' : 'bg-forest/10 text-forest/40'
+            )}>
+              2
+            </div>
+            <div className={cn('h-0.5 flex-1 transition-colors', workflowStep === 'generate' ? 'bg-forest' : 'bg-forest/20')} />
+            <div className={cn(
+              'flex items-center justify-center w-8 h-8 rounded-full font-body text-sm font-medium transition-colors',
+              workflowStep === 'generate' ? 'bg-forest text-cream' : 'bg-forest/10 text-forest/40'
+            )}>
+              3
+            </div>
+          </div>
 
-            {/* Background Upload */}
-            <div className="mt-6 pt-6 border-t border-forest/10">
-              <h3 className="font-body text-sm font-medium text-forest mb-3">
-                🖼️ Image de référence (optionnel)
-              </h3>
-              <p className="font-body text-xs text-forest/50 mb-3">
-                L&apos;IA s&apos;inspirera de cette image pour générer le résultat
+          {/* Step 1: Describe */}
+          {workflowStep === 'describe' && (
+            <div className="bg-white rounded-2xl border border-forest/8 p-6">
+              <h2 className="font-display text-lg text-forest mb-2">1. Décrivez ce que vous voulez</h2>
+              <p className="font-body text-sm text-forest/60 mb-4">
+                Écrivez simplement votre idée. L&apos;IA va créer un prompt détaillé pour vous.
               </p>
 
-              {backgroundImage ? (
-                <div className="relative inline-block">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={backgroundImage}
-                    alt="Background preview"
-                    className="w-32 h-32 object-cover rounded-lg border border-forest/20"
-                  />
-                  <button
-                    onClick={clearBackground}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-blush-deep text-white rounded-full flex items-center justify-center text-xs hover:bg-blush-deep/80 transition-colors"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-forest/20 rounded-lg cursor-pointer hover:border-forest/40 hover:bg-forest/5 transition-all">
-                  <svg className="w-8 h-8 text-forest/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-                  </svg>
-                  <span className="font-body text-sm text-forest/50">Cliquer pour importer</span>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleBackgroundUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
+              <textarea
+                value={userDescription}
+                onChange={(e) => setUserDescription(e.target.value)}
+                placeholder={`Ex: "Une image inspirante avec une citation sur la santé intestinale" ou "Un visuel apaisant avec des herbes médicinales pour promouvoir une consultation"`}
+                disabled={isGeneratingPrompts}
+                rows={4}
+                className="w-full p-4 rounded-xl border border-forest/10 bg-cream/30 font-body text-sm text-forest placeholder:text-forest/40 focus:outline-none focus:ring-2 focus:ring-forest/20 resize-none disabled:opacity-50"
+              />
 
-            <div className="mt-6 flex items-center gap-3">
+              {/* Background Upload */}
+              <div className="mt-6 pt-6 border-t border-forest/10">
+                <h3 className="font-body text-sm font-medium text-forest mb-3">
+                  🖼️ Image de référence (optionnel)
+                </h3>
+                <p className="font-body text-xs text-forest/50 mb-3">
+                  L&apos;IA s&apos;inspirera de cette image pour générer le résultat
+                </p>
+
+                {backgroundImage ? (
+                  <div className="relative inline-block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={backgroundImage}
+                      alt="Background preview"
+                      className="w-32 h-32 object-cover rounded-lg border border-forest/20"
+                    />
+                    <button
+                      onClick={clearBackground}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-blush-deep text-white rounded-full flex items-center justify-center text-xs hover:bg-blush-deep/80 transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-forest/20 rounded-lg cursor-pointer hover:border-forest/40 hover:bg-forest/5 transition-all">
+                    <svg className="w-8 h-8 text-forest/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                    </svg>
+                    <span className="font-body text-sm text-forest/50">Cliquer pour importer</span>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBackgroundUpload}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+
               <button
-                onClick={handleGenerate}
-                disabled={!prompt.trim() || isGenerating}
+                onClick={handleGeneratePrompts}
+                disabled={!userDescription.trim() || isGeneratingPrompts}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-body text-sm transition-all',
-                  !prompt.trim() || isGenerating
+                  'w-full mt-6 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-body text-sm transition-all',
+                  !userDescription.trim() || isGeneratingPrompts
                     ? 'bg-forest/10 text-forest/40 cursor-not-allowed'
                     : 'bg-forest text-cream hover:bg-forest-deep'
                 )}
               >
-                {isGenerating ? (
+                {isGeneratingPrompts ? (
                   <>
                     <div className="w-4 h-4 border-2 border-cream/30 border-t-cream rounded-full animate-spin" />
-                    Génération en cours...
+                    L&apos;IA prépare vos prompts...
                   </>
                 ) : (
                   <>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                     </svg>
-                    Générer (~$0.04)
+                    Générer des prompts avec l&apos;IA
                   </>
                 )}
               </button>
+
+              {error && (
+                <div className="mt-4 p-3 bg-blush/20 border border-blush-deep/20 rounded-lg">
+                  <p className="font-body text-sm text-blush-deep">{error}</p>
+                </div>
+              )}
             </div>
+          )}
 
-            {error && (
-              <div className="mt-4 p-3 bg-blush/20 border border-blush-deep/20 rounded-lg">
-                <p className="font-body text-sm text-blush-deep">{error}</p>
+          {/* Step 2: Select/Edit Prompt */}
+          {workflowStep === 'select-prompt' && (
+            <div className="bg-white rounded-2xl border border-forest/8 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="font-display text-lg text-forest">2. Choisissez un prompt</h2>
+                  <p className="font-body text-sm text-forest/60 mt-1">
+                    Sélectionnez une suggestion ou modifiez-la
+                  </p>
+                </div>
+                <button
+                  onClick={handleBackToDescription}
+                  className="p-2 text-forest/50 hover:text-forest hover:bg-forest/5 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
               </div>
-            )}
-          </div>
 
-          {/* Generation Status */}
-          {taskId && (
-            <GenerationStatus
-              taskId={taskId}
-              documentId={documentId}
-              onComplete={handleGenerationComplete}
-              onError={handleGenerationError}
-            />
+              {/* Original Description */}
+              <div className="mb-4 p-3 bg-cream/50 rounded-lg border border-forest/5">
+                <p className="font-body text-xs text-forest/50 mb-1">Votre demande :</p>
+                <p className="font-body text-sm text-forest">&quot;{userDescription}&quot;</p>
+              </div>
+
+              {/* Prompt Suggestions */}
+              <div className="space-y-3 mb-6">
+                {promptSuggestions.map((suggestion, index) => (
+                  <button
+                    key={suggestion.id}
+                    onClick={() => handleSelectPrompt(suggestion.text)}
+                    className={cn(
+                      'w-full text-left p-4 rounded-xl border-2 transition-all',
+                      selectedPrompt === suggestion.text
+                        ? 'border-forest bg-forest/5'
+                        : 'border-forest/10 hover:border-forest/30 bg-white'
+                    )}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className={cn(
+                        'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium',
+                        selectedPrompt === suggestion.text
+                          ? 'bg-forest text-cream'
+                          : 'bg-forest/10 text-forest'
+                      )}>
+                        {index + 1}
+                      </span>
+                      <p className="font-body text-sm text-forest leading-relaxed">
+                        {suggestion.text}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Edit Selected Prompt */}
+              {selectedPrompt && (
+                <div className="border-t border-forest/10 pt-4">
+                  <label className="font-body text-sm font-medium text-forest mb-2 block">
+                    ✏️ Modifier le prompt (optionnel)
+                  </label>
+                  <textarea
+                    value={editedPrompt}
+                    onChange={(e) => setEditedPrompt(e.target.value)}
+                    rows={5}
+                    className="w-full p-4 rounded-xl border border-forest/10 bg-cream/30 font-body text-sm text-forest focus:outline-none focus:ring-2 focus:ring-forest/20 resize-none"
+                  />
+                </div>
+              )}
+
+              <button
+                onClick={handleGenerate}
+                disabled={!editedPrompt.trim() || isGenerating}
+                className={cn(
+                  'w-full mt-6 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-body text-sm transition-all',
+                  !editedPrompt.trim() || isGenerating
+                    ? 'bg-forest/10 text-forest/40 cursor-not-allowed'
+                    : 'bg-gold text-white hover:bg-gold/90'
+                )}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+                </svg>
+                Générer l&apos;image (~$0.04)
+              </button>
+
+              {error && (
+                <div className="mt-4 p-3 bg-blush/20 border border-blush-deep/20 rounded-lg">
+                  <p className="font-body text-sm text-blush-deep">{error}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 3: Generation in Progress */}
+          {workflowStep === 'generate' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-2xl border border-forest/8 p-6">
+                <h2 className="font-display text-lg text-forest mb-2">3. Génération en cours</h2>
+                <p className="font-body text-sm text-forest/60 mb-4">
+                  Votre image est en cours de création...
+                </p>
+
+                {/* Show the prompt used */}
+                <div className="p-3 bg-cream/50 rounded-lg border border-forest/5 mb-4">
+                  <p className="font-body text-xs text-forest/50 mb-1">Prompt utilisé :</p>
+                  <p className="font-body text-sm text-forest line-clamp-3">{editedPrompt}</p>
+                </div>
+
+                {error && (
+                  <div className="p-3 bg-blush/20 border border-blush-deep/20 rounded-lg mb-4">
+                    <p className="font-body text-sm text-blush-deep">{error}</p>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleNewGeneration}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-body text-sm text-forest/70 hover:text-forest hover:bg-forest/5 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  </svg>
+                  Nouvelle génération
+                </button>
+              </div>
+
+              {/* Generation Status */}
+              {taskId && (
+                <GenerationStatus
+                  taskId={taskId}
+                  documentId={documentId}
+                  onComplete={handleGenerationComplete}
+                  onError={handleGenerationError}
+                />
+              )}
+            </div>
           )}
         </div>
 
