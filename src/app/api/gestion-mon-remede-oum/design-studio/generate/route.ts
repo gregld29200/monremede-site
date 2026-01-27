@@ -35,23 +35,21 @@ export async function POST(request: NextRequest) {
     const taskId = kieResponse.data.taskId
 
     // Create generatedImage document in Sanity
-    const doc: Record<string, unknown> = {
-      _type: 'generatedImage',
-      prompt: body.prompt, // Store original prompt without suffix
+    const doc = {
+      _type: 'generatedImage' as const,
+      prompt: body.prompt,
       kieTaskId: taskId,
-      status: 'pending',
+      status: 'pending' as const,
       aspectRatio: body.aspectRatio || '16:9',
       resolution: body.resolution || '2K',
       purpose: body.purpose || 'mainImage',
       cost: getEstimatedCost(body.resolution || '2K'),
-    }
-
-    // Only add linkedPost if articleId is provided
-    if (body.articleId) {
-      doc.linkedPost = {
-        _type: 'reference',
-        _ref: body.articleId,
-      }
+      ...(body.articleId && {
+        linkedPost: {
+          _type: 'reference' as const,
+          _ref: body.articleId,
+        },
+      }),
     }
 
     console.log('Creating Sanity document:', JSON.stringify(doc, null, 2))
