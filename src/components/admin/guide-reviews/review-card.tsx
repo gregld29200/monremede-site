@@ -53,6 +53,7 @@ function formatDate(dateString: string) {
 
 export function ReviewCard({ review, variant = 'full', onAction }: ReviewCardProps) {
   const [loading, setLoading] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState(false)
 
   const handleAction = async (action: 'approve' | 'reject' | 'feature' | 'unfeature') => {
     if (!onAction) return
@@ -67,11 +68,15 @@ export function ReviewCard({ review, variant = 'full', onAction }: ReviewCardPro
   if (variant === 'compact') {
     return (
       <div className={cn(
-        'group bg-white rounded-xl border border-forest/8 p-4 transition-all hover:shadow-md',
-        review.featured && 'ring-2 ring-gold/30 border-gold/20'
+        'group bg-white rounded-xl border border-forest/8 p-4 transition-all hover:shadow-md cursor-pointer',
+        review.featured && 'ring-2 ring-gold/30 border-gold/20',
+        expanded && 'ring-2 ring-forest/20'
       )}>
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
+          <div
+            className="min-w-0 flex-1"
+            onClick={() => setExpanded(!expanded)}
+          >
             <div className="flex items-center gap-2 mb-1">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -85,14 +90,25 @@ export function ReviewCard({ review, variant = 'full', onAction }: ReviewCardPro
               )}
             </div>
             <p className="font-display text-sm text-forest">{review.displayName}</p>
-            <p className="font-body text-xs text-forest/50 line-clamp-2 mt-1">{review.comment}</p>
+            <p className={cn(
+              'font-body text-xs text-forest/50 mt-1 transition-all',
+              expanded ? '' : 'line-clamp-2'
+            )}>
+              {review.comment}
+            </p>
+            {!expanded && review.comment.length > 100 && (
+              <p className="font-body text-[10px] text-sage mt-1">Cliquer pour voir tout</p>
+            )}
           </div>
           {onAction && (
             <button
-              onClick={() => handleAction(review.featured ? 'unfeature' : 'feature')}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleAction(review.featured ? 'unfeature' : 'feature')
+              }}
               disabled={loading !== null}
               className={cn(
-                'p-2 rounded-lg transition-colors',
+                'p-2 rounded-lg transition-colors flex-shrink-0',
                 review.featured
                   ? 'bg-gold/10 text-gold hover:bg-gold/20'
                   : 'text-forest/30 hover:text-gold hover:bg-gold/10'
