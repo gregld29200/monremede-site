@@ -7,7 +7,6 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import {
   PromptEditor,
-  PromptSuggestions,
   GenerationStatus,
 } from '@/components/admin/design-studio'
 import { SOCIAL_TEMPLATES, BRAND_KIT, type GeneratedImage } from '@/types/design-studio'
@@ -68,10 +67,6 @@ function SocialPageContent() {
     setError(errorMsg)
     setIsGenerating(false)
     setTaskId(null)
-  }
-
-  const handleSuggestionSelect = (text: string) => {
-    setPrompt(text)
   }
 
   const handleDownload = async (image: GeneratedImage) => {
@@ -177,16 +172,6 @@ function SocialPageContent() {
                 <p className="font-body text-sm text-blush-deep">{error}</p>
               </div>
             )}
-          </div>
-
-          {/* Suggestions */}
-          <div className="bg-white rounded-2xl border border-forest/8 p-6">
-            <h3 className="font-display text-lg text-forest mb-4">Suggestions</h3>
-            <PromptSuggestions
-              context={`Image ${template.name} pour Mon Remède, naturopathie et bien-être`}
-              onSelect={handleSuggestionSelect}
-              selectedRatio={template.aspectRatio}
-            />
           </div>
 
           {/* Generation Status */}
