@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,9 +9,8 @@ import {
   PromptEditor,
   PromptSuggestions,
   GenerationStatus,
-  ResultGallery,
 } from '@/components/admin/design-studio'
-import { SOCIAL_TEMPLATES, BRAND_KIT, type SocialTemplate, type GeneratedImage } from '@/types/design-studio'
+import { SOCIAL_TEMPLATES, BRAND_KIT, type GeneratedImage } from '@/types/design-studio'
 
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 
@@ -143,7 +142,6 @@ function SocialPageContent() {
             <PromptEditor
               value={prompt}
               onChange={setPrompt}
-              placeholder={`Ex: Une table de petit-déjeuner sain avec des fruits frais, du miel et des herbes...`}
               disabled={isGenerating}
             />
 
