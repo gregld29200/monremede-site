@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
 import { writeClient } from '@/sanity/lib/writeClient'
 import { getTaskStatus } from '@/lib/kie-ai'
-import type { GenerationStatus, TaskStatusResponse } from '@/types/design-studio'
+import type { TaskStatusResponse } from '@/types/design-studio'
 
 export async function GET(
   request: NextRequest,
@@ -21,23 +21,6 @@ export async function GET(
     // Get current status from KIE.AI
     const kieStatus = await getTaskStatus(taskId)
 
-    if (kieStatus.code !== 0) {
-      return NextResponse.json(
-        { error: `KIE.AI error: ${kieStatus.msg}` },
-        { status: 500 }
-      )
-    }
-
-    // Map KIE.AI status to our status
-    let status: GenerationStatus = 'pending'
-    if (kieStatus.data.status === 'processing') {
-      status = 'generating'
-    } else if (kieStatus.data.status === 'completed') {
-      status = 'success'
-    } else if (kieStatus.data.status === 'failed') {
-      status = 'failed'
-    }
-
     // Find and update the Sanity document
     const doc = await client.fetch<{ _id: string; status: string } | null>(
       `*[_type == "generatedImage" && kieTaskId == $taskId][0]{ _id, status }`,
@@ -46,24 +29,24 @@ export async function GET(
 
     if (doc) {
       // Update status in Sanity if it changed
-      const updates: Record<string, unknown> = { status }
+      const updates: Record<string, unknown> = { status: kieStatus.status }
 
-      if (kieStatus.data.resultUrl) {
-        updates.resultUrl = kieStatus.data.resultUrl
+      if (kieStatus.resultUrl) {
+        updates.resultUrl = kieStatus.resultUrl
       }
 
-      if (kieStatus.data.error) {
-        updates.errorMessage = kieStatus.data.error
+      if (kieStatus.error) {
+        updates.errorMessage = kieStatus.error
       }
 
       await writeClient.patch(doc._id).set(updates).commit()
     }
 
     const response: TaskStatusResponse = {
-      status,
-      resultUrl: kieStatus.data.resultUrl,
-      error: kieStatus.data.error,
-      progress: kieStatus.data.progress,
+      status: kieStatus.status,
+      resultUrl: kieStatus.resultUrl,
+      error: kieStatus.error,
+      progress: kieStatus.progress,
     }
 
     return NextResponse.json(response)

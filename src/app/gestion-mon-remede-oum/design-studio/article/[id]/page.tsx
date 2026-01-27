@@ -183,7 +183,10 @@ export default function ArticleImageGeneratorPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <div className="w-8 h-8 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-3 border-gold/20 border-t-gold rounded-full animate-spin" />
+          <p className="font-body text-sm text-ink-soft/60">Chargement de l&apos;article...</p>
+        </div>
       </div>
     )
   }
@@ -191,11 +194,22 @@ export default function ArticleImageGeneratorPage({
   if (!article) {
     return (
       <div className="text-center py-24">
+        <div className="w-16 h-16 rounded-3xl bg-blush/20 flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-blush-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+        </div>
         <h2 className="font-display text-xl text-forest mb-2">Article non trouvé</h2>
+        <p className="font-body text-sm text-ink-soft/60 mb-4">
+          L&apos;article demandé n&apos;existe pas ou a été supprimé
+        </p>
         <Link
           href={`${ADMIN_PATH}/design-studio/article`}
-          className="font-body text-sm text-gold hover:underline"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-forest text-cream rounded-full font-body text-sm hover:bg-forest-deep transition-colors"
         >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
           Retour à la liste
         </Link>
       </div>
@@ -205,42 +219,55 @@ export default function ArticleImageGeneratorPage({
   const currentImageUrl = getImageUrl(article.mainImage?.asset?._ref)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
           href={`${ADMIN_PATH}/design-studio/article`}
-          className="p-2 text-forest/50 hover:text-forest hover:bg-forest/5 rounded-lg transition-colors"
+          className="group p-2.5 text-forest/50 hover:text-forest bg-white hover:bg-cream-warm rounded-xl border border-forest/5 hover:border-forest/10 transition-all"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+          <svg className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
         </Link>
-        <div>
-          <h2 className="font-display text-2xl text-forest">Générer une image</h2>
-          <p className="font-body text-sm text-ink-soft/70 mt-1">
-            Pour : {article.title}
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="font-display text-2xl text-forest">Générer une image</h2>
+            <span className="px-2.5 py-1 bg-gold/10 text-gold text-xs font-accent uppercase tracking-wider rounded-full border border-gold/20">
+              Nano Banana Pro
+            </span>
+          </div>
+          <p className="font-body text-sm text-ink-soft/60 truncate max-w-lg">
+            Pour : <span className="text-forest">{article.title}</span>
           </p>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Left panel - Article preview */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl border border-forest/5 overflow-hidden">
-            <div className="p-6 border-b border-forest/5">
-              <h3 className="font-accent text-sm text-forest uppercase tracking-wider">
-                Aperçu de l&apos;article
-              </h3>
+      <div className="grid lg:grid-cols-5 gap-6">
+        {/* Left panel - Article preview (2 cols) */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="sticky top-6 bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 overflow-hidden">
+            <div className="p-5 border-b border-forest/5">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-forest/20 to-forest/5 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-display text-base text-forest font-medium">
+                  Aperçu de l&apos;article
+                </h3>
+              </div>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-5 space-y-5">
               {/* Current image */}
               <div className="space-y-2">
-                <p className="font-body text-xs text-ink-soft/60 uppercase tracking-wider">
+                <p className="font-accent text-xs text-forest/50 uppercase tracking-wider">
                   Image actuelle
                 </p>
-                <div className="aspect-video rounded-xl bg-forest/5 overflow-hidden relative">
+                <div className="aspect-video rounded-2xl bg-gradient-to-br from-forest/5 to-forest/10 overflow-hidden relative border border-forest/5">
                   {currentImageUrl ? (
                     <Image
                       src={currentImageUrl}
@@ -251,10 +278,12 @@ export default function ArticleImageGeneratorPage({
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
-                        <svg className="w-12 h-12 text-forest/20 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <p className="font-body text-sm text-ink-soft/50">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blush/30 to-blush/10 flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-7 h-7 text-blush-deep/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        </div>
+                        <p className="font-body text-sm text-ink-soft/40">
                           Aucune image
                         </p>
                       </div>
@@ -265,10 +294,10 @@ export default function ArticleImageGeneratorPage({
 
               {/* Title */}
               <div>
-                <p className="font-body text-xs text-ink-soft/60 uppercase tracking-wider mb-1">
+                <p className="font-accent text-xs text-forest/50 uppercase tracking-wider mb-1.5">
                   Titre
                 </p>
-                <h4 className="font-display text-lg text-forest">
+                <h4 className="font-display text-lg text-forest leading-tight">
                   {article.title}
                 </h4>
               </div>
@@ -276,10 +305,10 @@ export default function ArticleImageGeneratorPage({
               {/* Excerpt */}
               {article.excerpt && (
                 <div>
-                  <p className="font-body text-xs text-ink-soft/60 uppercase tracking-wider mb-1">
+                  <p className="font-accent text-xs text-forest/50 uppercase tracking-wider mb-1.5">
                     Extrait
                   </p>
-                  <p className="font-body text-sm text-ink-soft/80 line-clamp-3">
+                  <p className="font-body text-sm text-ink-soft/70 line-clamp-4 leading-relaxed">
                     {article.excerpt}
                   </p>
                 </div>
@@ -288,10 +317,10 @@ export default function ArticleImageGeneratorPage({
           </div>
         </div>
 
-        {/* Right panel - Generation workflow */}
-        <div className="space-y-6">
+        {/* Right panel - Generation workflow (3 cols) */}
+        <div className="lg:col-span-3 space-y-6">
           {/* AI Suggestions */}
-          <div className="bg-white rounded-2xl border border-forest/5 p-6">
+          <div className="bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 p-6">
             <PromptSuggestions
               articleId={id}
               articleType={articleType}
@@ -300,7 +329,7 @@ export default function ArticleImageGeneratorPage({
           </div>
 
           {/* Prompt editor */}
-          <div className="bg-white rounded-2xl border border-forest/5 p-6">
+          <div className="bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 p-6">
             <PromptEditor
               value={prompt}
               onChange={setPrompt}
@@ -309,7 +338,7 @@ export default function ArticleImageGeneratorPage({
           </div>
 
           {/* Settings */}
-          <div className="bg-white rounded-2xl border border-forest/5 p-6">
+          <div className="bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 p-6">
             <AspectRatioPicker
               aspectRatio={aspectRatio}
               resolution={resolution}
@@ -320,8 +349,15 @@ export default function ArticleImageGeneratorPage({
 
           {/* Error message */}
           {error && (
-            <div className="p-4 bg-blush-deep/10 border border-blush-deep/20 rounded-xl">
-              <p className="font-body text-sm text-blush-deep">{error}</p>
+            <div className="p-5 bg-gradient-to-r from-blush/30 to-blush/10 border border-blush-deep/20 rounded-2xl">
+              <p className="font-body text-sm text-blush-deep flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-blush-deep/10 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-blush-deep" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                </div>
+                {error}
+              </p>
             </div>
           )}
 
@@ -331,16 +367,18 @@ export default function ArticleImageGeneratorPage({
               onClick={handleGenerate}
               disabled={!prompt.trim()}
               className={cn(
-                'w-full px-6 py-4 rounded-xl font-body text-base transition-all',
-                'bg-gold text-white hover:bg-gold/90',
-                'disabled:opacity-50 disabled:cursor-not-allowed',
+                'group relative w-full px-6 py-4 rounded-2xl font-body text-base transition-all duration-300 overflow-hidden',
+                'bg-gradient-to-r from-gold to-gold/90 text-white',
+                'hover:shadow-xl hover:shadow-gold/25 hover:-translate-y-0.5',
+                'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none',
                 'flex items-center justify-center gap-3'
               )}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <svg className="w-5 h-5 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
               </svg>
-              Générer l&apos;image
+              <span className="relative">Générer l&apos;image</span>
             </button>
           )}
 
@@ -356,7 +394,7 @@ export default function ArticleImageGeneratorPage({
 
           {/* Result gallery */}
           {resultUrl && (
-            <div className="bg-white rounded-2xl border border-forest/5 p-6">
+            <div className="bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 p-6">
               <ResultGallery
                 resultUrl={resultUrl}
                 documentId={documentId}
@@ -376,13 +414,14 @@ export default function ArticleImageGeneratorPage({
                 setDocumentId(null)
               }}
               className={cn(
-                'w-full px-6 py-3 rounded-xl font-body text-sm transition-all',
-                'border border-forest/20 text-forest hover:bg-cream-warm',
-                'flex items-center justify-center gap-2'
+                'group w-full px-6 py-3.5 rounded-2xl font-body text-sm transition-all duration-300',
+                'bg-gradient-to-br from-cream-warm to-cream border border-forest/15 text-forest',
+                'hover:border-forest/25 hover:shadow-md hover:shadow-forest/5',
+                'flex items-center justify-center gap-2.5'
               )}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
               </svg>
               Générer une autre image
             </button>

@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       resolution: body.resolution || '2K',
     })
 
-    if (kieResponse.code !== 0 || !kieResponse.data?.taskId) {
+    if (kieResponse.code !== 200 || !kieResponse.data?.taskId) {
       return NextResponse.json(
         { error: `KIE.AI error: ${kieResponse.msg}` },
         { status: 500 }
