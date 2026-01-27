@@ -14,6 +14,7 @@ import { SOCIAL_TEMPLATES, BRAND_KIT } from '@/types/design-studio'
 const ADMIN_PATH = '/gestion-mon-remede-oum'
 
 type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+type LogoColor = 'dark' | 'light'
 
 interface GeneratedImageData {
   url: string
@@ -44,6 +45,8 @@ function SocialPageContent() {
   const [editingImage, setEditingImage] = useState<GeneratedImageData | null>(null)
   const [logoPosition, setLogoPosition] = useState<LogoPosition>('bottom-right')
   const [logoSize, setLogoSize] = useState(80)
+  const [logoColor, setLogoColor] = useState<LogoColor>('dark')
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const handleBackgroundUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -157,101 +160,86 @@ function SocialPageContent() {
     setEditingImage(image)
     setLogoPosition('bottom-right')
     setLogoSize(80)
+    setLogoColor('dark')
   }
 
   const closeLogoEditor = () => {
     setEditingImage(null)
   }
 
-  const downloadImage = async (imageUrl: string, withLogo: boolean) => {
-    if (!imageUrl) return
-
+  const downloadWithoutLogo = async (imageUrl: string) => {
+    setIsDownloading(true)
     try {
-      if (!withLogo) {
-        // Download without logo
-        const response = await fetch(imageUrl)
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
+      // Use server-side proxy to avoid CORS
+      const response = await fetch('/api/gestion-mon-remede-oum/design-studio/add-logo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl,
+          position: logoPosition,
+          size: 0, // Size 0 means no logo
+          logoColor: 'dark',
+        }),
+      })
+
+      if (!response.ok) {
+        // Fallback: try direct download (might work in some cases)
         const link = document.createElement('a')
-        link.href = url
+        link.href = imageUrl
         link.download = `${template.id}-monremede-${Date.now()}.png`
+        link.target = '_blank'
         link.click()
-        URL.revokeObjectURL(url)
         return
       }
 
-      // Download with logo using canvas
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-      if (!ctx) throw new Error('Canvas not supported')
-
-      const img = new window.Image()
-      img.crossOrigin = 'anonymous'
-
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => {
-          canvas.width = img.width
-          canvas.height = img.height
-          ctx.drawImage(img, 0, 0)
-
-          // Load and draw logo
-          const logo = new window.Image()
-          logo.crossOrigin = 'anonymous'
-
-          logo.onload = () => {
-            const padding = 30
-            const logoWidth = logoSize * (img.width / 500) // Scale logo based on image size
-            const logoHeight = (logo.height / logo.width) * logoWidth
-
-            let x = padding
-            let y = padding
-
-            switch (logoPosition) {
-              case 'top-left':
-                x = padding
-                y = padding
-                break
-              case 'top-right':
-                x = canvas.width - logoWidth - padding
-                y = padding
-                break
-              case 'bottom-left':
-                x = padding
-                y = canvas.height - logoHeight - padding
-                break
-              case 'bottom-right':
-                x = canvas.width - logoWidth - padding
-                y = canvas.height - logoHeight - padding
-                break
-            }
-
-            ctx.drawImage(logo, x, y, logoWidth, logoHeight)
-
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const url = URL.createObjectURL(blob)
-                const link = document.createElement('a')
-                link.href = url
-                link.download = `${template.id}-monremede-logo-${Date.now()}.png`
-                link.click()
-                URL.revokeObjectURL(url)
-              }
-              resolve()
-            }, 'image/png')
-          }
-
-          logo.onerror = () => reject(new Error('Failed to load logo'))
-          logo.src = '/logo.png'
-        }
-
-        img.onerror = () => reject(new Error('Failed to load image'))
-        img.src = imageUrl
-      })
-
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${template.id}-monremede-${Date.now()}.png`
+      link.click()
+      URL.revokeObjectURL(url)
       closeLogoEditor()
     } catch (err) {
       console.error('Download error:', err)
       setError('Erreur lors du téléchargement')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
+  const downloadWithLogo = async (imageUrl: string) => {
+    setIsDownloading(true)
+    try {
+      const response = await fetch('/api/gestion-mon-remede-oum/design-studio/add-logo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl,
+          position: logoPosition,
+          size: logoSize,
+          logoColor,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to add logo')
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${template.id}-monremede-logo-${Date.now()}.png`
+      link.click()
+      URL.revokeObjectURL(url)
+      closeLogoEditor()
+    } catch (err) {
+      console.error('Download error:', err)
+      setError('Erreur lors du téléchargement avec logo')
+    } finally {
+      setIsDownloading(false)
     }
   }
 
@@ -457,7 +445,7 @@ function SocialPageContent() {
                         onClick={() => openLogoEditor(image)}
                         className="px-4 py-2 bg-white text-forest rounded-lg font-body text-sm hover:bg-cream transition-colors"
                       >
-                        🏷️ Ajouter logo
+                        🏷️ Télécharger
                       </button>
                     </div>
                   </div>
@@ -477,7 +465,7 @@ function SocialPageContent() {
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-display text-xl text-forest">Ajouter le logo</h3>
+                <h3 className="font-display text-xl text-forest">Télécharger l&apos;image</h3>
                 <button
                   onClick={closeLogoEditor}
                   className="p-2 text-forest/50 hover:text-forest hover:bg-forest/5 rounded-lg transition-colors"
@@ -520,7 +508,10 @@ function SocialPageContent() {
                       alt="Logo"
                       width={logoSize}
                       height={logoSize}
-                      className="drop-shadow-lg"
+                      className={cn(
+                        'drop-shadow-lg',
+                        logoColor === 'light' && 'invert brightness-200'
+                      )}
                     />
                   </div>
                 </div>
@@ -554,6 +545,37 @@ function SocialPageContent() {
                   </div>
                 </div>
 
+                {/* Logo Color */}
+                <div>
+                  <p className="font-body text-sm text-forest mb-2">Couleur du logo :</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setLogoColor('dark')}
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-body transition-all',
+                        logoColor === 'dark'
+                          ? 'bg-forest text-cream'
+                          : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                      )}
+                    >
+                      <span className="w-4 h-4 rounded-full bg-forest border border-forest/20" />
+                      Foncé
+                    </button>
+                    <button
+                      onClick={() => setLogoColor('light')}
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-body transition-all',
+                        logoColor === 'light'
+                          ? 'bg-forest text-cream'
+                          : 'bg-forest/5 text-forest/70 hover:bg-forest/10'
+                      )}
+                    >
+                      <span className="w-4 h-4 rounded-full bg-white border border-forest/20" />
+                      Clair (fond sombre)
+                    </button>
+                  </div>
+                </div>
+
                 {/* Size */}
                 <div>
                   <p className="font-body text-sm text-forest mb-2">Taille du logo : {logoSize}px</p>
@@ -571,21 +593,41 @@ function SocialPageContent() {
               {/* Download Buttons */}
               <div className="flex gap-3">
                 <button
-                  onClick={() => downloadImage(editingImage.url, false)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-forest/10 text-forest rounded-xl font-body text-sm hover:bg-forest/20 transition-colors"
+                  onClick={() => downloadWithoutLogo(editingImage.url)}
+                  disabled={isDownloading}
+                  className={cn(
+                    'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body text-sm transition-colors',
+                    isDownloading
+                      ? 'bg-forest/5 text-forest/40 cursor-not-allowed'
+                      : 'bg-forest/10 text-forest hover:bg-forest/20'
+                  )}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
+                  {isDownloading ? (
+                    <div className="w-4 h-4 border-2 border-forest/30 border-t-forest rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                  )}
                   Sans logo
                 </button>
                 <button
-                  onClick={() => downloadImage(editingImage.url, true)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-forest text-cream rounded-xl font-body text-sm hover:bg-forest-deep transition-colors"
+                  onClick={() => downloadWithLogo(editingImage.url)}
+                  disabled={isDownloading}
+                  className={cn(
+                    'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-body text-sm transition-colors',
+                    isDownloading
+                      ? 'bg-forest/50 text-cream/50 cursor-not-allowed'
+                      : 'bg-forest text-cream hover:bg-forest-deep'
+                  )}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                  </svg>
+                  {isDownloading ? (
+                    <div className="w-4 h-4 border-2 border-cream/30 border-t-cream rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                  )}
                   Avec logo
                 </button>
               </div>
