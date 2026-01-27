@@ -53,21 +53,12 @@ export default function MerciPage() {
                 Prochaine étape
               </p>
               <p className="text-cream text-xl leading-relaxed">
-                Vous recevrez le lien de téléchargement de vos guides
-                <strong className="text-gold"> dans les 24 heures</strong>, incha&apos;Allah.
+                Nous vous contactons <strong className="text-gold">dans les 24 heures</strong> pour vous envoyer vos liens de téléchargement personnalisés, incha&apos;Allah.
               </p>
             </div>
 
-            <div className="text-cream/50 text-sm space-y-2">
-              <p>Un email de confirmation vous a été envoyé.</p>
-              <p className="text-cream/70">
-                <span className="text-gold">💡</span> Si vous ne le trouvez pas, pensez à vérifier :
-              </p>
-              <p className="text-cream/60">
-                • L&apos;onglet <strong className="text-cream/80">Promotions</strong> (Gmail)
-                <br />
-                • Vos <strong className="text-cream/80">courriers indésirables</strong> (spams)
-              </p>
+            <div className="text-cream/50 text-sm">
+              <p>En attendant, n&apos;hésitez pas à découvrir nos autres ressources ci-dessous.</p>
             </div>
           </div>
         </section>

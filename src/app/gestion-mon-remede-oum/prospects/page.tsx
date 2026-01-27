@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { StatusBadge } from '@/components/admin/status-badge'
 import type { UnifiedProspect, ProspectSourceTag } from '@/types/admin'
 
+// URL du site pour générer les liens de téléchargement
+const SITE_URL = 'https://monremede.com'
+
 const statusFilters = [
   { value: 'all', label: 'Tous' },
   { value: 'nouveau', label: 'Nouveau' },
@@ -90,6 +93,19 @@ export default function ProspectsPage() {
     if (score >= 40) return 'bg-[#dc2626]'
     if (score >= 25) return 'bg-[#d97706]'
     return 'bg-[#059669]'
+  }
+
+  const [copiedToken, setCopiedToken] = useState<string | null>(null)
+
+  const copyDownloadLink = async (token: string) => {
+    const link = `${SITE_URL}/cadeaux-ramadan/telechargement?token=${token}`
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopiedToken(token)
+      setTimeout(() => setCopiedToken(null), 2000)
+    } catch (error) {
+      console.error('Erreur lors de la copie:', error)
+    }
   }
 
   return (
@@ -217,6 +233,7 @@ export default function ProspectsPage() {
                   <th>Source</th>
                   <th>Profil sante</th>
                   <th>Score</th>
+                  <th>Lien</th>
                   <th>Statut</th>
                   <th>Soumis</th>
                   <th className="text-right">Actions</th>
@@ -272,6 +289,39 @@ export default function ProspectsPage() {
                             {prospect.totalScore !== undefined ? `${prospect.totalScore}/50` : '-'}
                           </span>
                         </div>
+                      ) : (
+                        <span className="text-sm text-[#9ca3af]">-</span>
+                      )}
+                    </td>
+                    <td>
+                      {prospect.downloadToken ? (
+                        <button
+                          onClick={() => copyDownloadLink(prospect.downloadToken!)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            copiedToken === prospect.downloadToken
+                              ? 'bg-[#d1fae5] text-[#059669]'
+                              : prospect.linkSent
+                                ? 'bg-[#f3f4f6] text-[#6b7280] hover:bg-[#e5e7eb]'
+                                : 'bg-[#fef3c7] text-[#d97706] hover:bg-[#fde68a]'
+                          }`}
+                          title={prospect.linkSent ? 'Lien déjà envoyé' : 'Lien non envoyé'}
+                        >
+                          {copiedToken === prospect.downloadToken ? (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              Copié !
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                              </svg>
+                              Copier
+                            </>
+                          )}
+                        </button>
                       ) : (
                         <span className="text-sm text-[#9ca3af]">-</span>
                       )}

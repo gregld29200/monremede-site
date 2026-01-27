@@ -11,6 +11,7 @@ import {
   AspectRatioPicker,
   GenerationStatus,
   ResultGallery,
+  BackgroundUploader,
 } from '@/components/admin/design-studio'
 import type { AspectRatio, Resolution, PromptSuggestion } from '@/types/design-studio'
 
@@ -53,6 +54,7 @@ export default function ArticleImageGeneratorPage({
   const [prompt, setPrompt] = useState('')
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9')
   const [resolution, setResolution] = useState<Resolution>('2K')
+  const [referenceImageUrl, setReferenceImageUrl] = useState<string | null>(null)
   const [generating, setGenerating] = useState(false)
   const [taskId, setTaskId] = useState<string | null>(null)
   const [documentId, setDocumentId] = useState<string | null>(null)
@@ -106,6 +108,7 @@ export default function ArticleImageGeneratorPage({
           resolution,
           articleId: id,
           purpose: 'mainImage',
+          referenceImageUrl: referenceImageUrl || undefined,
         }),
       })
 
@@ -344,6 +347,16 @@ export default function ArticleImageGeneratorPage({
               resolution={resolution}
               onAspectRatioChange={setAspectRatio}
               onResolutionChange={setResolution}
+            />
+          </div>
+
+          {/* Background image (optional) */}
+          <div className="bg-gradient-to-br from-cream-warm to-cream rounded-3xl border border-forest/8 p-6">
+            <BackgroundUploader
+              imageUrl={referenceImageUrl}
+              onUpload={setReferenceImageUrl}
+              onRemove={() => setReferenceImageUrl(null)}
+              disabled={generating}
             />
           </div>
 

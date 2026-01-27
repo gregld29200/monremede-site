@@ -10,40 +10,23 @@ interface SocialTemplatesProps {
 
 export function SocialTemplates({ selectedId, onSelect }: SocialTemplatesProps) {
   return (
-    <div className="space-y-4">
-      <h3 className="font-accent text-sm text-forest uppercase tracking-wider">
-        Formats réseaux sociaux
-      </h3>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {SOCIAL_TEMPLATES.map((template) => (
-          <button
-            key={template.id}
-            onClick={() => onSelect(template)}
-            className={cn(
-              'p-4 rounded-xl border text-left transition-all',
-              selectedId === template.id
-                ? 'bg-gold/10 border-gold/30 ring-2 ring-gold/20'
-                : 'bg-cream hover:bg-cream-warm border-forest/10 hover:border-forest/20'
-            )}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">{template.icon}</span>
-              <div>
-                <p className="font-display text-sm text-forest font-medium">
-                  {template.name}
-                </p>
-                <p className="font-body text-xs text-ink-soft/70">
-                  {template.aspectRatio}
-                </p>
-              </div>
-            </div>
-            <p className="font-body text-xs text-ink-soft/70">
-              {template.description}
-            </p>
-          </button>
-        ))}
-      </div>
+    <div className="space-y-1">
+      {SOCIAL_TEMPLATES.map((template) => (
+        <button
+          key={template.id}
+          onClick={() => onSelect(template)}
+          className={cn(
+            'group flex items-center gap-3 w-full p-3 rounded-lg transition-all text-left',
+            selectedId === template.id
+              ? 'bg-gold/10 border border-gold/20'
+              : 'bg-forest/[0.02] hover:bg-forest/[0.04] border border-transparent hover:border-forest/10'
+          )}
+        >
+          <span className="text-lg flex-shrink-0">{template.icon}</span>
+          <span className="font-body text-sm text-forest">{template.name}</span>
+          <span className="font-body text-xs text-forest/40 ml-auto">{template.aspectRatio}</span>
+        </button>
+      ))}
     </div>
   )
 }

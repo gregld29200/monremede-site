@@ -22,6 +22,7 @@ export interface GenerateImageRequest {
   resolution: Resolution
   articleId?: string
   purpose: ImagePurpose
+  referenceImageUrl?: string
 }
 
 export interface GenerateImageResponse {
@@ -125,15 +126,15 @@ export const BRAND_KIT = {
     gold: '#c4a35a',
     goldLight: '#dcc78e',
   },
-  promptSuffix: `Style: Natural, organic, elegant, warm, feminine aesthetic.
-Color palette: deep forest greens, soft sage, warm cream, golden accents, soft blush pink.
-Mood: Peaceful, nurturing, wellness-focused, naturopathy-inspired.
-Lighting: Soft, natural daylight with gentle shadows.`,
+  promptSuffix: `Style: Naturel, organique, élégant, chaleureux, esthétique féminine.
+Palette de couleurs: verts forêt profonds, sauge douce, crème chaude, accents dorés, rose poudré.
+Ambiance: Paisible, bienveillante, axée bien-être, inspirée de la naturopathie.
+Éclairage: Doux, lumière naturelle du jour avec ombres légères.`,
   claudeSystemPrompt: `Tu génères des descriptions d'images pour un site de naturopathie.
 Marque: Mon Remède - élégante, naturelle, féminine.
 Couleurs: vert forêt (#2D4A3E), sauge (#8b9e7e), crème (#f2ebe1), or (#c4a35a).
 Style: Photos lifestyle organiques, ingrédients naturels, ambiance apaisante.
-Génère des prompts en anglais pour la génération d'images.`,
+Génère des prompts en français pour la génération d'images.`,
 }
 
 // Social media templates

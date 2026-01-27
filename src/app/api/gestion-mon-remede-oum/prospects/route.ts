@@ -68,7 +68,9 @@ export async function GET(request: NextRequest) {
         acquisitionSource,
         wantsConsultation,
         hasConsultedNaturopath,
-        source
+        source,
+        downloadToken,
+        linkSent
       },
       "total": count(*[${filter}])
     }`

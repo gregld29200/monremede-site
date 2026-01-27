@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
       prompt: fullPrompt,
       aspectRatio: body.aspectRatio || '16:9',
       resolution: body.resolution || '2K',
+      referenceImages: body.referenceImageUrl ? [body.referenceImageUrl] : undefined,
     })
 
     if (kieResponse.code !== 200 || !kieResponse.data?.taskId) {

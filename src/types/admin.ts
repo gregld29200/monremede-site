@@ -132,6 +132,8 @@ export interface UnifiedProspect {
   wantsConsultation?: string
   hasConsultedNaturopath?: string
   source?: string // e.g., 'cadeaux-ramadan'
+  downloadToken?: string // Token pour le lien de téléchargement
+  linkSent?: boolean // Le lien a-t-il été envoyé ?
 }
 
 // Dashboard Stats

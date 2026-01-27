@@ -12,40 +12,7 @@ interface ArticleContent {
 
 export async function POST(request: NextRequest) {
   try {
-    const { articleId, articleType = 'post' } = await request.json()
-
-    if (!articleId) {
-      return NextResponse.json(
-        { error: 'articleId est requis' },
-        { status: 400 }
-      )
-    }
-
-    // Fetch article content from Sanity
-    const article = await client.fetch<ArticleContent | null>(
-      `*[_type == $type && _id == $id][0]{
-        _id,
-        title,
-        excerpt,
-        body
-      }`,
-      { type: articleType, id: articleId }
-    )
-
-    if (!article) {
-      return NextResponse.json(
-        { error: 'Article non trouvé' },
-        { status: 404 }
-      )
-    }
-
-    // Extract text from body blocks
-    const bodyText = article.body
-      ?.map((block) =>
-        block.children?.map((child) => child.text || '').join(' ')
-      )
-      .join(' ')
-      .slice(0, 1500) || ''
+    const { articleId, articleType = 'post', customPrompt } = await request.json()
 
     const apiKey = process.env.ANTHROPIC_API_KEY
 
@@ -58,7 +25,49 @@ export async function POST(request: NextRequest) {
 
     const anthropic = new Anthropic({ apiKey })
 
-    const prompt = `${BRAND_KIT.claudeSystemPrompt}
+    let prompt: string
+
+    // Handle custom prompts (e.g., for quote backgrounds)
+    if (customPrompt) {
+      prompt = `${BRAND_KIT.claudeSystemPrompt}
+
+${customPrompt}`
+    } else {
+      // Standard article-based prompts
+      if (!articleId) {
+        return NextResponse.json(
+          { error: 'articleId est requis' },
+          { status: 400 }
+        )
+      }
+
+      // Fetch article content from Sanity
+      const article = await client.fetch<ArticleContent | null>(
+        `*[_type == $type && _id == $id][0]{
+          _id,
+          title,
+          excerpt,
+          body
+        }`,
+        { type: articleType, id: articleId }
+      )
+
+      if (!article) {
+        return NextResponse.json(
+          { error: 'Article non trouvé' },
+          { status: 404 }
+        )
+      }
+
+      // Extract text from body blocks
+      const bodyText = article.body
+        ?.map((block) =>
+          block.children?.map((child) => child.text || '').join(' ')
+        )
+        .join(' ')
+        .slice(0, 1500) || ''
+
+      prompt = `${BRAND_KIT.claudeSystemPrompt}
 
 Voici le contenu d'un article à illustrer :
 
@@ -69,7 +78,7 @@ ${bodyText ? `**Contenu :** ${bodyText}` : ''}
 ---
 
 Génère exactement 4 prompts d'images différents pour illustrer cet article. Chaque prompt doit :
-1. Être en anglais
+1. Être en français
 2. Décrire une scène ou composition visuelle spécifique
 3. Être adapté au style de la marque (naturel, organique, apaisant)
 4. Avoir environ 50-80 mots
@@ -79,12 +88,13 @@ Pour chaque prompt, suggère aussi le ratio d'aspect idéal parmi : 16:9 (paysag
 Réponds UNIQUEMENT au format JSON suivant, sans texte avant ou après :
 {
   "prompts": [
-    { "text": "prompt en anglais...", "suggestedRatio": "16:9" },
-    { "text": "prompt en anglais...", "suggestedRatio": "16:9" },
-    { "text": "prompt en anglais...", "suggestedRatio": "1:1" },
-    { "text": "prompt en anglais...", "suggestedRatio": "2:3" }
+    { "text": "prompt en français...", "suggestedRatio": "16:9" },
+    { "text": "prompt en français...", "suggestedRatio": "16:9" },
+    { "text": "prompt en français...", "suggestedRatio": "1:1" },
+    { "text": "prompt en français...", "suggestedRatio": "2:3" }
   ]
 }`
+    }
 
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',

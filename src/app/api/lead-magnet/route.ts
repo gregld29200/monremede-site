@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from 'next-sanity'
 import { randomUUID } from 'crypto'
-import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
-import { generateRamadanGiftsEmail, getRamadanGiftsEmailSubject } from '@/lib/email-templates/ramadan-gifts-confirmation'
+// Email automatique désactivé - Oum Soumaya envoie manuellement les liens
+// import { getResendClient, FROM_EMAIL, REPLY_TO_EMAIL } from '@/lib/resend'
+// import { generateRamadanGiftsEmail, getRamadanGiftsEmailSubject } from '@/lib/email-templates/ramadan-gifts-confirmation'
 
 function getWriteClient() {
   const token = process.env.SANITY_API_WRITE_TOKEN
@@ -63,87 +64,22 @@ export async function POST(request: NextRequest) {
     )
 
     if (existingSubscriber) {
-      // Already subscribed - resend email with existing token
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
-      const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${existingSubscriber.downloadToken}`
-
-      const resend = getResendClient()
-      let emailSent = false
-
-      if (resend && existingSubscriber.downloadToken) {
-        try {
-          const emailHtml = generateRamadanGiftsEmail({
-            firstName: existingSubscriber.firstName || data.firstName.trim(),
-            downloadUrl,
-          })
-
-          await resend.emails.send({
-            from: FROM_EMAIL,
-            to: data.email,
-            replyTo: REPLY_TO_EMAIL,
-            subject: getRamadanGiftsEmailSubject(),
-            html: emailHtml,
-          })
-
-          emailSent = true
-          console.log(`Email renvoyé à ${data.email} (abonné existant)`)
-        } catch (emailError) {
-          console.error('Erreur lors du renvoi de l\'email:', emailError)
-        }
-      }
-
+      // Already subscribed - no automatic email, admin will send manually
       return NextResponse.json({
         success: true,
         alreadySubscribed: true,
-        emailSent,
-        message: 'Vous êtes déjà inscrit(e) ! L\'email a été renvoyé.',
+        emailSent: false,
+        message: 'Vous êtes déjà inscrit(e) ! Nous vous contactons sous 24h.',
       })
     }
 
     // Generate unique download token
     const downloadToken = randomUUID()
 
-    // Build download URL first (needed for email)
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://monremede.com'
-    const downloadUrl = `${siteUrl}/cadeaux-ramadan/telechargement?token=${downloadToken}`
+    // Email automatique désactivé - Oum Soumaya envoie manuellement les liens
+    // Le lien est accessible dans l'admin: /gestion-mon-remede-oum/prospects
 
-    // Send confirmation email BEFORE creating the document
-    const resend = getResendClient()
-    let emailSent = false
-    let emailError: string | undefined
-
-    if (resend) {
-      try {
-        const emailHtml = generateRamadanGiftsEmail({
-          firstName: data.firstName.trim(),
-          downloadUrl,
-        })
-
-        const emailResult = await resend.emails.send({
-          from: FROM_EMAIL,
-          to: data.email,
-          replyTo: REPLY_TO_EMAIL,
-          subject: getRamadanGiftsEmailSubject(),
-          html: emailHtml,
-        })
-
-        if (emailResult.error) {
-          emailError = emailResult.error.message
-          console.error('Erreur Resend:', emailResult.error)
-        } else {
-          emailSent = true
-          console.log(`Email de confirmation envoyé à ${data.email}, ID: ${emailResult.data?.id}`)
-        }
-      } catch (err) {
-        emailError = err instanceof Error ? err.message : 'Erreur inconnue'
-        console.error('Erreur lors de l\'envoi de l\'email:', err)
-      }
-    } else {
-      emailError = 'RESEND_API_KEY non configuré'
-      console.error('Resend client non disponible - RESEND_API_KEY manquant')
-    }
-
-    // Create the document in Sanity with accurate linkSent status
+    // Create the document in Sanity - linkSent: false car envoi manuel
     const result = await writeClient.create({
       _type: 'leadMagnetSubscriber',
       firstName: data.firstName.trim(),
@@ -154,14 +90,13 @@ export async function POST(request: NextRequest) {
       wantsConsultation: data.wantsConsultation || undefined,
       subscribedAt: new Date().toISOString(),
       downloadToken,
-      linkSent: emailSent,
-      emailError: emailError || undefined,
+      linkSent: false, // L'admin enverra manuellement le lien
     })
 
     return NextResponse.json({
       success: true,
       id: result._id,
-      emailSent,
+      emailSent: false, // Email manuel par l'admin
       message: 'Inscription réussie !',
     })
   } catch (error) {
