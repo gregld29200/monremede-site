@@ -501,11 +501,11 @@ function SocialPageContent() {
                       className="relative rounded-xl overflow-hidden border border-forest/10"
                       style={{ aspectRatio: template.aspectRatio.replace(':', '/') }}
                     >
-                      <Image
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src={imageUrl}
                         alt={`Generated image ${index + 1}`}
-                        fill
-                        className="object-cover"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
                     <div className="absolute inset-0 bg-forest/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
