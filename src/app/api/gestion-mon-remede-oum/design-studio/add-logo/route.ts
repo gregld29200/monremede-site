@@ -5,18 +5,26 @@ import fs from 'fs/promises'
 
 type LogoPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 type LogoColor = 'dark' | 'light'
+type OutputFormat = 'png' | 'webp' | 'jpeg'
 
 interface AddLogoRequest {
   imageUrl: string
   position: LogoPosition
   size: number
   logoColor: LogoColor
+  format?: OutputFormat
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body: AddLogoRequest = await request.json()
-    const { imageUrl, position, size, logoColor } = body
+    const { imageUrl, position, size, logoColor, format = 'png' } = body
+
+    const mimeTypes: Record<OutputFormat, string> = {
+      png: 'image/png',
+      webp: 'image/webp',
+      jpeg: 'image/jpeg',
+    }
 
     if (!imageUrl) {
       return NextResponse.json({ error: 'Image URL required' }, { status: 400 })
