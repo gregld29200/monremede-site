@@ -32,35 +32,56 @@ const sourceLabels: Record<ProspectSourceTag, { label: string; color: string; bg
   'autre': { label: 'Autre', color: 'text-[#6b7280]', bg: 'bg-[#f3f4f6]' },
 }
 
+const PROSPECTS_PER_PAGE = 50
+
 export default function ProspectsPage() {
   const [prospects, setProspects] = useState<UnifiedProspect[]>([])
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [sourceFilter, setSourceFilter] = useState('all')
 
-  const fetchProspects = useCallback(async () => {
-    setIsLoading(true)
+  const fetchProspects = useCallback(async (offset = 0, append = false) => {
+    if (append) {
+      setIsLoadingMore(true)
+    } else {
+      setIsLoading(true)
+    }
     try {
       const params = new URLSearchParams()
       if (search) params.set('search', search)
       if (statusFilter !== 'all') params.set('status', statusFilter)
       if (sourceFilter !== 'all') params.set('source', sourceFilter)
+      params.set('limit', String(PROSPECTS_PER_PAGE))
+      params.set('offset', String(offset))
 
       const response = await fetch(`/api/gestion-mon-remede-oum/prospects?${params}`)
       const data = await response.json()
-      setProspects(data.prospects || [])
+
+      if (append) {
+        setProspects(prev => [...prev, ...(data.prospects || [])])
+      } else {
+        setProspects(data.prospects || [])
+      }
       setTotal(data.total || 0)
     } catch (error) {
       console.error('Error fetching prospects:', error)
     } finally {
       setIsLoading(false)
+      setIsLoadingMore(false)
     }
   }, [search, statusFilter, sourceFilter])
 
+  const loadMore = useCallback(() => {
+    fetchProspects(prospects.length, true)
+  }, [fetchProspects, prospects.length])
+
+  const hasMore = prospects.length < total
+
   useEffect(() => {
-    fetchProspects()
+    fetchProspects(0, false)
   }, [fetchProspects])
 
   const formatDate = (dateString?: string) => {
@@ -357,10 +378,31 @@ export default function ProspectsPage() {
 
         {/* Table footer */}
         {!isLoading && prospects.length > 0 && (
-          <div className="px-5 py-3 border-t border-[#f3f4f6] bg-[#f9fafb]">
+          <div className="px-5 py-3 border-t border-[#f3f4f6] bg-[#f9fafb] flex items-center justify-between">
             <p className="text-sm text-[#6b7280]">
               Affichage de {prospects.length} sur {total} prospect{total > 1 ? 's' : ''}
             </p>
+            {hasMore && (
+              <button
+                onClick={loadMore}
+                disabled={isLoadingMore}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#111827] text-white hover:bg-[#1f2937] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoadingMore ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Chargement...
+                  </>
+                ) : (
+                  <>
+                    Charger plus
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         )}
       </div>
