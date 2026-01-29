@@ -13,6 +13,7 @@ import {clientNote} from './clientNote'
 import {leadMagnetSubscriber} from './leadMagnetSubscriber'
 import {guideReview} from './guideReview'
 import {generatedImage} from './generatedImage'
+import {ebookPurchase} from './ebookPurchase'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -35,6 +36,9 @@ export const schema: {types: SchemaTypeDefinition[]} = {
     // Lead Magnets
     leadMagnetSubscriber,
     guideReview,
+
+    // E-commerce
+    ebookPurchase,
 
     // Design Studio
     generatedImage,
