@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 const credentials = [
   'Naturopathie',
   'Micronutrition',
@@ -18,12 +20,15 @@ export function AuthorSection() {
             <div className="absolute -inset-4 rounded-full border border-sage/20 hidden lg:block" />
 
             {/* Main Image */}
-            <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full bg-gradient-to-br from-sage-light to-sage overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="label text-forest-deep/60 text-center px-6 text-[0.6rem]">
-                  Portrait Auteure
-                </span>
-              </div>
+            <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden shadow-lg">
+              <Image
+                src="/images/author-brand.webp"
+                alt="Mon Remède - Oum Soumayya"
+                width={224}
+                height={224}
+                className="w-full h-full object-cover"
+                priority
+              />
             </div>
           </div>
 
