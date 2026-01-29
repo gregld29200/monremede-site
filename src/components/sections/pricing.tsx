@@ -78,7 +78,7 @@ export function PricingSection() {
 
             {/* Price */}
             <div className="text-center mb-6">
-              <span className="text-4xl lg:text-5xl font-display text-forest">14,99€</span>
+              <span className="text-4xl lg:text-5xl font-display text-forest">19€</span>
             </div>
 
             {/* Features */}
