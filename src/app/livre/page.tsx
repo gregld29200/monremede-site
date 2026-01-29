@@ -4,7 +4,6 @@ import {
   PainPointsSection,
   BookContentSection,
   AuthorSection,
-  TestimonialsSection,
   PricingSection,
   FAQSection,
   FinalCTASection,
@@ -24,7 +23,6 @@ export default function LivrePage() {
         <PainPointsSection />
         <BookContentSection />
         <AuthorSection />
-        <TestimonialsSection />
         <PricingSection />
         <FAQSection />
         <FinalCTASection />
