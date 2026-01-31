@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/Hero.png",
+        url: "/images/og-image.webp",
         width: 1200,
         height: 630,
         alt: "Mon Remède - Naturopathie avec Oum Soumayya",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Mon Remède - La Santé dans l'assiette",
     description: "Découvrez la naturopathie avec Oum Soumayya : livre, consultations et recettes santé.",
-    images: ["/images/Hero.png"],
+    images: ["/images/og-image.webp"],
   },
   other: {
     "theme-color": "#2D4A3E",
