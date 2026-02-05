@@ -5,6 +5,7 @@ import {
   BookContentSection,
   AuthorSection,
   PricingSection,
+  GuideTestimonials,
   FAQSection,
   FinalCTASection,
 } from '@/components/sections'
@@ -24,6 +25,7 @@ export default function LivrePage() {
         <BookContentSection />
         <AuthorSection />
         <PricingSection />
+        <GuideTestimonials />
         <FAQSection />
         <FinalCTASection />
       </main>
