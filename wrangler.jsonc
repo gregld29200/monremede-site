@@ -1,6 +1,23 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "monremede-site",
-  "pages_build_output_dir": "out",
-  "compatibility_date": "2025-05-05"
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-04-23",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "monremede-site"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  }
 }
