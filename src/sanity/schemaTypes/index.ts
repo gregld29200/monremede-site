@@ -14,6 +14,8 @@ import {leadMagnetSubscriber} from './leadMagnetSubscriber'
 import {guideReview} from './guideReview'
 import {generatedImage} from './generatedImage'
 import {ebookPurchase} from './ebookPurchase'
+import {telegramChannel} from './telegramChannel'
+import {telegramBroadcast} from './telegramBroadcast'
 
 export const schema: {types: SchemaTypeDefinition[]} = {
   types: [
@@ -42,5 +44,9 @@ export const schema: {types: SchemaTypeDefinition[]} = {
 
     // Design Studio
     generatedImage,
+
+    // Telegram
+    telegramChannel,
+    telegramBroadcast,
   ],
 }

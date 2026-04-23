@@ -49,6 +49,19 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      S.listItem()
+        .title('Telegram')
+        .child(
+          S.list()
+            .title('Telegram')
+            .items([
+              S.documentTypeListItem('telegramChannel').title('Canaux'),
+              S.documentTypeListItem('telegramBroadcast').title('Historique des envois'),
+            ])
+        ),
+
+      S.divider(),
+
       // Paramètres
       S.listItem()
         .title('Paramètres')

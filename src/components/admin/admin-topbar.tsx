@@ -59,6 +59,9 @@ const getPageTitle = (pathname: string): { title: string; subtitle: string } => 
   if (pathname.includes('/categories')) {
     return { title: 'Categories', subtitle: 'Organiser vos contenus' }
   }
+  if (pathname.includes('/telegram')) {
+    return { title: 'Telegram', subtitle: 'Diffuser vos contenus sur plusieurs canaux' }
+  }
   // Guide page
   if (pathname.includes('/guide')) {
     return { title: 'Guide', subtitle: 'Comment utiliser l\'administration' }

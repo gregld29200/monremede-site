@@ -93,6 +93,16 @@ const navigation = [
     badge: 'AI',
   },
   {
+    name: 'Telegram',
+    href: `${ADMIN_PATH}/telegram`,
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21.5 4.5L3.75 11.625c-.55.22-.533 1.005.026 1.201l4.28 1.499a1.25 1.25 0 001.26-.272l3.418-3.161c.428-.396 1.097.178.735.632l-2.894 3.626a1.25 1.25 0 00.154 1.73l3.588 2.987c.44.366 1.11.124 1.219-.44L22.48 5.6c.13-.58-.418-1.134-.98-.912z" />
+      </svg>
+    ),
+    badge: null,
+  },
+  {
     name: 'Guide',
     href: `${ADMIN_PATH}/guide`,
     icon: (

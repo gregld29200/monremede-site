@@ -22,6 +22,7 @@ La barre latérale à gauche vous permet d'accéder aux différentes sections :
 | 📝 | **Blog** | Gérer vos articles |
 | 🍳 | **Recettes** | Gérer vos recettes |
 | 🏷️ | **Catégories** | Gérer les catégories |
+| ✈️ | **Telegram** | Diffuser un post sur plusieurs canaux Telegram |
 
 ---
 
@@ -220,7 +221,53 @@ Vous pouvez ajouter plusieurs photos supplémentaires.
 
 ---
 
-## 5. L'Éditeur de Texte
+## 5. Publier sur Plusieurs Canaux Telegram
+
+La section **Telegram** permet de publier un même message sur plusieurs canaux en une seule action.
+
+### Étape 1 : Configurer vos canaux
+
+1. Ouvrez **Telegram** dans le menu
+2. Ajoutez chaque canal avec :
+   - **Nom** : un libellé interne pour vous repérer
+   - **Chat ID / @username** : soit `@nomducanal`, soit l'identifiant numérique du canal
+   - **Description** : optionnel
+3. Laissez le canal en **actif** si vous voulez l'utiliser dans les prochains envois
+
+> ⚠️ **Important** : Le bot Telegram doit être administrateur de chaque canal avec le droit de publier des messages.
+
+### Étape 2 : Composer le post
+
+Vous pouvez choisir :
+- **Article publié** : pour reprendre un article du blog
+- **Recette publiée** : pour reprendre une recette
+- **Message libre** : pour rédiger manuellement
+
+Le formulaire pré-remplit automatiquement :
+- le **titre**
+- le **message**
+- le **bouton**
+- le **lien**
+- l'**image** (si disponible)
+
+### Étape 3 : Sélectionner les canaux
+
+1. Cochez un ou plusieurs canaux actifs
+2. Vérifiez votre message
+3. Cliquez sur **Publier sur Telegram**
+
+### Historique des envois
+
+En bas de la page, vous verrez :
+- les derniers posts envoyés
+- le statut global (**Succès**, **Partiel**, **Échec**)
+- le détail par canal
+
+Cela permet d'identifier rapidement un canal mal configuré ou un problème de droit du bot.
+
+---
+
+## 6. L'Éditeur de Texte
 
 Pour le contenu des articles, vous avez un éditeur avec des outils :
 
@@ -248,7 +295,7 @@ Pour le contenu des articles, vous avez un éditeur avec des outils :
 
 ---
 
-## 6. Conseils Pratiques
+## 7. Conseils Pratiques
 
 ### Avant de publier, vérifiez :
 
